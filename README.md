@@ -33,7 +33,7 @@ A fortaleza é atacada por 3 tipos de inimigos diferentes, com forças diferente
 - Inimigos a tentar "rebentar" o portão com um aríete (Força: 3)
 - Inimigos numa torre de cerco a tentar movimentar-se até à fortaleza (Força: 4)
 
-Todos os inimigos começam a "3" unidades de distância da fortaleza. Os inimigos vão avançando para perto do Castelo até chegarem à Closed Combat Area. **Uma vez nessa zona, todos têm força = 4**.
+Todos os inimigos começam a "3" unidades de distância da fortaleza. Os inimigos vão avançando para perto do Castelo até chegarem à Closed Combat Area. **Uma vez nessa zona, todos têm força = 4**. Se mais do que 2 unidades estiverem nessa fase ao mesmo tempo, o jogador perde controlo da fortaleza e perde automaticamente o jogo.
 
 Na parte inferior da carta, existe um *trebuchet count*. Inicialmente, o jogador tem 3 aríetes à sua disposição.
 
@@ -49,6 +49,66 @@ Os 3 recursos que o jogador tem que controlar são:
 O jogador pode tentar movimentar alguns soldados pelo túnel para o meio das unidades inimigas. Inicialmente, os jogadores estão todos no castelo e ele terá que os movimentar aos poucos até passarem o túnel (o castelo representa 1 unidade e o túnel 2 unidades de distância).
 
 Existe também uma área onde se contabiliza a quantidade de suprimentos que foram capturados do inimigo (*raided*). A quantidade máxima de unidades que os seus soldados podem carregar é de 2.
+
+### Sequência de Ações
+No início de cada turno, devem ser realizadas as seguintes ações, pela sua ordem:
+
+1. **Verificar se se tem soldados no túnel.**
+  Se sim:
+    - Rodar um dado
+      - Se sair 2-6, os soldados podem continuar pelo túnel, porque não foram detetados.
+      - Se sair 1, os soldados foram capturados (ver [Soldados Capturados])
+      
+2. **Retirar Carta do Topo do Baralho**
+    1. Aplicar o evento da carta
+    2. Avançar os inimigos como instruído na carta
+    3. Tomar as ações permitidas pelo Action Points Allowances da carta
+3. **Realizar evento**
+  - Existem dois tipos de evento:
+      1. Eventos Regulares 
+      2. Eventos de Ataque Trebuchet (o inimigo automaticamente lança todos os seus aríetes.
+        - Se o inimigo tem 3 trebuchets (força total)
+          - A força da muralha é automaticamente reduzida em 2 unidades
+        - Se o inimigo tem 2 trebuchets
+          - A força da muralha é automaticamente reduzida em 1 unidade
+        - Se o inimigo tem 1 trebuchet
+          - Rodar Dado
+            - Se resultado é 4, 5 ou 6 => a muralha é atingida e a sua força é reduzida em 1 unidade
+            - Se resultado é 1, 2 ou 3 => a muralha não é atingida 
+4. **Movimento dos Inimigos**
+   - Nenhuma unidade inimiga se deve mover quando existem ataques de trebuchets
+   - Uma carta pode mandar mover:
+      - Nenhuma facção
+      - 1 ou mais facções
+      - A facção mais lenta (com o ícone da espada; as unidades mais longe do castelo, avançarão 1 posição; se 2 ou mais estiverem na posição mais atrasada, ambas as facções avançam)
+ 
+5. **Ações do Jogador**
+  - O círculo amarelo na lateral esquerda do evento determina a quantidade de ações que o jogador pode efetuar. O jogador é obrigado a gastar pelo menos 1 dessas ações por jogada.
+  - As ações disponíveis são:
+    - Ataque de Arqueiros
+    - Ataque de Agua a Ferver (Boiling Water)
+    - Ataque de Close Combat
+    - Coupure (arranjar a muralha)
+    - Juntar as tropas (Rally Troops)
+    - Movimentar soldados no túnel
+    - Fazer raid por supplies
+    - Sabotagem
+   
+  - Todas as ações podem ser efetuadas múltiplas vezes numa jogada, excepto o ataque de água a ferver.
+   
+    1. **Ataque de Arqueiros**
+      - Só pode ser usado contra Escadas, Aríetes e Torres de cerco.
+      - O jogador deve escolher a track que quer atacar e rodar um dado.
+        - Se o resultado for superior à força dessa facção => a facção inimiga afasta-se 1 unidade do castelo
+        - Senão => o ataque falhou
+    2. **Ataque de Água a Ferver**
+      - Só pode ser usado contra inimigos num espaço circular.
+      - A ação é igual ao Ataque de Arqueiros, mas com **+1 DRM** (acrescenta-se 1 valor ao resultado do dado).
+      - Se o resultado do dado for "1", a moral do povo é reduzida em 1 unidade, para além do ataque falhar (se o evento em ação tiver 1 bónus adicional de +1 DRM, esta consequência é ignorada).
+      - Esta ação só pode ser jogada 1 vez por turno. Se + do que 1 facção estiverem numa área circular, deve escolher 1 para atacar.
+    3. **Close Combat**
+      - ...
+
 
 ## Links Úteis
 - [REGRAS DO JOGO](https://github.com/aFaneca/PA1718/blob/master/Documenta%C3%A7%C3%A3o/9CS_Rules_20171217.pdf)
