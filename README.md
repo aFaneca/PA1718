@@ -88,8 +88,8 @@ No início de cada turno, devem ser realizadas as seguintes ações, pela sua or
     - Ataque de Arqueiros
     - Ataque de Agua a Ferver (Boiling Water)
     - Ataque de Close Combat
-    - Coupure (arranjar a muralha)
-    - Juntar as tropas (Rally Troops)
+    - Coupure (reparar danos na muralha)
+    - Motivar as tropas (Rally Troops)
     - Movimentar soldados no túnel
     - Fazer raid por supplies
     - Sabotagem
@@ -107,9 +107,72 @@ No início de cada turno, devem ser realizadas as seguintes ações, pela sua or
       - Se o resultado do dado for "1", a moral do povo é reduzida em 1 unidade, para além do ataque falhar (se o evento em ação tiver 1 bónus adicional de +1 DRM, esta consequência é ignorada).
       - Esta ação só pode ser jogada 1 vez por turno. Se + do que 1 facção estiverem numa área circular, deve escolher 1 para atacar.
     3. **Close Combat**
-      - ...
+      - Todas as unidades inimigas nessa área tem Força = 4.
+      - Rodar um dado (para cada uma das unidades inimigas nesta área):
+        - Se resultado > 4 => afastar essa facção 1 unidade
+        - Se resultado == 1 => reduz a moral do povo em 1 unidade
+        - Senão => Perde o jogo
+      - Se no final do turno, estiverem 2 facções nesta área => perde o jogo.
+      - Os DRM (Die Roll Modification) não têm efeito sobre as unidades inimigas nesta área
+   4. **Reparar Muralha**
+      - Rodar um dado
+        - Se resultado > 4 => A força da Muralha aumenta em 1 unidade
+        - Senão => nada acontece
+   5. **Motivar as Tropas**
+      - Rodar um dado
+        - Se resultado > 4 => A moral do povo aumenta em 1 unidade
+        - Senão => nada acontece
+        - (OPCIONAL) O Jogador pode aumentar as chances de sucesso, ao dar ao povo 1 unidade de supplies (fica com -1 supplies), ganhando assim um bónus de +1 DRM (ou seja, adiciona +1 ao resultado do dado). <- Esta decisão é tomada ANTES de rodar o dado
+   6. **Movimentar Soldados no Túnel**
+      - Existem 3 possibilidades de movimento no túnel:
+        - Free => o jogador tem direito a 1 free movement por turno (sem gastar action points) <- sair do túnel tb é um free movement!
+        - Fast => o soldado movimenta-se diretamente até ao fim do túnel (custa 1 AP para entrar no túnel e +1 para atravessar imediatamente o túnel)
+        - Automatic Night Movement => Todas as unidades no túnel ao fim do dia são movidas de volta até ao castelo; esta ação não tem custos.
+      - Se estiverem unidades em território inimigo ao final do dia, serão automaticamente capturadas.
+   7. **Fazer raid de supplies**
+      - Só pode acontecer quando tiver unidades em território inimigo
+      - Rodar um dado
+        - Se 3,4 ou 5 => raid com sucesso de 1 supply
+        - Se 6 => raid com sucesso de 2 supplies
+        - Se 1 => os soldados são capturados
+   8. **Sabotagem**
+      - Só pode acontecer quando tiver unidades em território inimigo
+      - Os soldados tentam danificar os aríetes (trebuchets) para impedir que disparem
+      - Rodar um dado
+        - Se 5 ou 6 => 1 trebuchet é danificado (inimigos ficam com menos 1 trebuchet)
+        - Se 1 => os soldados são capturados
+      - A sabotagem pode ser feita ao mesmo tempo que se carregam supplies
+   9. **Action Points Adicionais**
+      - Pode ter acesso a action points (AP) adicionais se sacrificar a sua moral, por exemplo.
+      - Baixar em 1 unidade o valor da sua moral ou supply => acesso a +1 AP
+      - Só se pode ter acesso a 1 AP adicional por turno
+        
+6. **Verificar se ganhou ou perdeu o jogo**
+    - No final de cada turno, verificar se ganhou ou perdeu o jogo.
+    - Ao final do turno, perdeu o jogo se:
+      - 2 facções estiverem na zona de close combat
+      - 1 das Forças (muralha, moral ou supplies) estiver a 0
+    - Perde o jogo **imediatamanete** se:
+      - Uma 3ª facção avançar para a zona de close combat
+      - Uma segunda força fica a 0
+    - Ganhou o jogo se tiver aguentado até ao final do terceiro dia.
+ 
+ 7. **Fase do Final do Dia**
+  - 1 dia acaba quando todas as 6 cartas de eventos tiverem sido jogadas
+  - Ao final de cada dia:
+    - As cartas devem ser rebaralhadas para o próximo dia
+    - Reduzir os supplies em 1 unidade
+    - Mover soldados no túnel de volta para o castelo
+    - Soldados em território inimigo são capturados
+  
+  
+### Quando soldados são capturados
+  - O que fazer:
+    1. Os soldados são abandonados e substituídos por novos soldados no castelo
+    2. A moral é reduzida em 1 unidade
+    
 
-
+    
 ## Links Úteis
 - [REGRAS DO JOGO](https://github.com/aFaneca/PA1718/blob/master/Documenta%C3%A7%C3%A3o/9CS_Rules_20171217.pdf)
 - [PlayerAid](https://github.com/aFaneca/PA1718/blob/master/Documenta%C3%A7%C3%A3o/9CS_PlayerAid_20171217.pdf)
