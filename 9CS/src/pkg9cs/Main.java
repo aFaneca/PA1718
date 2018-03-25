@@ -5,17 +5,24 @@
  */
 package pkg9cs;
 
+import Lógica.Mundo;
+
 /**
  *
  * @author me
  */
 public class Main {
 
-    /**
-     * @param args the command line arguments
-     */
+    private void run() {
+        m = new Mundo();
+        System.out.println(m.rodaDado());
+    }
+
+    Mundo m;
+    
     public static void main(String[] args) {
-        // TODO code application logic here
+        Main main = new Main();
+        main.run();
     }
     
 }
