@@ -9,7 +9,9 @@ import Lógica.Mundo;
 
 /**
  *
- * @author me
+ * @authors 
+ * Amadeus Alves
+ * António Faneca
  */
 public class Main {
 
