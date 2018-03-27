@@ -5,21 +5,24 @@
  */
 package Lógica;
 
+import Lógica.Inimigos.Escada;
+import Lógica.Inimigos.Torre;
+import Lógica.Inimigos.Ariete;
 import java.util.ArrayList;
 import java.util.List;
 
 
 class Fortaleza {
-    Mundo mundo;
-    Muralha muralha;
-    Povo povo;
-    Suprimento suprimento;
-    List<Inimigo> inimigos;
-    Torre torre;
-    Escada escada;
-    Ariete ariete;
-    Soldado soldados;
-    int nrCatapultas;
+    private Mundo mundo;
+    private Muralha muralha;
+    private Povo povo;
+    private Suprimento suprimento;
+    private List<Inimigo> inimigos;
+    private Torre torre;
+    private Escada escada;
+    private Ariete ariete;
+    private Soldado soldados;
+    private int nrCatapultas;
     
     public Fortaleza(Mundo m){
         this.mundo = m;
@@ -32,6 +35,13 @@ class Fortaleza {
         inimigos.add(ariete);
         nrCatapultas = 3;
     }
+
+    public int getNrCatapultas() {
+        return nrCatapultas;
+    }
     
+    public void alteraMuralha(int alteracao){
+        muralha.alteraForca(alteracao);
+    }
     
 }

@@ -3,17 +3,19 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Lógica;
+package Lógica.Inimigos;
+
+import Lógica.Inimigo;
 
 /**
  *
  * @author me
  */
-class Povo {
-    private int moral;
+public class Escada extends Inimigo{
     
-    public Povo(){
-        moral = 4;
+    
+    public Escada(){
+        forca = 2;
+        nome = "Escadas";
     }
-    
 }

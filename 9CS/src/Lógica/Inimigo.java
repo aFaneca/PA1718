@@ -9,10 +9,10 @@ package Lógica;
  *
  * @author me
  */
-abstract class Inimigo {
-    int forca;
-    int local; // 4 <= espaço inicial - 0 <= zona de close combat
-    
+public abstract class Inimigo {
+    protected int forca;
+    protected int local; // 4 <= espaço inicial - 0 <= zona de close combat
+    protected String nome;
     
     public Inimigo(){
         local = 4;

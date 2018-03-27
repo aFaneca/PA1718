@@ -17,7 +17,10 @@ public class Main {
 
     private void run() {
         m = new Mundo();
-        System.out.println(m.rodaDado());
+        System.out.println("Nr. de Cartas: " + m.getCartas().size());
+        
+        m.verInfo();
+        
     }
 
     Mundo m;

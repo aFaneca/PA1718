@@ -10,7 +10,7 @@ package Lógica;
  * @author me
  */
 class Suprimento {
-    int nivel;
+    private int nivel;
     
     public Suprimento(){
         nivel = 4;

@@ -12,16 +12,14 @@ import java.util.List;
  *
  * @author me
  */
-abstract class Carta {
-    List<Evento> eventos;
-    List<Inimigo> inimigos;
-    Mundo mundo;
-    int nr;
+class Carta {
+    protected List<Evento> eventos;
+    protected Mundo mundo;
+    protected int nr;
     
-    public Carta(Mundo m, int numero, List<Inimigo> inim, Evento e1, Evento e2, Evento e3){
+    public Carta(Mundo m, int numero, Evento e1, Evento e2, Evento e3){
         this.mundo = m;
         eventos = new ArrayList<>(3);
-        this.inimigos = new ArrayList<>(inim);
         nr = numero;
         eventos.add(e1);
         eventos.add(e2);

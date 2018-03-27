@@ -5,24 +5,31 @@
  */
 package Lógica;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  *
  * @author me
  */
-abstract class Evento {
+public abstract class Evento {
     protected String nome;
     protected int APA; // Action Poins Allowance
-    static Mundo mundo;
-    public Evento(Mundo m, int var){
+    protected static Mundo mundo;
+    protected List<Inimigo> inimigos;
+    
+    
+    public Evento(Mundo m, int var, List<Inimigo> inim){
         APA = var;
         this.mundo = m;
+        this.inimigos = new ArrayList<>(inim);
     }
-    
+   
+    /*
     protected abstract boolean condicao();
     protected abstract void acao();
-    
+    */
     
     public int getAPA() {return APA;}
 

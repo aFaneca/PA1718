@@ -15,4 +15,12 @@ class Muralha {
     public Muralha(){
         forca = 4;
     }
+    
+    
+    public void alteraForca(int quant){
+        forca += quant;
+        if(forca > 4) forca = 4;
+        if(forca < 0) forca = 0;
+            
+    }
 }
