@@ -7,6 +7,7 @@ package Lógica.Eventos;
 
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Mundo;
 import java.util.List;
 
 /**
@@ -15,9 +16,14 @@ import java.util.List;
  */
 public class SalvaDeFlechas extends Evento{
 
-    public SalvaDeFlechas(int numero, List<Inimigo> inim){
+    public SalvaDeFlechas(Mundo mundo, int numero, List<Inimigo> inim){
         super(mundo, numero, inim);
         nome = "Salva de Flechas";
+    }
+
+    @Override
+    protected void acao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

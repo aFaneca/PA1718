@@ -5,12 +5,15 @@
  */
 package Lógica;
 
+import Estados.AguardaInicio;
+import Estados.IEstados;
 import Lógica.Inimigos.UnidadesLentas;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
 import Lógica.Eventos.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -19,13 +22,18 @@ public class Mundo {
     private Fortaleza fortaleza;
     private List<Carta> cartas;
     private List<List<Inimigo>> inimigos;
-
+    private IEstados estadoAtual; 
+    private static int cartasViradas;
+    private int dia;
     
     public Mundo(){
+        estadoAtual = new AguardaInicio(this);
         dado = new Dado();
         fortaleza = new Fortaleza(this);
         cartas = new ArrayList<>();
         gerarCartas();
+        cartasViradas = 0;
+        dia = 1;
     
     }
     
@@ -40,9 +48,9 @@ public class Mundo {
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
         cartas.add(new Carta(this,1, 
-                new AtaqueDeCatapulta(3, inimigos.get(0)), 
-                new AtaqueDeCatapulta(2, inimigos.get(1)), 
-                new AtaqueDeCatapulta(1, inimigos.get(2))
+                new AtaqueDeCatapulta(this, 3, inimigos.get(0)), 
+                new AtaqueDeCatapulta(this, 2, inimigos.get(1)), 
+                new AtaqueDeCatapulta(this, 1, inimigos.get(2))
         ));
         
         // CARTA 2
@@ -55,9 +63,9 @@ public class Mundo {
         //inimigos.get(2).add(null);
 
         cartas.add(new Carta(this,2, 
-                new Doenca(2, inimigos.get(0)), 
-                new GuardasDistraidos(2, inimigos.get(1)), 
-                new AtaqueDeCatapulta(1, inimigos.get(2)))
+                new Doenca(this, 2, inimigos.get(0)), 
+                new GuardasDistraidos(this, 2, inimigos.get(1)), 
+                new AtaqueDeCatapulta(this, 1, inimigos.get(2)))
         );
         
         // CARTA 3
@@ -70,9 +78,9 @@ public class Mundo {
         inimigos.get(2).add(new Ariete());
         
         cartas.add(new Carta(this,3, 
-                new SuprimentosEstragados(2, inimigos.get(0)), 
-                new MauTempo(2, inimigos.get(1)), 
-                new OleoQuente(2, inimigos.get(2)))
+                new SuprimentosEstragados(this, 2, inimigos.get(0)), 
+                new MauTempo(this, 2, inimigos.get(1)), 
+                new OleoQuente(this, 2, inimigos.get(2)))
         );
         
         // CARTA 4
@@ -87,9 +95,9 @@ public class Mundo {
         inimigos.get(2).add(new Torre());
         
         cartas.add(new Carta(this,4, 
-                new MorteDeUmLider(2, inimigos.get(0)), 
-                new PortaFortificada(2, inimigos.get(1)), 
-                new FlechasFlamejantes(2, inimigos.get(2)))
+                new MorteDeUmLider(this, 2, inimigos.get(0)), 
+                new PortaFortificada(this, 2, inimigos.get(1)), 
+                new FlechasFlamejantes(this, 2, inimigos.get(2)))
         );
         
         // CARTA 5
@@ -103,9 +111,9 @@ public class Mundo {
         inimigos.get(2).add(new Escada());
         
         cartas.add(new Carta(this,5, 
-                new SalvaDeFlechas(2, inimigos.get(0)), 
-                new Colapso(2, inimigos.get(1)), 
-                new CatapultaReparada(2, inimigos.get(2)))
+                new SalvaDeFlechas(this, 2, inimigos.get(0)), 
+                new Colapso(this, 2, inimigos.get(1)), 
+                new CatapultaReparada(this, 2, inimigos.get(2)))
         );
         
         // CARTA 6
@@ -119,9 +127,9 @@ public class Mundo {
         inimigos.get(2).add(new Torre());
         
         cartas.add(new Carta(this,6, 
-                new CoberturaDaEscuridao(2, inimigos.get(0)), 
-                new FatigaInimiga(2, inimigos.get(1)), 
-                new Reuniao(2, inimigos.get(2)))
+                new CoberturaDaEscuridao(this, 2, inimigos.get(0)), 
+                new FatigaInimiga(this, 2, inimigos.get(1)), 
+                new Reuniao(this, 2, inimigos.get(2)))
         );
         
         // CARTA 7
@@ -136,12 +144,41 @@ public class Mundo {
         inimigos.get(2).add(new Torre());
         
         cartas.add(new Carta(this,7, 
-                new InimigoDeterminado(2, inimigos.get(0)), 
-                new EscudosDeFerro(2, inimigos.get(1)), 
-                new Fe(2, inimigos.get(2)))
+                new InimigoDeterminado(this, 2, inimigos.get(0)), 
+                new EscudosDeFerro(this, 2, inimigos.get(1)), 
+                new Fe(this, 2, inimigos.get(2)))
         );
     }
     
+    
+    public void baralharCartas(){
+        Collections.shuffle(cartas);
+    }
+    
+    
+    public void novoJogo(){
+        baralharCartas();
+        setEstado(estadoAtual.proximoEstado());
+    }
+    
+    public Carta virarCarta(){
+       if(cartasViradas > 6){
+           cartasViradas = 0;
+          // setEstado(estadoAtual.fimDoDia());
+          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
+       }
+       
+        return cartas.get(cartasViradas++);
+    }
+    
+    
+    public Evento eventoAtual(Carta carta){
+        return carta.getEventoAtual();
+    }
+    
+    public void aplicarEvento(Evento evento){
+        evento.acao();
+    }
     
     public int rodaDado(){
         return dado.rodaDado();
@@ -155,11 +192,55 @@ public class Mundo {
         fortaleza.alteraMuralha(quant);
     }
 
+    public boolean soldadosNoTunel(){
+        return fortaleza.soldadosNoTunel();
+    }
+    
+    public int sorteDosSoldados(){
+        return dado.rodaDado();
+    }
+    
+    public void soldadosCapturados(){
+        fortaleza.soldadosCapturados();
+    }
+    
+    
+    public void evento_Doenca(){
+        // REDUZIR MORAL E SUPRIMENTOS
+        fortaleza.evento_Doenca();
+    }
+    
+    public void evento_SuprimentosEstragados() {
+        fortaleza.evento_SuprimentosEstragados();
+    }
+    
+    public void evento_MorteDeUmLider() {
+        fortaleza.evento_MorteDeUmLider();
+    }
+    
     public List<Carta> getCartas() {
         return cartas;
     }
     
+    public IEstados getEstado(){
+        return this.estadoAtual;
+    }
     
+    public void setEstado(IEstados estado){
+        this.estadoAtual = estado;
+    }
+    
+    public int getDia(){
+        return this.dia;
+    }
+    
+    public void setDia(int d){
+        this.dia = d;
+    }
+    
+    public Fortaleza getFortaleza(){
+        return fortaleza;
+    }
     public void verInfo(){
         int nr = 1, nr1 = 1;
         
@@ -180,4 +261,8 @@ public class Mundo {
         }
         
     }
+
+    
+
+
 }

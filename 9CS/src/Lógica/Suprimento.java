@@ -15,5 +15,14 @@ class Suprimento {
     public Suprimento(){
         nivel = 4;
     }
+
+    public int getNivel() {
+        return nivel;
+    }
     
+    public void alterarNivel(int quant){
+        nivel += quant;
+        if(nivel > 2) nivel = 2;
+        if(nivel < 1) nivel = 1;
+    }
 }

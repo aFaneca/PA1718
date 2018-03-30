@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author me
  */
-class Carta {
+public class Carta {
     protected List<Evento> eventos;
     protected Mundo mundo;
     protected int nr;
@@ -52,5 +52,13 @@ class Carta {
     }
     
     
-    
+    @Override
+    public String toString(){
+        
+        return "Carta nr." + nr;
+    }
+
+    Evento getEventoAtual() {
+        return this.eventos.get(mundo.getDia() - 1);
+    }
 }

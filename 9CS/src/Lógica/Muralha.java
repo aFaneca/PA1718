@@ -10,7 +10,7 @@ package Lógica;
  * @author me
  */
 class Muralha {
-    int forca;
+    private int forca;
     
     public Muralha(){
         forca = 4;
@@ -23,4 +23,9 @@ class Muralha {
         if(forca < 0) forca = 0;
             
     }
+
+    public int getForca() {
+        return forca;
+    }
+ 
 }

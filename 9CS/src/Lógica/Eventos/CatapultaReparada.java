@@ -7,6 +7,7 @@ package Lógica.Eventos;
 
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Mundo;
 import java.util.List;
 
 /**
@@ -15,9 +16,14 @@ import java.util.List;
  */
 public class CatapultaReparada extends Evento {
 
-    public CatapultaReparada(int numero, List<Inimigo> inim){
+    public CatapultaReparada(Mundo mundo, int numero, List<Inimigo> inim){
         super(mundo, numero, inim);
         nome = "Catapulta Reparada";
+    }
+
+    @Override
+    protected void acao() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

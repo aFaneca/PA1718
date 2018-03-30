@@ -15,5 +15,14 @@ class Povo {
     public Povo(){
         moral = 4;
     }
+
+    public int getMoral() {
+        return moral;
+    }
     
+    public void alterarMoral(int quant){
+        moral += quant;
+        if(moral > 4) moral = 4;
+        if(moral < 0) moral = 0;
+    }
 }

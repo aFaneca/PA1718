@@ -29,6 +29,7 @@ class Fortaleza {
         muralha = new Muralha();
         povo = new Povo();
         suprimento = new Suprimento();
+        soldados = new Soldado();
         inimigos = new ArrayList<>(3);
         inimigos.add(torre);
         inimigos.add(escada);
@@ -43,5 +44,40 @@ class Fortaleza {
     public void alteraMuralha(int alteracao){
         muralha.alteraForca(alteracao);
     }
+    
+    public boolean soldadosNoTunel(){
+        return soldados.noTunel();
+    }
+    
+    
+    public void soldadosCapturados(){
+        // ELIMINAR REGISTO DOS SOLDADOS ATUAIS E GERAR NOVOS SOLDADOS
+        soldados = new Soldado();
+    }
+    
+    public void evento_Doenca(){
+        povo.alterarMoral(-1);
+        suprimento.alterarNivel(-1);
+    }
+    
+    void evento_SuprimentosEstragados() {
+        suprimento.alterarNivel(-1);
+    }
+    
+    void evento_MorteDeUmLider() {
+        povo.alterarMoral(-1);
+    }
+    
+    
+    @Override
+    public String toString(){
+        return "## DETALHES DA FORTALEZA ##\n" 
+                + "FORÇA DA MURALHA: " + muralha.getForca()
+                + "\n MORAL DO POVO: " + povo.getMoral()
+                + "\n NIVEL DE SUPRIMENTOS: " + suprimento.getNivel();
+    }
+
+    
+
     
 }

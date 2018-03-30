@@ -10,11 +10,18 @@ package Lógica;
  * @author me
  */
 class Soldado {
-    int local; // 0 => no castelo | 1 => entrada do túnel | 2 => saida do túnel | 3 => linhas inimigas
-    boolean capturado;
+    private int local; // 0 => no castelo | 1 => entrada do túnel | 2 => saida do túnel | 3 => linhas inimigas
+    private boolean capturado;
     
     public Soldado(){
         local = 0;
         capturado = false;
+    }
+    
+    
+    public boolean noTunel(){
+        if(this.local == 1 || this.local == 2)
+            return true;
+        return false;
     }
 }

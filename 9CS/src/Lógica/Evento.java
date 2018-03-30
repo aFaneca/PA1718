@@ -28,8 +28,9 @@ public abstract class Evento {
    
     /*
     protected abstract boolean condicao();
+*/
     protected abstract void acao();
-    */
+    
     
     public int getAPA() {return APA;}
 
