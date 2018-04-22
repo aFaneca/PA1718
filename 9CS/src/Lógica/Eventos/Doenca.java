@@ -19,7 +19,12 @@ public class Doenca extends Evento{
 
     public Doenca(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
+<<<<<<< HEAD
         nome = "Doenca";      
+=======
+        nome = "Ataque de Catapulta";
+        
+>>>>>>> 7c362e166336f5e3b30949681994d9dacec19346
     }
 
     @Override

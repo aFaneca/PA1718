@@ -118,7 +118,11 @@ public class Mundo {
         eventos.clear();
         eventos.add(new MorteDeUmLider(cartas.get(3), 2, inimigos.get(0)));
         eventos.add(new PortaFortificada(cartas.get(3), 2, inimigos.get(1)));
+<<<<<<< HEAD
         eventos.add(new FlechasFlamejantes(cartas.get(3), 3, inimigos.get(2)));
+=======
+        eventos.add(new FlechasFlamejantes(cartas.get(3), 2, inimigos.get(2)));
+>>>>>>> 7c362e166336f5e3b30949681994d9dacec19346
         cartas.get(3).adicionaEventos(eventos);
         
 //        cartas.add(new Carta(this,4, 
@@ -138,7 +142,11 @@ public class Mundo {
         inimigos.get(2).add(fortaleza.getEscada());
         cartas.add(new Carta(this, 5));
         eventos.clear();
+<<<<<<< HEAD
         eventos.add(new SalvaDeFlechas(cartas.get(4), 3, inimigos.get(0)));
+=======
+        eventos.add(new SalvaDeFlechas(cartas.get(4), 2, inimigos.get(0)));
+>>>>>>> 7c362e166336f5e3b30949681994d9dacec19346
         eventos.add(new Colapso(cartas.get(4), 2, inimigos.get(1)));
         eventos.add(new CatapultaReparada(cartas.get(4), 2, inimigos.get(2)));
         cartas.get(4).adicionaEventos(eventos);
@@ -161,9 +169,15 @@ public class Mundo {
         inimigos.get(2).add(fortaleza.getTorre());
         cartas.add(new Carta(this, 6));
         eventos.clear();
+<<<<<<< HEAD
         eventos.add(new CoberturaDaEscuridao(cartas.get(5), 3, inimigos.get(0)));
         eventos.add(new FatigaInimiga(cartas.get(5), 3, inimigos.get(1)));
         eventos.add(new Reuniao(cartas.get(5), 3, inimigos.get(2)));
+=======
+        eventos.add(new CoberturaDaEscuridao(cartas.get(5), 2, inimigos.get(0)));
+        eventos.add(new FatigaInimiga(cartas.get(5), 2, inimigos.get(1)));
+        eventos.add(new Reuniao(cartas.get(5), 2, inimigos.get(2)));
+>>>>>>> 7c362e166336f5e3b30949681994d9dacec19346
         cartas.get(5).adicionaEventos(eventos);
         
         
@@ -187,7 +201,11 @@ public class Mundo {
         eventos.clear();
         eventos.add(new InimigoDeterminado(cartas.get(6), 2, inimigos.get(0)));
         eventos.add(new EscudosDeFerro(cartas.get(6), 2, inimigos.get(1)));
+<<<<<<< HEAD
         eventos.add(new Fe(cartas.get(6), 3, inimigos.get(2)));
+=======
+        eventos.add(new Fe(cartas.get(6), 1, inimigos.get(2)));
+>>>>>>> 7c362e166336f5e3b30949681994d9dacec19346
         cartas.get(6).adicionaEventos(eventos);
         
         
