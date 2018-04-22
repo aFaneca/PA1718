@@ -5,6 +5,9 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.*;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
@@ -16,9 +19,11 @@ import java.util.List;
  */
 public class GuardasDistraidos extends Evento {
 
-    public GuardasDistraidos(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    public GuardasDistraidos(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Guardas Distraídos";
+        drms.add(new DRM(new Sabotagem(carta.getFortaleza()), 1));
+        drms.add(new DRM(new MotivarTropas(carta.getFortaleza()), 1));
     }
 
     @Override

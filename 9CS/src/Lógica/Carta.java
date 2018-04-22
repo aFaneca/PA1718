@@ -16,16 +16,23 @@ public class Carta {
     protected List<Evento> eventos;
     protected Mundo mundo;
     protected int nr;
+    protected Fortaleza fortaleza;
     
-    public Carta(Mundo m, int numero, Evento e1, Evento e2, Evento e3){
+    public Carta(Mundo m, int numero){
         this.mundo = m;
-        eventos = new ArrayList<>(3);
+        fortaleza = m.getFortaleza();
         nr = numero;
-        eventos.add(e1);
-        eventos.add(e2);
-        eventos.add(e3);
     }
 
+    public void adicionaEventos(List<Evento> ev){
+        eventos = new ArrayList<>(ev);        
+    }
+    
+    
+    public Fortaleza getFortaleza(){
+        
+        return fortaleza;
+    }
     @Override
     public int hashCode() {
         int hash = 7;

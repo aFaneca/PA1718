@@ -5,6 +5,7 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Carta;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
@@ -16,8 +17,8 @@ import java.util.List;
  */
 public class OleoQuente extends Evento {
 
-    public OleoQuente(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    public OleoQuente(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Óleo Quente";
     }
 

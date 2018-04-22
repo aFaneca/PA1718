@@ -11,8 +11,10 @@ package Lógica;
  */
 class Povo {
     private int moral;
+    private Fortaleza fortaleza;
     
-    public Povo(){
+    public Povo(Fortaleza fortaleza){
+        this.fortaleza = fortaleza;
         moral = 4;
     }
 

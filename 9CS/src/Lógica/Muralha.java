@@ -11,9 +11,11 @@ package Lógica;
  */
 class Muralha {
     private int forca;
+    private Fortaleza fortaleza;
     
-    public Muralha(){
+    public Muralha(Fortaleza fortaleza){
         forca = 4;
+        this.fortaleza = fortaleza;
     }
     
     

@@ -5,9 +5,14 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.*;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,10 +20,18 @@ import java.util.List;
  * @author me
  */
 public class InimigoDeterminado extends Evento{
-
-    public InimigoDeterminado(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    List<Inimigo> inimigosAfetados;
+    
+    public InimigoDeterminado(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Inimigo Determinado";
+        
+        // -1 para ataques contra Ariete
+        inimigosAfetados = new ArrayList<>();
+        inimigosAfetados.add(new Ariete());
+        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
     @Override
