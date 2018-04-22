@@ -8,6 +8,8 @@ package ui.Texto;
 import Estados.*;
 import Lógica.*;
 import Lógica.Eventos.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -42,25 +44,14 @@ public class Main {
                 virarCarta();
             }
                 
-            
-//            if( !(estado instanceof AguardaInicio) && !(estado instanceof AguardaTrocaRecursos))
-//                System.out.print(j.getDados().toString()); //Mostro o tabuleiro ao utilizador
-//            
-//            if (estado instanceof AguardaAcao)
-//                askForInputAcao();
-//            else if (estado instanceof AguardaInicio)
-//                askForInputMenuInicial();
-//            else if (estado instanceof AguardaTrocaRecursos)
-//                askForInputRecursos();
-//            else if (estado instanceof AguardaUpgrades)
-//                askForInputUpgrades();
         }
         
     }
     
     private void novoJogo(){
-    //System.out.println("Nr. de Cartas: " + m.getCartas().size());
-        //-m.verInfo();
+    System.out.println("Nr. de Cartas: " + m.getCartas().size());
+        m.verInfo();
+        sc.nextInt();
             
             mostraMenu();
  
@@ -103,7 +94,7 @@ public class Main {
            System.out.println("Clique no 'ENTER' para rodar o dado e determinar o seu destino.");
            sc.nextLine();
            int resultado = m.sorteDosSoldados();
-           if(resultado > 1){
+           if(resultado > Constantes.SOLDADOS_NO_TUNEL_SEM_SORTE.getValor()){
                System.out.println("A sorte está do seu lado! O resultado do dado foi " + resultado + " e os soldados continuam indetetados no Túnel.");
            }else{
                System.out.println("A sorte não está do seu lado! O resultado do dado foi " + resultado + " e os soldados foram capturados pelos inimigos");
@@ -120,44 +111,47 @@ public class Main {
        // DESCOBRE QUAL O EVENTO ATUAL E APLICA-O
        if(eventoAtual instanceof AtaqueDeCatapulta)
            EVENTO_ataqueDeCatapulta(eventoAtual);
-//       else if(eventoAtual instanceof CatapultaReparada)
-//           EVENTO_catapultaReparada();
-//       else if(eventoAtual instanceof CoberturaDaEscuridao)
-//           EVENTO_coberturaDaEscuridao();
-//       else if(eventoAtual instanceof Colapso)
-//           EVENTO_colapso();
+       else if(eventoAtual instanceof CatapultaReparada)
+           EVENTO_catapultaReparada();
+       else if(eventoAtual instanceof CoberturaDaEscuridao)
+           EVENTO_coberturaDaEscuridao();
+       else if(eventoAtual instanceof Colapso)
+           EVENTO_colapso();
        else if(eventoAtual instanceof Doenca)
            EVENTO_doenca();
-//       else if(eventoAtual instanceof EscudosDeFerro)
-//           EVENTO_escudosDeFerro();
-//       else if(eventoAtual instanceof FatigaInimiga)
-//           EVENTO_fatigaInimiga();
-//       else if(eventoAtual instanceof Fe)
-//           EVENTO_fe();
-//       else if(eventoAtual instanceof FlechasFlamejantes)
-//           EVENTO_flechasFlamejantes();
-//       else if(eventoAtual instanceof GuardasDistraidos)
-//           EVENTO_guardasDistraidos();
-//       else if(eventoAtual instanceof InimigoDeterminado)
-//           EVENTO_inimigoDeterminado();
+       else if(eventoAtual instanceof EscudosDeFerro)
+           EVENTO_escudosDeFerro();
+       else if(eventoAtual instanceof FatigaInimiga)
+           EVENTO_fatigaInimiga();
+       else if(eventoAtual instanceof Fe)
+           EVENTO_fe();
+       else if(eventoAtual instanceof FlechasFlamejantes)
+           EVENTO_flechasFlamejantes();
+       else if(eventoAtual instanceof GuardasDistraidos)
+           EVENTO_guardasDistraidos();
+       else if(eventoAtual instanceof InimigoDeterminado)
+           EVENTO_inimigoDeterminado();
 //       else if(eventoAtual instanceof MauTempo)
 //           EVENTO_mauTempo();
        else if(eventoAtual instanceof MorteDeUmLider)
            EVENTO_morteDeUmLider();
 //       else if(eventoAtual instanceof OleoQuente)
 //           EVENTO_oleoQuente();
-//       else if(eventoAtual instanceof PortaFortificada)
-//           EVENTO_portaFortificada();
+       else if(eventoAtual instanceof PortaFortificada)
+           EVENTO_portaFortificada();
 //       else if(eventoAtual instanceof Reuniao)
 //           EVENTO_reuniao();
-//       else if(eventoAtual instanceof SalvaDeFlechas)
-//           EVENTO_salvaDeFlechas();
+       else if(eventoAtual instanceof SalvaDeFlechas)
+           EVENTO_salvaDeFlechas();
        else if(eventoAtual instanceof SuprimentosEstragados)
            EVENTO_suprimentosEstragados();
-                  
-   // AVANÇO DO INIMIGO
+       
+       // MOSTRA OS DRMS ASSOCIADOS AO EVENTO
+       mostraDRMS(eventoAtual);
+       
+       // AVANÇO DO INIMIGO
    
-   // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM IMEDIATO DO JOGO
+       // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM IMEDIATO DO JOGO
    
    
    } 
@@ -195,22 +189,38 @@ public class Main {
         System.out.print("> ");
     }
 
+    private void mostraDRMS(Evento evento){
+        if(m.temDRM(evento)){ // SE O EVENTO POSSUI DRMs
+            List<DRM> drms = new ArrayList<>(m.getDRMS(evento));
+            for(DRM drm : drms)
+                System.out.println("Este evento concedeu-lhe a seguinte DRM: " + drm + ".");
+        }
+    }
     
     // EVENTOS
     private void EVENTO_ataqueDeCatapulta(Evento evento) {
-        m.aplicarEvento(evento);
+        //m.aplicarEvento(evento);
+        m.evento_AtaqueDeCatapulta();
     }
 
     private void EVENTO_catapultaReparada() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        m.evento_CatapultaReparada();
+        System.out.println("Adicionada 1 Catapulta à sua defesa. Agora possui " + m.contaCatapultas() + " catapultas.");
+        
+        
     }
 
     private void EVENTO_coberturaDaEscuridao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_colapso() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // A TORRE DE CERCO É REMOVIDA DO JOGO SE ESTIVER NA POSIÇÃO INICIAL
+        if(m.getPosTorre() == Constantes.POSICAO_INICIAL_INIMIGOS.getValor()){ // SE A POSIÇÃO DA TORRE FOR A INICIAL
+            m.removerTorre();
+            System.out.println("Uma vez que a Torre de Cerco ainda se encontrava na posição inicial, a mesma foi destruída permanentemente. Menos uma preocupação!");
+        }else
+            System.out.println("Uma vez que a Torre de Cerco já não se encontrava na posição inicial, nada aconteceu.");
     }
 
     private void EVENTO_doenca() {
@@ -219,27 +229,27 @@ public class Main {
     }
 
     private void EVENTO_escudosDeFerro() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_fatigaInimiga() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_fe() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_flechasFlamejantes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_guardasDistraidos() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_inimigoDeterminado() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_mauTempo() {
@@ -255,7 +265,7 @@ public class Main {
     }
 
     private void EVENTO_portaFortificada() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_reuniao() {
@@ -263,7 +273,7 @@ public class Main {
     }
 
     private void EVENTO_salvaDeFlechas() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_suprimentosEstragados() {

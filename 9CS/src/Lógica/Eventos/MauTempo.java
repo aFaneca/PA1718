@@ -5,6 +5,7 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Carta;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
@@ -18,8 +19,8 @@ import java.util.List;
  */
 public class MauTempo extends Evento{
 
-    public MauTempo(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    public MauTempo(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Mau Tempo";
     }
 

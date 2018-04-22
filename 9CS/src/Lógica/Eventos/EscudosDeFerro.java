@@ -5,9 +5,14 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.*;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +21,23 @@ import java.util.List;
  */
 public class EscudosDeFerro extends Evento{
 
-    public EscudosDeFerro(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    /*  -1 em Ataques a Torres de Cerco
+        Assim, aplica-se às seguintes ações:
+            => Ataque de Arqueiros
+            => Ataque de Àgua Fervente
+            => Ataque de Close Combat
+                                            */
+    
+    List<Inimigo> inimigosAfetados;
+    
+    public EscudosDeFerro(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Escudos de Ferro";
+        inimigosAfetados = new ArrayList<>();
+        inimigosAfetados.add(new Torre());
+        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
     @Override

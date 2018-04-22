@@ -5,9 +5,16 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.AtaqueDeAguaFervente;
+import Lógica.Ações.AtaqueDeArqueiros;
+import Lógica.Ações.AtaqueDeCloseCombat;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.Ariete;
 import Lógica.Mundo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,10 +22,18 @@ import java.util.List;
  * @author me
  */
 public class PortaFortificada extends Evento{
-
-    public PortaFortificada(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    List<Inimigo> inimigosAfetados;
+    
+    public PortaFortificada(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Porta Fortificada";
+        
+        // +1 para ataques contra Ariete
+        inimigosAfetados = new ArrayList<>();
+        inimigosAfetados.add(new Ariete());
+        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), 1, inimigosAfetados));
     }
 
     @Override

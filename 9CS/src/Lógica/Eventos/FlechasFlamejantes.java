@@ -5,9 +5,17 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.AtaqueDeAguaFervente;
+import Lógica.Ações.AtaqueDeArqueiros;
+import Lógica.Ações.AtaqueDeCloseCombat;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.Ariete;
+import Lógica.Inimigos.Torre;
 import Lógica.Mundo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,10 +23,18 @@ import java.util.List;
  * @author me
  */
 public class FlechasFlamejantes extends Evento {
-
-    public FlechasFlamejantes(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    protected List<Inimigo> inimigosAfetados;
+    
+    public FlechasFlamejantes(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Flechas Flamejantes";
+        
+        // +1 para ataques contra a Torre
+        inimigosAfetados = new ArrayList<>();
+        inimigosAfetados.add(new Torre());
+        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
     @Override

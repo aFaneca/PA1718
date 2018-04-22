@@ -5,6 +5,9 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.*;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
@@ -16,9 +19,12 @@ import java.util.List;
  */
 public class FatigaInimiga extends Evento{
 
-    public FatigaInimiga(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    public FatigaInimiga(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Fatiga Inimiga";
+        drms.add(new DRM(new RepararMuralha(carta.getFortaleza()), +1));
+        drms.add(new DRM(new Raid(carta.getFortaleza()), +1));
+        drms.add(new DRM(new Sabotagem(carta.getFortaleza()), +1));
     }
 
     @Override

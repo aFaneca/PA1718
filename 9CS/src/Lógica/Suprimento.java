@@ -11,8 +11,10 @@ package Lógica;
  */
 class Suprimento {
     private int nivel;
+    private Fortaleza fortaleza;
     
-    public Suprimento(){
+    public Suprimento(Fortaleza fortaleza){
+        this.fortaleza = fortaleza;
         nivel = 4;
     }
 

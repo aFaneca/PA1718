@@ -15,6 +15,12 @@ public abstract class Inimigo {
     protected String nome;
     
     public Inimigo(){
-        local = 4;
+        local = 3;
+    }
+    
+    
+    @Override
+    public String toString(){
+        return nome;
     }
 }

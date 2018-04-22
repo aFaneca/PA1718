@@ -5,9 +5,14 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.*;
+import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,9 +21,22 @@ import java.util.List;
  */
 public class Fe extends Evento{
 
-    public Fe(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    protected List<Inimigo> inimigosAfetados;
+    
+    public Fe(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Fé";
+        
+        // +1 para ataques a arietes
+        inimigosAfetados = new ArrayList<>();
+        inimigosAfetados.add(new Ariete());
+        inimigosAfetados.add(new Escada());
+        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), 1, inimigosAfetados));
+        
+        // +1 para ações de moral -> Motivar Tropas
+        drms.add(new DRM(new MotivarTropas(carta.getFortaleza()), 1));
     }
 
     @Override

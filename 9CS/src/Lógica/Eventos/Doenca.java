@@ -5,6 +5,7 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Carta;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
@@ -16,9 +17,10 @@ import java.util.List;
  */
 public class Doenca extends Evento{
 
-    public Doenca(Mundo mundo, int numero, List<Inimigo> inim){
-        super(mundo, numero, inim);
+    public Doenca(Carta carta, int numero, List<Inimigo> inim){
+        super(carta, numero, inim);
         nome = "Ataque de Catapulta";
+        
     }
 
     @Override
