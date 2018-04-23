@@ -19,7 +19,7 @@ public class Doenca extends Evento{
 
     public Doenca(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
-        nome = "Ataque de Catapulta";
+        nome = "Doença";
         
     }
 

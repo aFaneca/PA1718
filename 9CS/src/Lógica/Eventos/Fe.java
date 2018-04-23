@@ -31,12 +31,12 @@ public class Fe extends Evento{
         inimigosAfetados = new ArrayList<>();
         inimigosAfetados.add(new Ariete());
         inimigosAfetados.add(new Escada());
-        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), 1, inimigosAfetados));
-        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), 1, inimigosAfetados));
-        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeArqueiros(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeAguaFervente(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), 1, inimigosAfetados));
         
         // +1 para ações de moral -> Motivar Tropas
-        drms.add(new DRM(new MotivarTropas(carta.getFortaleza()), 1));
+        drms.add(new DRM(this, new MotivarTropas(carta.getFortaleza()), 1));
     }
 
     @Override

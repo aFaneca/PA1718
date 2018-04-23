@@ -68,4 +68,12 @@ public class Carta {
     Evento getEventoAtual() {
         return this.eventos.get(mundo.getDia() - 1);
     }
+
+    public List<Inimigo> getInimigos(List<Integer> locais) {
+        return fortaleza.getInimigos(locais);
+    }
+
+    public List<Inimigo> getTodosOsInimigos() {
+        return fortaleza.getTodosOsInimigos();
+    }
 }

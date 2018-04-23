@@ -22,8 +22,8 @@ public class CoberturaDaEscuridao extends Evento{
     public CoberturaDaEscuridao(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Cobertura da Escuridão";
-        drms.add(new DRM(new Raid(carta.getFortaleza()), 1)); // +1 para Raid
-        drms.add(new DRM(new Sabotagem(carta.getFortaleza()), 1)); // +1 para Sabotagem
+        drms.add(new DRM(this, new Raid(carta.getFortaleza()), 1)); // +1 para Raid
+        drms.add(new DRM(this, new Sabotagem(carta.getFortaleza()), 1)); // +1 para Sabotagem
     }
 
     @Override

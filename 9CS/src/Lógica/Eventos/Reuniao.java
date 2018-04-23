@@ -5,10 +5,16 @@
  */
 package Lógica.Eventos;
 
+import Lógica.Ações.AtaqueDeAguaFervente;
+import Lógica.Ações.AtaqueDeArqueiros;
+import Lógica.Ações.AtaqueDeCloseCombat;
 import Lógica.Carta;
+import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.Ariete;
 import Lógica.Mundo;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,10 +22,21 @@ import java.util.List;
  * @author me
  */
 public class Reuniao extends Evento {
-
+    private List<Inimigo> inimigosAfetados;
+    private List<Integer> locais;
+    
     public Reuniao(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Reunião";
+        
+        // +1 para ataques em Close Combat (local = 0) ou Espaços Circulares (local = 1)
+        locais = new ArrayList<>();
+        locais.add(0); locais.add(1);
+        inimigosAfetados = new ArrayList<>(carta.getInimigos(locais));
+
+        drms.add(new DRM(this, new AtaqueDeArqueiros(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeAguaFervente(carta.getFortaleza()), 1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), 1, inimigosAfetados));
     }
 
     @Override

@@ -89,4 +89,8 @@ public abstract class Evento {
     public String toString(){
         return nome;
     }
+
+    public List<Inimigo> getInimigos() {
+        return carta.getTodosOsInimigos();
+    }
 }

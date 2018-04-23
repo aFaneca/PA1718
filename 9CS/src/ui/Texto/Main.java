@@ -49,9 +49,9 @@ public class Main {
     }
     
     private void novoJogo(){
-    System.out.println("Nr. de Cartas: " + m.getCartas().size());
-        m.verInfo();
-        sc.nextInt();
+//    System.out.println("Nr. de Cartas: " + m.getCartas().size());
+//        m.verInfo();
+//        sc.nextInt();
             
             mostraMenu();
  
@@ -131,16 +131,16 @@ public class Main {
            EVENTO_guardasDistraidos();
        else if(eventoAtual instanceof InimigoDeterminado)
            EVENTO_inimigoDeterminado();
-//       else if(eventoAtual instanceof MauTempo)
-//           EVENTO_mauTempo();
+       else if(eventoAtual instanceof MauTempo)
+           EVENTO_mauTempo();
        else if(eventoAtual instanceof MorteDeUmLider)
            EVENTO_morteDeUmLider();
 //       else if(eventoAtual instanceof OleoQuente)
 //           EVENTO_oleoQuente();
        else if(eventoAtual instanceof PortaFortificada)
            EVENTO_portaFortificada();
-//       else if(eventoAtual instanceof Reuniao)
-//           EVENTO_reuniao();
+      else if(eventoAtual instanceof Reuniao)
+           EVENTO_reuniao();
        else if(eventoAtual instanceof SalvaDeFlechas)
            EVENTO_salvaDeFlechas();
        else if(eventoAtual instanceof SuprimentosEstragados)
@@ -192,8 +192,11 @@ public class Main {
     private void mostraDRMS(Evento evento){
         if(m.temDRM(evento)){ // SE O EVENTO POSSUI DRMs
             List<DRM> drms = new ArrayList<>(m.getDRMS(evento));
-            for(DRM drm : drms)
-                System.out.println("Este evento concedeu-lhe a seguinte DRM: " + drm + ".");
+            for(DRM drm : drms){
+                if(drm.isValida())
+                    System.out.println("Este evento concedeu-lhe a seguinte DRM: " + drm + ".");
+            }
+                
         }
     }
     
@@ -261,7 +264,7 @@ public class Main {
     }
 
     private void EVENTO_oleoQuente() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_portaFortificada() {
@@ -269,7 +272,7 @@ public class Main {
     }
 
     private void EVENTO_reuniao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return;
     }
 
     private void EVENTO_salvaDeFlechas() {

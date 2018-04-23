@@ -22,9 +22,9 @@ public class FatigaInimiga extends Evento{
     public FatigaInimiga(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Fatiga Inimiga";
-        drms.add(new DRM(new RepararMuralha(carta.getFortaleza()), +1));
-        drms.add(new DRM(new Raid(carta.getFortaleza()), +1));
-        drms.add(new DRM(new Sabotagem(carta.getFortaleza()), +1));
+        drms.add(new DRM(this, new RepararMuralha(carta.getFortaleza()), +1));
+        drms.add(new DRM(this, new Raid(carta.getFortaleza()), +1));
+        drms.add(new DRM(this, new Sabotagem(carta.getFortaleza()), +1));
     }
 
     @Override

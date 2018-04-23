@@ -22,8 +22,8 @@ public class GuardasDistraidos extends Evento {
     public GuardasDistraidos(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Guardas Distraídos";
-        drms.add(new DRM(new Sabotagem(carta.getFortaleza()), 1));
-        drms.add(new DRM(new MotivarTropas(carta.getFortaleza()), 1));
+        drms.add(new DRM(this, new Sabotagem(carta.getFortaleza()), 1));
+        drms.add(new DRM(this, new MotivarTropas(carta.getFortaleza()), 1));
     }
 
     @Override

@@ -56,11 +56,7 @@ public class Mundo {
         eventos.add(new AtaqueDeCatapulta(cartas.get(0), 2, inimigos.get(1)));
         eventos.add(new AtaqueDeCatapulta(cartas.get(0), 1, inimigos.get(2)));
         cartas.get(0).adicionaEventos(eventos);
-//        cartas.add(new Carta(this,1, 
-//                new AtaqueDeCatapulta(fortaleza, 3, inimigos.get(0)), 
-//                new AtaqueDeCatapulta(this, 2, inimigos.get(1)), 
-//                new AtaqueDeCatapulta(this, 1, inimigos.get(2))
-//        ));
+
         
         // CARTA 2
         inimigos.clear();
@@ -76,11 +72,7 @@ public class Mundo {
         eventos.add(new AtaqueDeCatapulta(cartas.get(1), 1, inimigos.get(2)));
         cartas.get(1).adicionaEventos(eventos);
 
-//        cartas.add(new Carta(this,2, 
-//                new Doenca(this, 2, inimigos.get(0)), 
-//                new GuardasDistraidos(this, 2, inimigos.get(1)), 
-//                new AtaqueDeCatapulta(this, 1, inimigos.get(2)))
-//        );
+
         
         // CARTA 3
         inimigos.clear();
@@ -98,11 +90,7 @@ public class Mundo {
         cartas.get(2).adicionaEventos(eventos);
                 
                 
-//        cartas.add(new Carta(this,3, 
-//                new SuprimentosEstragados(this, 2, inimigos.get(0)), 
-//                new MauTempo(this, 2, inimigos.get(1)), 
-//                new OleoQuente(this, 2, inimigos.get(2)))
-//        );
+
         
         // CARTA 4
         inimigos.clear();
@@ -118,14 +106,10 @@ public class Mundo {
         eventos.clear();
         eventos.add(new MorteDeUmLider(cartas.get(3), 2, inimigos.get(0)));
         eventos.add(new PortaFortificada(cartas.get(3), 2, inimigos.get(1)));
-        eventos.add(new FlechasFlamejantes(cartas.get(3), 2, inimigos.get(2)));
+        eventos.add(new FlechasFlamejantes(cartas.get(3), 3, inimigos.get(2)));
         cartas.get(3).adicionaEventos(eventos);
         
-//        cartas.add(new Carta(this,4, 
-//                new MorteDeUmLider(this, 2, inimigos.get(0)), 
-//                new PortaFortificada(this, 2, inimigos.get(1)), 
-//                new FlechasFlamejantes(this, 2, inimigos.get(2)))
-//        );
+
         
         // CARTA 5
         inimigos.clear();
@@ -138,17 +122,12 @@ public class Mundo {
         inimigos.get(2).add(fortaleza.getEscada());
         cartas.add(new Carta(this, 5));
         eventos.clear();
-        eventos.add(new SalvaDeFlechas(cartas.get(4), 2, inimigos.get(0)));
+        eventos.add(new SalvaDeFlechas(cartas.get(4), 3, inimigos.get(0)));
         eventos.add(new Colapso(cartas.get(4), 2, inimigos.get(1)));
         eventos.add(new CatapultaReparada(cartas.get(4), 2, inimigos.get(2)));
         cartas.get(4).adicionaEventos(eventos);
         
-        
-//        cartas.add(new Carta(this,5, 
-//                new SalvaDeFlechas(this, 2, inimigos.get(0)), 
-//                new Colapso(this, 2, inimigos.get(1)), 
-//                new CatapultaReparada(this, 2, inimigos.get(2)))
-//        );
+       
         
         // CARTA 6
         inimigos.clear();
@@ -161,17 +140,13 @@ public class Mundo {
         inimigos.get(2).add(fortaleza.getTorre());
         cartas.add(new Carta(this, 6));
         eventos.clear();
-        eventos.add(new CoberturaDaEscuridao(cartas.get(5), 2, inimigos.get(0)));
-        eventos.add(new FatigaInimiga(cartas.get(5), 2, inimigos.get(1)));
-        eventos.add(new Reuniao(cartas.get(5), 2, inimigos.get(2)));
+        eventos.add(new CoberturaDaEscuridao(cartas.get(5), 3, inimigos.get(0)));
+        eventos.add(new FatigaInimiga(cartas.get(5), 3, inimigos.get(1)));
+        eventos.add(new Reuniao(cartas.get(5), 3, inimigos.get(2)));
         cartas.get(5).adicionaEventos(eventos);
         
         
-//        cartas.add(new Carta(this,6, 
-//                new CoberturaDaEscuridao(this, 2, inimigos.get(0)), 
-//                new FatigaInimiga(this, 2, inimigos.get(1)), 
-//                new Reuniao(this, 2, inimigos.get(2)))
-//        );
+
         
         // CARTA 7
         inimigos.clear();
@@ -187,15 +162,10 @@ public class Mundo {
         eventos.clear();
         eventos.add(new InimigoDeterminado(cartas.get(6), 2, inimigos.get(0)));
         eventos.add(new EscudosDeFerro(cartas.get(6), 2, inimigos.get(1)));
-        eventos.add(new Fe(cartas.get(6), 1, inimigos.get(2)));
+        eventos.add(new Fe(cartas.get(6), 3, inimigos.get(2)));
         cartas.get(6).adicionaEventos(eventos);
         
         
-//        cartas.add(new Carta(this,7, 
-//                new InimigoDeterminado(this, 2, inimigos.get(0)), 
-//                new EscudosDeFerro(this, 2, inimigos.get(1)), 
-//                new Fe(this, 2, inimigos.get(2)))
-//        );
     }
     
     
@@ -313,6 +283,8 @@ public class Mundo {
     public int getPosTorre(){ // OBTÉM A POSIÇÃO DA TORRE DE CERCO
         return fortaleza.posDaTorre();
     }
+    
+
     public void verInfo(){
         int nr = 1, nr1 = 1;
         

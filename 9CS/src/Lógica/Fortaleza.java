@@ -102,6 +102,20 @@ public class Fortaleza {
  
     }
     
+    // RETORNA UMA LISTA COM OS INIMIGOS QUE SE ENCONTRAREM NAS POSIÇÕES PASSADAS COMO ARGUMENTOS ("LOCAIS")
+    public List<Inimigo> getInimigos(List<Integer> locais){
+        List<Inimigo> inimigosNaPosicao = new ArrayList<>();
+        
+        for(Inimigo i : inimigos){  // for(int i = 0; i < inimigos.size(); i++)
+            for(int local : locais){
+                if(i.local == local)
+                    inimigosNaPosicao.add(i);
+            }
+        }
+        
+        return inimigosNaPosicao;
+    }
+    
     // EVENTOS
     public void evento_AtaqueDeCatapulta(){
         if(mundo.contaCatapultas() == 3)
@@ -185,6 +199,9 @@ public class Fortaleza {
         return sabotagem;
     }
     
+    public List<Inimigo> getTodosOsInimigos() {
+        return inimigos;
+    }
     
     
     
@@ -196,6 +213,8 @@ public class Fortaleza {
                 + "\n MORAL DO POVO: " + povo.getMoral()
                 + "\n NIVEL DE SUPRIMENTOS: " + suprimento.getNivel();
     }
+
+   
 
     
 

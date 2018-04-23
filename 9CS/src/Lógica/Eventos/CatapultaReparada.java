@@ -23,7 +23,7 @@ public class CatapultaReparada extends Evento {
     public CatapultaReparada(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Catapulta Reparada";
-        drms.add(new DRM(new RepararMuralha(carta.getFortaleza()), 1)); // +1 para ações de reparação da muralha
+        drms.add(new DRM(this, new RepararMuralha(carta.getFortaleza()), 1)); // +1 para ações de reparação da muralha
     }
 
     @Override

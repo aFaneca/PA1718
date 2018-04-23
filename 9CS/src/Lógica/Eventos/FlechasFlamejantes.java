@@ -32,9 +32,9 @@ public class FlechasFlamejantes extends Evento {
         // +1 para ataques contra a Torre
         inimigosAfetados = new ArrayList<>();
         inimigosAfetados.add(new Torre());
-        drms.add(new DRM(new AtaqueDeArqueiros(carta.getFortaleza()), -1, inimigosAfetados));
-        drms.add(new DRM(new AtaqueDeAguaFervente(carta.getFortaleza()), -1, inimigosAfetados));
-        drms.add(new DRM(new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeArqueiros(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeAguaFervente(carta.getFortaleza()), -1, inimigosAfetados));
+        drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
     @Override
