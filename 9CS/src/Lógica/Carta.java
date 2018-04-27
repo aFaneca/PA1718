@@ -76,4 +76,20 @@ public class Carta {
     public List<Inimigo> getTodosOsInimigos() {
         return fortaleza.getTodosOsInimigos();
     }
+    
+    public Acao getAcaoDaLista (Acao acao){
+        return fortaleza.getAcoes().get(fortaleza.getAcoes().indexOf(acao));
+    }
+    
+    public List<Acao> getAcoes(){
+        return fortaleza.getAcoes();
+    }
+
+    public Acao getRaid() {
+        return fortaleza.getRaid();
+    }
+    
+    public Acao getSabotagem() {
+        return fortaleza.getSabotagem();
+    }
 }

@@ -6,8 +6,8 @@
 package Lógica;
 
 import Estados.AguardaInicio;
+import Estados.AguardaSelecaoDeAcao;
 import Estados.IEstados;
-import Lógica.Inimigos.UnidadesLentas;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
@@ -36,7 +36,7 @@ public class Mundo {
         eventos = new ArrayList<>();
         gerarCartas();
         cartasViradas = 0;
-        dia = 3;
+        dia = 2;
     
     }
     
@@ -64,7 +64,7 @@ public class Mundo {
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
         inimigos.get(0).add(fortaleza.getTorre());
-        inimigos.get(1).add(fortaleza.getUnidadesLentas());
+        inimigos.get(1).addAll(fortaleza.getUnidadesLentas());
         cartas.add(new Carta(this, 2));
         eventos.clear();
         eventos.add(new Doenca(cartas.get(1), 2, inimigos.get(0)));
@@ -134,7 +134,7 @@ public class Mundo {
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
-        inimigos.get(0).add(fortaleza.getUnidadesLentas());
+        inimigos.get(0).addAll(fortaleza.getUnidadesLentas());
         inimigos.get(1).add(fortaleza.getEscada());
         inimigos.get(2).add(fortaleza.getAriete());
         inimigos.get(2).add(fortaleza.getTorre());
@@ -194,10 +194,6 @@ public class Mundo {
         return carta.getEventoAtual();
     }
     
-//    public void aplicarEvento(Evento evento){
-//        evento.acao();
-//    }
-    
     public int rodaDado(){
         return dado.rodaDado();
     }
@@ -227,6 +223,16 @@ public class Mundo {
         return evento.temDRM();
     }
     
+    public void avancaInimigos(Evento evento){
+        List<Inimigo> inimigosParaAvancar = new ArrayList<>();
+        
+        for(Inimigo i : evento.getInimigosDoEvento()){
+            i.setLocal(i.getLocal() - 1);
+        }
+        
+        // O ESTADO SEGUINTE É AguardaSelecaoDeAcao
+        setEstado(new AguardaSelecaoDeAcao(this));
+    }
     
     public void evento_AtaqueDeCatapulta(){
         fortaleza.evento_AtaqueDeCatapulta();
@@ -252,6 +258,7 @@ public class Mundo {
     public void removerTorre(){
         fortaleza.removerTorre();
     }
+   
     public List<DRM> getDRMS(Evento evento){
         return evento.drms;
     }
@@ -294,6 +301,9 @@ public class Mundo {
             for(Evento evento : carta.eventos){
                 System.out.println("\t\tNOME DO EVENTO: " + evento);
                 System.out.println("\t\tAPA: " + evento.APA);
+                System.out.println("\t\tTem Restrições de Ações: " + evento.temRestricoesDeAcoes());
+                if(evento.temRestricoesDeAcoes())
+                    System.out.println("\t\tAções Permitidas: " + evento.acoesPermitidas);
                 System.out.println("\t\tNr. de Inimigos: " + evento.inimigos.size());
                 for(Inimigo inimigo : evento.inimigos){
                     System.out.println("\t\t\tINIMIGO #" + nr1++ + " - " + inimigo);
@@ -306,7 +316,48 @@ public class Mundo {
         
     }
 
-    
+    public String verificaCondicoesFatais() {
+        /* CONDIÇÕES PARA FIM DO JOGO NO FINAL DO TURNO
+            - 2 facções estiverem na zona de close combat
+            - 1 das Forças (muralha, moral ou supplies) estiver a 0
+        */
+        boolean faccoesFatais = fortaleza.faccoesFatais(2); // 2 facções estão na zona de close combat?
+        boolean forcasFatais = fortaleza.forcasFatais(1); // 1 das forças está a 0?
+        
+        if(faccoesFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "2 ou mais facções entraram na zona de Close Combat";
+        }
+            
+        else if(forcasFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "1 das forças da fortaleza chegou a zero.";
+        }
+         
+        return null;
+    }
+
+    public String verificaCondicoesFataisImediatas(){
+        /* CONDIÇÕES PARA FIM IMEDIATO DO JOGO
+            - Uma 3a facção avançar para zona de close combat
+            - Uma 2a força fica a 0
+        */
+        boolean faccoesFatais = fortaleza.faccoesFatais(2); // 2 facções estão na zona de close combat?
+        boolean forcasFatais = fortaleza.forcasFatais(1); // 1 das forças está a 0?
+        
+        if(faccoesFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "3 ou mais facções entraram na zona de Close Combat, pelo que o jogador perdeu automaticamente o jogo.";
+        }
+            
+        else if(forcasFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "2 das forças da fortaleza chegou a zero, pelo que o jogador perdeu automaticamente o jogo.";
+        }
+        
+        
+        return null;
+    }
 
 
 }

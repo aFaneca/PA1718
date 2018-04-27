@@ -9,7 +9,6 @@ import Lógica.Ações.*;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
-import Lógica.Inimigos.UnidadesLentas;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,8 +22,8 @@ public class Fortaleza {
     private Torre torre;      // INIMIGO
     private Escada escada;   // INIMIGO
     private Ariete ariete;  // INIMIGO
-    private UnidadesLentas unidadesLentas; // INIMIGO
-    private List<Acao> acoes;
+    private List<Inimigo> unidadesLentas;
+    private List<Acao> acoes; // Lista de todas as ações existentes no jogo
     private AtaqueDeAguaFervente ataqueDeAguaFervente; // AÇÃO
     private AtaqueDeArqueiros ataqueDeArqueiros; // AÇÃO
     private AtaqueDeCloseCombat ataqueDeCloseCombat; // AÇÃO
@@ -115,6 +114,11 @@ public class Fortaleza {
         
         return inimigosNaPosicao;
     }
+   
+    
+    public List<Inimigo> getListaDeInimigos(){
+        return inimigos;
+    }
     
     // EVENTOS
     public void evento_AtaqueDeCatapulta(){
@@ -159,7 +163,29 @@ public class Fortaleza {
         return ariete;
     }
     
-    public UnidadesLentas getUnidadesLentas(){
+    public List<Inimigo> getUnidadesLentas(){
+        unidadesLentas = new ArrayList<>(); // REINICIALIZA A LISTA
+        int local = Constantes.POSICAO_INICIAL_INIMIGOS.getValor();
+        
+        return encontraUnidadesMaisLentas(local);
+    }
+
+    
+    
+    public List<Inimigo> encontraUnidadesMaisLentas(int local){
+        
+        
+        for(Inimigo i : inimigos){
+            // ENCONTRAR AS QUE SE ENCONTRAM MAIS LONGE DO CASTELO, A COMEÇAR PELA POSIÇÃO MAIS AFASTADA
+            if(i.local == local){
+                unidadesLentas.add(i);
+            }
+        }
+        
+        if(unidadesLentas.isEmpty()){ //
+            encontraUnidadesMaisLentas(--local); // RECURSIVIDADE
+        }
+        
         return unidadesLentas;
     }
 
@@ -202,23 +228,39 @@ public class Fortaleza {
     public List<Inimigo> getTodosOsInimigos() {
         return inimigos;
     }
-    
-    
-    
-    
+
+    public boolean faccoesFatais(int n) {
+        // VERIFICAR SE 2 OU MAIS FACÇÕES ESTÃO NA ZONA DE CLOSE COMBAT (local = 0)
+        int contador = 0;
+        
+        for(Inimigo i : inimigos){
+            if(i.local == 0)
+                contador++;
+        }
+        if(contador >= n) return true;
+        
+       return false;
+    }
+
+    public boolean forcasFatais(int n) {
+        // VERIFICAR SE ALGUMA DAS FORÇAS ESTÁ A 0
+        int contador = 0;
+        
+        if(muralha.getForca() == 0) contador++;
+        if(povo.getMoral() == 0) contador++;
+        if(suprimento.getNivel() == 0) contador ++;
+        
+        if(contador >= n)
+            return true;
+        
+        return false;
+    }
+
     @Override
     public String toString(){
         return "## DETALHES DA FORTALEZA ##\n" 
                 + "FORÇA DA MURALHA: " + muralha.getForca()
                 + "\n MORAL DO POVO: " + povo.getMoral()
                 + "\n NIVEL DE SUPRIMENTOS: " + suprimento.getNivel();
-    }
-
-   
-
-    
-
-    
-
-    
+    }   
 }

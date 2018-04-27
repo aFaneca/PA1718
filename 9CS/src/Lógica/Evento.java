@@ -21,31 +21,32 @@ public abstract class Evento {
     protected Carta carta;
     protected List<Inimigo> inimigos;
     protected List<DRM> drms; // Dice Result Modifications
-    
-    
-//    public Evento(Carta c, int var){
-//        APA = var;
-//        this.carta = c;
-//        this.inimigos = new ArrayList<>();
-//        this.drms = new ArrayList<>();
-//    }
-//    
-//    public Evento(Carta c, int var, List<Inimigo> inim){
-//        this(c, var);
-//        this.inimigos = new ArrayList<>(inim);
-//    }
+    protected List<Acao> acoesPermitidas; // LISTA DE AÇOES PERMITIDAS; POR DEFAULT, TODAS SÃO PERMITIDAS
    
     public Evento(Carta c, int var, List<Inimigo> inim){
         APA = var;
         this.carta = c;
         this.inimigos = new ArrayList<>(inim);
         this.drms = new ArrayList<>();
+        this.acoesPermitidas = new ArrayList<>(carta.getAcoes());
     }
     
     /*
     protected abstract boolean condicao();
 */
     protected abstract void acao();
+    
+    
+    
+    public boolean temRestricoesDeAcoes(){
+        if(acoesPermitidas.isEmpty())
+            return false;
+        return true;
+    }
+    public List<Acao> getAcoesPermitidas(){
+        return acoesPermitidas;
+    }
+    
     
     
     
@@ -92,5 +93,9 @@ public abstract class Evento {
 
     public List<Inimigo> getInimigos() {
         return carta.getTodosOsInimigos();
+    }
+    
+    public List<Inimigo> getInimigosDoEvento() {
+        return inimigos;
     }
 }

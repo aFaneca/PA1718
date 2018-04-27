@@ -5,12 +5,16 @@
  */
 package Estados;
 
+import Lógica.Mundo;
+
 /**
  *
  * @author me
  */
-public interface IEstados {
-    IEstados proximoEstado();
-    IEstados fimDoJogo();
-    IEstados fimDoDia();
+public class JogoTerminado extends EstadosAdapter{
+    
+    public JogoTerminado(Mundo m){
+        super(m);
+    }
+    
 }

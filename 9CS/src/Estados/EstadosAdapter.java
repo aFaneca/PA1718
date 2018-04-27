@@ -28,6 +28,9 @@ public class EstadosAdapter implements IEstados{
 
     @Override
     public IEstados fimDoDia() {return this;}
+    
+    @Override
+    public IEstados fimDoJogo() {return this;}
 
    
 }

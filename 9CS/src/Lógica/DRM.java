@@ -18,7 +18,7 @@ public class DRM {
     protected int var; // variação no resultado
     protected Acao acao; // ação afetada pela variação
     protected List<Inimigo> inimigosAfetados; // SE A LISTA SE ENCONTRAR VAZIA, É SINAL QUE AFETA TODOS OS INIMIGOS (OU NENHUM, CASO SEJA UMA DRM NÃO DIRECIONADA A ATAQUE)
-    protected boolean jaTemLista = false;
+
     
     public DRM(Evento e, Acao acao, int var){ // CONSTRUTOR PADRÃO
         this.evento = e;
@@ -31,7 +31,7 @@ public class DRM {
         this.evento = e;
         this.var = var;
         this.acao = acao;
-        inimigosAfetados = new ArrayList<>(inimigos);  
+        inimigosAfetados = new ArrayList<>(inimigos);
     }
     
 //    public DRM(Acao acao, int var, ArrayList<Integer> locais){
@@ -40,12 +40,15 @@ public class DRM {
 //    }
     
     
+
+    
     public boolean isValida(){
         if(inimigosAfetados.isEmpty())
             return false;
         return true;
     }
     
+
     
     @Override
     public String toString(){

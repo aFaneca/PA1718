@@ -19,6 +19,16 @@ public abstract class Inimigo {
     }
     
     
+    public int getLocal(){
+        return local;
+    }
+    
+    public void setLocal(int l){
+        local = l;
+        if(local < 0) local = 0;
+        if(local > 3) local = 3;
+    }
+    
     @Override
     public String toString(){
         return nome;

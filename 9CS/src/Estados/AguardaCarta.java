@@ -23,6 +23,10 @@ public class AguardaCarta extends EstadosAdapter{
         return this;
     }
     
+    public IEstados fimDoJogo(){
+        return new JogoTerminado(this.getMundo());
+    }
+    
     @Override
     public IEstados proximoEstado(){
         //this.getMundo().
