@@ -180,11 +180,11 @@ public class Mundo {
     }
     
     public Carta virarCarta(){
-       if(cartasViradas > 6){
-           cartasViradas = 0;
-          // setEstado(estadoAtual.fimDoDia());
-          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
-       }
+//       if(cartasViradas > 6){
+//           cartasViradas = 0;
+//          // setEstado(estadoAtual.fimDoDia());
+//          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
+//       }
        
         return cartas.get(cartasViradas++);
     }
@@ -232,6 +232,33 @@ public class Mundo {
         
         // O ESTADO SEGUINTE É AguardaSelecaoDeAcao
         setEstado(new AguardaSelecaoDeAcao(this));
+    }
+    
+    public int acao_RepararMuralha(){
+        int resultadoDoDado = rodaDado();
+        
+        if(resultadoDoDado >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
+            fortaleza.alteraMuralha(+1);
+        
+        estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    public int acao_MotivarTropas(boolean usarBonus){
+        int resultadoDoDado = rodaDado();
+        
+        if(usarBonus){
+            fortaleza.alteraSuprimentos(-1);
+            resultadoDoDado++; // +1 para o resultado do dado
+        }
+        
+        if(resultadoDoDado >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor())
+            fortaleza.alteraPovo(+1);
+        
+        estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
     }
     
     public void evento_AtaqueDeCatapulta(){
@@ -285,6 +312,10 @@ public class Mundo {
     
     public Fortaleza getFortaleza(){
         return fortaleza;
+    }
+    
+    public int getCartasViradas(){
+        return cartasViradas;
     }
     
     public int getPosTorre(){ // OBTÉM A POSIÇÃO DA TORRE DE CERCO

@@ -9,7 +9,7 @@ import Lógica.Mundo;
 
 
 public class EstadosAdapter implements IEstados{
-    private Mundo mundo;
+    protected Mundo mundo;
     
     public EstadosAdapter(Mundo mundo){
         this.mundo = mundo;

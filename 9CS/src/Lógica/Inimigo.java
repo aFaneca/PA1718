@@ -15,7 +15,7 @@ public abstract class Inimigo {
     protected String nome;
     
     public Inimigo(){
-        local = 3;
+        local = Constantes.POSICAO_INICIAL_INIMIGOS.getValor();
     }
     
     

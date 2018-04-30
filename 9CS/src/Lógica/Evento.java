@@ -47,6 +47,9 @@ public abstract class Evento {
         return acoesPermitidas;
     }
     
+    public void removerAcao(Acao acao){
+        acoesPermitidas.remove(acao);
+    }
     
     
     

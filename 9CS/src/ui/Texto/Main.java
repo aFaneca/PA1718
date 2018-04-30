@@ -7,6 +7,7 @@ package ui.Texto;
 
 import Estados.*;
 import Lógica.*;
+import Lógica.Ações.*;
 import Lógica.Eventos.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +49,8 @@ public class Main {
             }
             
             else if(estado instanceof AguardaSelecaoDeAcao)
-                selecionarAcao();
+                processaAcoes();
+
             
             else if(estado instanceof JogoTerminado){
                 fimDoJogo();
@@ -71,29 +73,29 @@ public class Main {
 //        m.verInfo();
 //        sc.nextInt();
             
-        mostraMenu();
+        ui_mostraMenu();
  
         if(sc.hasNextInt()){  // SE TIVER LIDO UM INTEIRO
-            switch(sc.nextInt()){
-                case 1: clearScreen(); m.novoJogo();
+            int n = sc.nextInt();
+            sc.nextLine(); // PARA LIMPAR O BUFFER DO RESTO DA LINHA
+            switch(n){
+                case 1: ui_clearScreen(); m.novoJogo();
                     break;
                 case 2:
                     break;
                 case 3: return;
 
-                default: clearScreen(); 
+                default: ui_clearScreen(); 
                     break;
                 }
             }else{ // SENÃO, PEDIR OUTRO INPUT
-                clearScreen();
+                ui_clearScreen();
                 sc.next(); 
         }
 
-        System.out.println(">>> Clique no 'Enter' para continuar...");
-        sc.nextLine();
-        clearScreen();
-        System.out.println(">>> Clique no 'Enter' para continuar...");
-        sc.nextLine();  
+        //ui_CliqueNoEnterPara("continuar");
+        //ui_clearScreen();
+         
     }
         
 
@@ -104,8 +106,8 @@ public class Main {
        // ANTES DE TUDO, VERIFICA SE EXISTEM SOLDADOS NO TUNEL
        if(m.soldadosNoTunel()){
            System.out.println("Temos soldados corajosos a atravessar os túneis.");
-           System.out.println("Clique no 'ENTER' para rodar o dado e determinar o seu destino.");
-           sc.nextLine();
+           ui_PressioneNoEnterPara("rodar o dado e determinar o seu destino.");
+           
            int resultado = m.sorteDosSoldados();
            if(resultado > Constantes.SOLDADOS_NO_TUNEL_SEM_SORTE.getValor()){
                System.out.println("A sorte está do seu lado! O resultado do dado foi " + resultado + " e os soldados continuam indetetados no Túnel.");
@@ -117,6 +119,7 @@ public class Main {
            System.out.println("Não tem soldados no túnel. Todos estão em segurança dentro do Castelo.");
        
        
+       ui_PressioneNoEnterPara("virar uma carta.");
        // VIRA A CARTA NO TOPO DO BARALHO
        System.out.println("Encontrou a carta " + cartaVirada + ".");
        System.out.println("Enfrentará agora o Evento " + eventoAtual + ".");
@@ -176,31 +179,7 @@ public class Main {
         main.run();
      
     }
-        
-    public static void clearScreen() {  
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");  
-        System.out.flush();  
-    }
-
-    private void mostraMenu() {
-        System.out.println("## 9 CARDS SIEGE ##\n"
-                + "[1] NOVO JOGO\n"
-                + "[2] CONTINUAR JOGO\n"
-                + "[3] SAIR");
-        
-        System.out.print("> ");
-    }
+  
 
     private void mostraDRMS(Evento evento){
         if(m.temDRM(evento)){ // SE O EVENTO POSSUI DRMs
@@ -210,18 +189,20 @@ public class Main {
                     System.out.println("Este evento concedeu-lhe a seguinte DRM: " + drm + ".");
             }
                 
-        }
+        }else
+            System.out.println("Este evento não lhe concedeu qualquer DRM.");
     }
     
     private void avancaInimigos(Evento evento){ // AVANÇA OS INIMIGOS ASSOCIADOS A ESTE EVENTO
         if(evento.getInimigosDoEvento().isEmpty()){ // Nenhuma unidade inimiga se deve mover quando existem ataques de trebuchets (não necessita de filtração, porque nesses casos, a lista já se encontra vazia de qualquer forma
             System.out.println("De acordo com esta carta, nenhum inimigo avançará nenhuma posição neste turno.");
         }else{
-            m.avancaInimigos(evento);
+            
             for(Inimigo i : evento.getInimigosDoEvento()){
                 System.out.println("O inimigo " + i + " encontra-se agora na localização " + i.getLocal() + ".");
             }
         }
+        m.avancaInimigos(evento);
         
     }
     
@@ -321,11 +302,27 @@ public class Main {
         motivoFimDoJogo = m.verificaCondicoesFatais();
     }
 
-    private void selecionarAcao() {
-        List<Acao> acoesPermitidas = eventoAtual.getAcoesPermitidas();
-        Acao acao;
+    
+    private void processaAcoes(){
+        Acao acaoEscolhida = null;
+        boolean continuar = true;
         
+        
+        while(continuar){
+            System.out.println(" -- AÇÕES DISPONÍVEIS: " + eventoAtual.getAPA());
+            continuar = selecionarAcao(); // Este método vai tratar da seleção e aplicação da ação escolhida e retorna falso quando o jogador não desejar obter mais ações ou já as tiver esgotado
+        }
+
+        m.setEstado(new AguardaCarta(m));
+    }
+    private boolean selecionarAcao() {
+        List<Acao> acoesPermitidas = eventoAtual.getAcoesPermitidas();
+        Acao acao, acaoEscolhida = null;
+        boolean valido = false;
+        int resposta = -1;
+   
         do{
+            //ui_clearScreen();
             System.out.println("Escolha uma ação: ");
             int i = 0;
 
@@ -333,29 +330,116 @@ public class Main {
                 System.out.println("[" + i + "] " + a);
                 i++;
             }
-            System.out.println("> ");
-            sc.next();
-        } while(!sc.hasNextInt());
+            System.out.println("[" + i + "] " + "Não quero realizar mais nenhuma ação.");
+            System.out.print("> ");
+            if(sc.hasNextInt()){
+                resposta = sc.nextInt();
+                sc.nextLine(); //  Para limpar o buffer do resto da linha
+                if(resposta > 0 && resposta <= acoesPermitidas.size()){
+                    valido = true;
+                }
+            }else
+                sc.next();
+            
+            //sc.next();
+        } while(!valido);
         
-        int resposta = sc.nextInt();
+        if(resposta == acoesPermitidas.size())
+            return false;
         
-        switch(resposta){
-            case 0: acao = new // Ataque de Agua Fervente
-                break;
-            case 1: // Ataque de Arqueiros
-                break;
-            case 2: // Ataque de Close Combat
-                break;
-            case 3: // Motivar as Tropas
-                break;
-            case 4: // Movimentar Soldados No Túnel
-                break;
-            case 5: // Raid
-                break;
-            case 6: // Reparar Muralhas
-                break;
-            case 7: // Sabotagem
-                break;
+        for(Acao a : acoesPermitidas){
+            if(resposta == acoesPermitidas.indexOf(a))
+                acaoEscolhida = a;
         }
+        System.out.println("Escolheu a ação " + acaoEscolhida + "."); 
+        
+        if(acaoEscolhida instanceof RepararMuralha){
+            System.out.println("Para poder aumentar a força da sua muralha em 1 unidade, deve conseguir um resultado >= a " + Constantes.REPARAR_MURALHA_MINIMO.getValor() + ".");
+            ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação");
+            
+            // APLICAR AÇÃO
+            int resultadoDaAcao = m.acao_RepararMuralha();
+            
+            System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
+            if(resultadoDaAcao >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
+                System.out.println("A força da muralha foi aumentada em 1 unidade.");
+            else
+                System.out.println("Não conseguiu reparar a sua muralha :/");
+            
+        }
+        else if(acaoEscolhida instanceof MotivarTropas){
+            System.out.println("Para poder motivar as suas tropas e aumentar a moral do seu povo em 1 unidade, deverá conseguir um resultado >= a " + Constantes.MOTIVAR_TROPAS_MINIMO.getValor() + ".");
+            System.out.println("Deseja sacrificar os seus suprimentos em 1 unidade, recebendo em troca +1 no resultado do dado?");
+            
+            valido = false;
+            do{
+                System.out.println("[1] Sim, dar 1 unidade de suprimentos ao povo\n[2] Não, tentar a minha sorte");
+                System.out.print("> ");
+                if(sc.hasNextInt()){
+                    resposta = sc.nextInt();
+                    sc.nextLine(); //  Para limpar o buffer do resto da linha
+                    if(resposta == 1 || resposta == 2){
+                        valido = true;
+                    }
+                }else
+                    sc.next();
+
+                //sc.next();
+        } while(!valido);
+            
+            boolean usarBonus = (resposta == 1) ? true : false; // SE A RESPOSTA FOR 1, usarBonus = true, senão, usarBonus = false
+            ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação.");
+            
+            // APLICAR AÇÃO
+            int resultadoDaAcao = m.acao_MotivarTropas(usarBonus);
+            
+            System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
+            if(resultadoDaAcao >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor())
+                System.out.println("A moral do seu Povo foi aumentada em 1 unidade.");
+            else
+                System.out.println("Não conseguiu aumentar a moral do povo :/");
+        }
+        
+        if(!acaoEscolhida.isReutilizavel()) // SE A AÇÃO ATUAL NÃO FOR REUTILIZÁVEL
+            eventoAtual.removerAcao(acaoEscolhida); // REMOVER A AÇÃO DO LEQUE DE AÇÕES DISPONÍVEIS
+            
+            eventoAtual.setAPA(eventoAtual.getAPA() - 1); // RETIRAR DO NR. DE APA'S DISPONÍVEIS O QUE FOI UTILIZADOO AGORA
+            if(eventoAtual.getAPA() < 1)
+                return false;
+            else
+                return true;
+
+    }
+    
+    private void ui_PressioneNoEnterPara(String texto){
+        System.out.println("Pressione 'Enter' para " + texto + "...");
+        sc.nextLine();
+        
+        
+    }
+          
+    public static void ui_clearScreen() {  
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "        \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
+                + "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");  
+        System.out.flush();  
+    }
+
+    private void ui_mostraMenu() {
+        System.out.println("## 9 CARDS SIEGE ##\n"
+                + "[1] NOVO JOGO\n"
+                + "[2] CONTINUAR JOGO\n"
+                + "[3] SAIR");
+        
+        System.out.print("> ");
     }
 }

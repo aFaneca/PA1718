@@ -80,6 +80,14 @@ public class Fortaleza {
         muralha.alteraForca(alteracao);
     }
     
+    public void alteraSuprimentos(int alteracao){
+        suprimento.alterarNivel(alteracao);
+    }
+    
+    public void alteraPovo(int var){
+        povo.alterarMoral(var);
+    }
+    
     public boolean soldadosNoTunel(){
         return soldados.noTunel();
     }

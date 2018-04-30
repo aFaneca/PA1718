@@ -26,6 +26,7 @@ public class MauTempo extends Evento{
         super(carta, numero, inim);
         nome = "Mau Tempo";
         
+
         // SÓ SÃO PERMITIDAS AÇÕES DE SABOTAGEM E RAID NESTA RONDA
         acoesPermitidas = new ArrayList<>();
         acoesPermitidas.add(carta.getAcaoDaLista(carta.getRaid()));
