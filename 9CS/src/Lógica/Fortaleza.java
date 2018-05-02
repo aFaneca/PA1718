@@ -92,6 +92,9 @@ public class Fortaleza {
         return soldados.noTunel();
     }
     
+    public void alteraSuprimentosFurtados(int var){
+        soldados.alteraSuprimentosFurtados(var);
+    }
     
     public void soldadosCapturados(){
         // ELIMINAR REGISTO DOS SOLDADOS ATUAIS E GERAR NOVOS SOLDADOS
@@ -108,6 +111,8 @@ public class Fortaleza {
         inimigos.remove(torre);
  
     }
+    
+    
     
     // RETORNA UMA LISTA COM OS INIMIGOS QUE SE ENCONTRAREM NAS POSIÇÕES PASSADAS COMO ARGUMENTOS ("LOCAIS")
     public List<Inimigo> getInimigos(List<Integer> locais){

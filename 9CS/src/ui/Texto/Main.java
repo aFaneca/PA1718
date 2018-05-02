@@ -316,26 +316,33 @@ public class Main {
         m.setEstado(new AguardaCarta(m));
     }
     private boolean selecionarAcao() {
+        List<Integer> nrsNaoPermitidos = new ArrayList<>();
         List<Acao> acoesPermitidas = eventoAtual.getAcoesPermitidas();
         Acao acao, acaoEscolhida = null;
         boolean valido = false;
         int resposta = -1;
-   
+        int i = 0;
         do{
             //ui_clearScreen();
             System.out.println("Escolha uma ação: ");
-            int i = 0;
+            i = 0;
+            nrsNaoPermitidos.clear();
 
             for(Acao a : acoesPermitidas){
-                System.out.println("[" + i + "] " + a);
-                i++;
+                
+                if( (!(a instanceof Raid) || m.soldadosNoTunel()) && ( !(a instanceof Sabotagem) || m.soldadosNoTunel() )  ){ // SE NÃO ESTIVEREM SOLDADOS NO TÚNEL, NÃO MOSTRAR A OPÇÃO DE RAID, UMA VEZ QUE NÃO SE APLICA
+                    System.out.println("[" + i + "] " + a);
+                }else{
+                    nrsNaoPermitidos.add(i); 
+                }   
+                  i++;
             }
             System.out.println("[" + i + "] " + "Não quero realizar mais nenhuma ação.");
             System.out.print("> ");
             if(sc.hasNextInt()){
                 resposta = sc.nextInt();
                 sc.nextLine(); //  Para limpar o buffer do resto da linha
-                if(resposta > 0 && resposta <= acoesPermitidas.size()){
+                if(!nrsNaoPermitidos.contains(resposta) && resposta >= 0 && resposta <= i){
                     valido = true;
                 }
             }else
@@ -344,7 +351,7 @@ public class Main {
             //sc.next();
         } while(!valido);
         
-        if(resposta == acoesPermitidas.size())
+        if(resposta == i) // SE O UTILIZADOR NÃO DESEJAR REALIZAR NENHUMA AÇÃO 
             return false;
         
         for(Acao a : acoesPermitidas){
@@ -353,6 +360,7 @@ public class Main {
         }
         System.out.println("Escolheu a ação " + acaoEscolhida + "."); 
         
+        // AÇÃO: REPARAR MURALHA
         if(acaoEscolhida instanceof RepararMuralha){
             System.out.println("Para poder aumentar a força da sua muralha em 1 unidade, deve conseguir um resultado >= a " + Constantes.REPARAR_MURALHA_MINIMO.getValor() + ".");
             ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação");
@@ -367,6 +375,7 @@ public class Main {
                 System.out.println("Não conseguiu reparar a sua muralha :/");
             
         }
+        // AÇÃO: MOTIVAR TROPAS
         else if(acaoEscolhida instanceof MotivarTropas){
             System.out.println("Para poder motivar as suas tropas e aumentar a moral do seu povo em 1 unidade, deverá conseguir um resultado >= a " + Constantes.MOTIVAR_TROPAS_MINIMO.getValor() + ".");
             System.out.println("Deseja sacrificar os seus suprimentos em 1 unidade, recebendo em troca +1 no resultado do dado?");
@@ -398,6 +407,42 @@ public class Main {
                 System.out.println("A moral do seu Povo foi aumentada em 1 unidade.");
             else
                 System.out.println("Não conseguiu aumentar a moral do povo :/");
+        }
+        // AÇÃO: RAID DE SUPRIMENTOS
+        else if(acaoEscolhida instanceof Raid){
+            // NESTA FASE, JÁ SABEMOS QUE EXISTEM SOLDADOS NO TÚNEL 
+            System.out.println("Para fazer raid de suprimentos em linhas inimigas, deverá conseguir um resultado >= 3. Se obtiver o resultado 6, consegiurá arrecadar 2 unidades de Suprimentos. Se o resultado for 1, as suas tropas serão capturadas.");
+            ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação.");
+            
+            // APLICAR AÇÃO
+            int resultadoDaAcao = m.acao_Raid();
+            System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
+            if(resultadoDaAcao >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
+                if(resultadoDaAcao >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
+                    System.out.println("Os seus soldados efetuaram o ataque com bastante sucesso e conseguiram furtar 2 unidades de suprimentos!");
+                }else{  // DEFAULT: 3,4,5 <= RAID COM SUCESSO DE 1 SUPRIMENTO
+                    System.out.println("Os seus soldados efetuaram o ataque com sucesso e conseguiram furtar 1 unidade de suprimentos!");
+                }
+            }else{ // DEFAULT: 1 <= SOLDADOS CAPTURADOS
+                System.out.println("Pouca sorte! Os seus soldados não conseguiram efetuar o Raid e foram capturados :/");
+            }
+        }
+        // AÇÃO: SABOTAGEM
+        else if(acaoEscolhida instanceof Sabotagem){
+            // NESTA FASE, JÁ SABEMOS QUE EXISTEM SOLDADOS NO TÚNEL 
+            System.out.println("Para fazer sabotagem em linhas inimigas, deverá conseguir um resultado >= 5. Se o resultado for 1, as suas tropas serão capturadas.");
+            ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação.");
+            
+            // APLICAR AÇÃO
+            int resultadoDaAcao = m.acao_Sabotagem();
+            System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
+            
+            if(resultadoDaAcao >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor()){ // DEFAULT: 5, 6 <= -1 Catapulta dos Inimigos
+                System.out.println("Conseguiu danificar com sucesso 1 catapulta inimiga. A mesma encontra-se agora inoperacional!");
+            
+            }else if(resultadoDaAcao <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor()){ // DEFAULT: 1 <= Soldados são capturados
+                System.out.println("Pouca sorte! Enquanto tentavam sabotar as catapultas inimigas, as suas tropas foram capturadas pelo inimigo :/");
+            }
         }
         
         if(!acaoEscolhida.isReutilizavel()) // SE A AÇÃO ATUAL NÃO FOR REUTILIZÁVEL

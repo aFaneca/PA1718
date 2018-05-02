@@ -13,11 +13,13 @@ class Soldado {
     private int local; // 0 => no castelo | 1 => entrada do túnel | 2 => saida do túnel | 3 => linhas inimigas
     private boolean capturado;
     private Fortaleza fortaleza;
+    private int suprimentosFurtados;
     
     public Soldado(Fortaleza fortaleza){
         this.fortaleza = fortaleza;
         local = 0;
         capturado = false;
+        suprimentosFurtados = 0;
     }
     
     
@@ -25,5 +27,12 @@ class Soldado {
         if(this.local == 1 || this.local == 2)
             return true;
         return false;
+    }
+    
+    public void alteraSuprimentosFurtados(int var){
+        suprimentosFurtados += var;
+        
+        if(suprimentosFurtados > 2) suprimentosFurtados = 2;
+        if(suprimentosFurtados < 0) suprimentosFurtados = 0;
     }
 }

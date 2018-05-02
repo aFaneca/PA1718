@@ -261,6 +261,35 @@ public class Mundo {
         return resultadoDoDado;
     }
     
+    public int acao_Raid(){
+        int resultadoDoDado = rodaDado();
+        
+        if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
+            if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
+                fortaleza.alteraSuprimentosFurtados(+2); 
+            }else{  // DEFAULT: 3,4,5 <= RAID COM SUCESSO DE 1 SUPRIMENTO
+                fortaleza.alteraSuprimentosFurtados(+1);
+            }
+        }else{ // DEFAULT: 1 <= SOLDADOS CAPTURADOS
+            soldadosCapturados();
+        }
+        
+        return resultadoDoDado;
+    }
+    
+    public int acao_Sabotagem(){
+        int resultadoDoDado = rodaDado();
+        
+        if(resultadoDoDado >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor()){ // DEFAULT: 5, 6 <= -1 Catapulta dos Inimigos
+            fortaleza.alteraNrCatapultas(-1);
+            
+        }else if(resultadoDoDado <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor()){ // DEFAULT: 1 <= Soldados são capturados
+            soldadosCapturados();
+        }
+        
+        return resultadoDoDado;
+    }
+    
     public void evento_AtaqueDeCatapulta(){
         fortaleza.evento_AtaqueDeCatapulta();
     }
