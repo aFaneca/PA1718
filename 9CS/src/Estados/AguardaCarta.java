@@ -12,16 +12,12 @@ import Lógica.Mundo;
  * @author me
  */
 public class AguardaCarta extends EstadosAdapter{
-    
+
     public AguardaCarta(Mundo m){
         super(m);
     }
     
-    public IEstados fimDoDia(){
-        Mundo m = super.getMundo();
-        
-        return this;
-    }
+
     
     public IEstados fimDoJogo(){
         return new JogoTerminado(this.getMundo());
@@ -29,8 +25,8 @@ public class AguardaCarta extends EstadosAdapter{
     
     @Override
     public IEstados proximoEstado(){
-        //this.getMundo().
         
-        return new AguardaEscolhaDeAcao(this.getMundo());
+        
+        return new AguardaSelecaoDeAcao(this.getMundo());
     }
 }

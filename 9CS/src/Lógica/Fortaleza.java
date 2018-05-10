@@ -101,6 +101,10 @@ public class Fortaleza {
         return soldados.noTunel();
     }
     
+    public boolean soldadosEmLinhasInimigas(){
+        return soldados.emLinhasInimigas();
+    }
+    
     public void alteraSuprimentosFurtados(int var){
         soldados.alteraSuprimentosFurtados(var);
     }

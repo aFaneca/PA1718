@@ -18,11 +18,15 @@ public class AguardaSelecaoDeAcao extends EstadosAdapter{
         
     }
     
+    @Override
+    public IEstados fimDoJogo(){
+        return new JogoTerminado(this.getMundo());
+    }
 
     public IEstados proximoEstado(){
         
         if(mundo.getCartasViradas() % mundo.getCartas().size() == 0) // SE JÁ FORAM VIRADAS AS 7 CARTAS
-            return new AguardaInicio(mundo);
+            return new DiaTerminado(this.getMundo());
         else
             return new AguardaCarta(mundo);
     }

@@ -29,6 +29,12 @@ class Soldado {
         return false;
     }
     
+    public boolean emLinhasInimigas(){
+        if(this.local == 3)
+            return true;
+        return false;
+    }
+    
     public void alteraSuprimentosFurtados(int var){
         suprimentosFurtados += var;
         
@@ -53,5 +59,9 @@ class Soldado {
         
         if(local < 0) local = 0;
         if(local > 3) local = 3;
+        
+        if(local == 0)
+            fortaleza.alteraSuprimentos(+suprimentosFurtados);
+        
     }
 }

@@ -50,7 +50,9 @@ public class Main {
             
             else if(estado instanceof AguardaSelecaoDeAcao)
                 processaAcoes();
-
+            
+            else if(estado instanceof DiaTerminado)
+                fimDoDia();
             
             else if(estado instanceof JogoTerminado){
                 fimDoJogo();
@@ -97,9 +99,44 @@ public class Main {
         //ui_clearScreen();
          
     }
-        
+    
+    private void fimDoDia(){
+        System.out.println("O dia " + (m.getDia()) + " chegou ao fim.");
+    /*
+        As cartas devem ser rebaralhadas para o próximo dia
+        Reduzir os supplies em 1 unidade
+        Mover soldados no túnel de volta para o castelo
+        Soldados em território inimigo são capturados
+    */
 
-   private void virarCarta(){
+        
+        // SOLDADOS NO TÚNEL, VOLTAM AUTOMATICAMENTE PARA O CASTELO
+        if(m.soldadosNoTunel()){
+            System.out.println("Os seus soldados estão de volta à fortaleza.");
+            m.alteraPosSoldados(-3); // COMO TUDO ESTÁ CONFIGURADO PARA QUE A POSIÇÃO DOS SOLDADOS NUNCA SEJA < 0, ISTO GARANTE QUE ELES VOLTAM PARA A POSIÇÃO 0, INDEPENDENTEMENTE DA POSIÇÃO EM QUE ESTÃO ATUALMENTE
+        }
+            
+        // SOLDADOS EM TERRITÓRIO INIMIGO, SÃO CAPTURADOS
+        if(m.soldadosEmLinhasInimigas()){
+            System.out.println("Como os seus soldados em linhas inimigas não voltaram para o castelo antes do anoitecer, foram capturados :/");
+            m.soldadosCapturados();
+        }
+        
+        // REDUZIR SUPPLIES EM 1 UNIDADE
+        System.out.println("Com o chegar do fim do dia, os suprimentos armazenados na fortaleza foram reduzidos em 1 unidade.");
+        m.alteraSuprimentos(-1);
+        
+        // REBARALHAR CARTAS
+        ui_PressioneNoEnterPara("rebaralhar as cartas e começar um novo dia");
+        m.baralharCartas();
+        
+        m.setEstado(m.getEstado().proximoEstado());
+        
+        if(m.getDia() == 3)
+            motivoFimDoJogo = "Chegou ao fim do terceiro dia de cerco e as tropas inimigas levantam a bandeira branca. Parabéns pela vitória!";
+    }
+
+    private void virarCarta(){
        cartaVirada = m.virarCarta();
        eventoAtual = m.eventoAtual(cartaVirada);
        
@@ -173,14 +210,12 @@ public class Main {
        verificaCondicoesFatais();   
    } 
    
-   
     public static void main(String[] args) {
         Main main = new Main();
         main.run();
      
     }
   
-
     private void mostraDRMS(Evento evento){
         if(m.temDRM(evento)){ // SE O EVENTO POSSUI DRMs
             List<DRM> drms = new ArrayList<>(m.getDRMS(evento));
@@ -299,7 +334,7 @@ public class Main {
     }
     
     private void verificaCondicoesFataisImediatas() {
-        motivoFimDoJogo = m.verificaCondicoesFatais();
+        motivoFimDoJogo = m.verificaCondicoesFataisImediatas();
     }
 
     
@@ -312,8 +347,13 @@ public class Main {
             System.out.println(" -- AÇÕES DISPONÍVEIS: " + eventoAtual.getAPA());
             continuar = selecionarAcao(); // Este método vai tratar da seleção e aplicação da ação escolhida e retorna falso quando o jogador não desejar obter mais ações ou já as tiver esgotado
         }
-        if(!(m.getEstado() instanceof JogoTerminado))
-            m.setEstado(new AguardaCarta(m));
+        if(!(m.getEstado() instanceof JogoTerminado)){
+            m.setEstado(m.getEstado().proximoEstado());
+            //m.setEstado(new AguardaCarta(m));
+        }
+        
+        
+            
     }
     private boolean selecionarAcao() {
         List<Integer> nrsNaoPermitidos = new ArrayList<>();
@@ -328,7 +368,7 @@ public class Main {
         
         do{
             if(m.getEstado() instanceof JogoTerminado)
-            return false;
+                return false;
             //ui_clearScreen();
             System.out.println("Escolha uma ação: ");
             i = 0;
@@ -336,7 +376,8 @@ public class Main {
 
             for(Acao a : acoesPermitidas){
                 
-                if( (!(a instanceof Raid) || m.soldadosNoTunel()) && ( !(a instanceof Sabotagem) || m.soldadosNoTunel() )  ){ // SE NÃO ESTIVEREM SOLDADOS NO TÚNEL, NÃO MOSTRAR A OPÇÃO DE RAID, UMA VEZ QUE NÃO SE APLICA
+                // QUANDO NÃO É UMA AÇÃO DE 'RAID' NEM DE 'SABOTAGEM' OU É UMA DAS DUAS, MAS ESTÃO SOLDADOS EM TERRITÓRIO INIMIGO
+                if( (!(a instanceof Raid) && !(a instanceof Sabotagem) ) || ( ((a instanceof Raid) || (a instanceof Sabotagem)) && (m.soldadosEmLinhasInimigas()))){
                     System.out.println("[" + i + "] " + a);
                 }else{
                     nrsNaoPermitidos.add(i); 
@@ -704,6 +745,7 @@ public class Main {
                     System.out.println("Má sorte! O seu ataque não teve sucesso e a moral do povo foi reduzida em 1 unidade :/");
                 else{
                     System.out.println("Má sorte! O seu ataque não teve sucesso e o inimigo conseguiu penetrar a muralha. FUJAM TODOOS!");
+                    motivoFimDoJogo = "As muralhas caíram e a fortaleza foi invadida.";
                 }
             }
             

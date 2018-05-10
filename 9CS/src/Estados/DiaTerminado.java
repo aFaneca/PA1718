@@ -11,18 +11,20 @@ import Lógica.Mundo;
  *
  * @author me
  */
-public class AguardaEscolhaDeAcao extends EstadosAdapter{
-    private boolean continuar = true;
-    public AguardaEscolhaDeAcao(Mundo mundo) {
+public class DiaTerminado extends EstadosAdapter{
+    static int contagemDeDias = 1;
+
+    public DiaTerminado(Mundo mundo) {
         super(mundo);
     }
     
     @Override
     public IEstados proximoEstado(){
-        //this.getMundo().
+        if(contagemDeDias++ == 3)
+            return new JogoTerminado(this.getMundo());
+        Mundo m  = super.getMundo();
         
-        if(continuar)
-            return this;
+        m.setDia(m.getDia() + 1);
         
         return new AguardaCarta(this.getMundo());
     }

@@ -43,7 +43,7 @@ public class Mundo {
         eventos = new ArrayList<>();
         gerarCartas();
         cartasViradas = 0;
-        dia = 2;
+        dia = 1;
     
     }
     
@@ -187,8 +187,8 @@ public class Mundo {
     }
     
     public Carta virarCarta(){
-//       if(cartasViradas > 6){
-//           cartasViradas = 0;
+       if(cartasViradas > 6)
+           cartasViradas = 0;
 //          // setEstado(estadoAtual.fimDoDia());
 //          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
 //       }
@@ -212,12 +212,23 @@ public class Mundo {
     public void alteraMuralha(int quant){
         fortaleza.alteraMuralha(quant);
     }
+    
+    public void alteraSuprimentos(int quant){
+        fortaleza.alteraSuprimentos(quant);
+    }
 
     public boolean soldadosNoTunel(){
 
         return fortaleza.soldadosNoTunel();
     }
     
+    public boolean soldadosEmLinhasInimigas(){
+        return fortaleza.soldadosEmLinhasInimigas();
+    }
+    
+    public void alteraPosSoldados(int var){
+        fortaleza.alteraPosSoldados(var);
+    }
     public int sorteDosSoldados(){
         return dado.rodaDado();
     }
@@ -258,7 +269,7 @@ public class Mundo {
         if(resultadoDoDado >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
             fortaleza.alteraMuralha(+1);
         
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
@@ -284,7 +295,7 @@ public class Mundo {
         if(resultadoDoDado >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor())
             fortaleza.alteraPovo(+1);
         
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
@@ -312,7 +323,7 @@ public class Mundo {
             soldadosCapturados();
         }
         
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
@@ -337,7 +348,7 @@ public class Mundo {
         }else if(resultadoDoDado <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor()){ // DEFAULT: 1 <= Soldados são capturados
             soldadosCapturados();
         }
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         return resultadoDoDado;
     }
     
@@ -361,7 +372,7 @@ public class Mundo {
         
         fortaleza.alteraPosSoldados(movimento);
         
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         
         return fortaleza.getPosicaoSoldados();
     }
@@ -384,7 +395,7 @@ public class Mundo {
             inimigoEscolhido.alterarLocal(+1);
         }
         
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
@@ -411,14 +422,14 @@ public class Mundo {
             fortaleza.alteraPovo(-1);
         
         
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
     
     
      public int acao_AtaqueDeCloseCombat(Inimigo inimigoEscolhido) {
-        estadoAtual = estadoAtual.proximoEstado();
+        //estadoAtual = estadoAtual.proximoEstado();
         int resultadoDoDado = rodaDado();
         
         if(resultadoDoDado > 4){ // O ataque teve sucesso
@@ -505,6 +516,8 @@ public class Mundo {
         return fortaleza.getListaDeInimigos();
     }
 
+    
+    
     public void verInfo(){
         int nr = 1, nr1 = 1;
         
