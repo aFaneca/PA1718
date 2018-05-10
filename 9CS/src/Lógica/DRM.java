@@ -17,7 +17,8 @@ public class DRM {
     protected Evento evento;
     protected int var; // variação no resultado
     protected Acao acao; // ação afetada pela variação
-    protected List<Inimigo> inimigosAfetados; // SE A LISTA SE ENCONTRAR VAZIA, É SINAL QUE AFETA TODOS OS INIMIGOS (OU NENHUM, CASO SEJA UMA DRM NÃO DIRECIONADA A ATAQUE)
+    protected List<Inimigo> inimigosAfetados; 
+    protected boolean afetaAcoesDeAtaque = false; // SE ESTA DRM AFETA AÇÕES DE ATAQUE OU NÃO
 
     
     public DRM(Evento e, Acao acao, int var){ // CONSTRUTOR PADRÃO
@@ -38,6 +39,14 @@ public class DRM {
 //        this(acao, var);
 //        inimi
 //    }
+
+    public Acao getAcao() {
+        return acao;
+    }
+
+    public int getVar() {
+        return var;
+    }
     
     
 

@@ -69,6 +69,11 @@ public class Fortaleza {
     }
 
     
+    public int getPosicaoSoldados(){
+        return soldados.getLocal();
+    }
+    
+    
     public void alteraNrCatapultas(int var){
         nrCatapultas += var;
         
@@ -86,6 +91,10 @@ public class Fortaleza {
     
     public void alteraPovo(int var){
         povo.alterarMoral(var);
+    }
+    
+    public void alteraPosSoldados(int var){
+        soldados.alteraPosicao(var);
     }
     
     public boolean soldadosNoTunel(){
@@ -240,6 +249,10 @@ public class Fortaleza {
     
     public List<Inimigo> getTodosOsInimigos() {
         return inimigos;
+    }
+    
+    public int getSuprimentosFurtados(){
+        return soldados.getSuprimentosFurtados();
     }
 
     public boolean faccoesFatais(int n) {

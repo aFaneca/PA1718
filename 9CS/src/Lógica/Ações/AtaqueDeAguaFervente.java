@@ -7,6 +7,9 @@ package Lógica.Ações;
 
 import Lógica.Acao;
 import Lógica.Fortaleza;
+import Lógica.Inimigo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -18,4 +21,15 @@ public class AtaqueDeAguaFervente extends Acao{
         super("Ataque de Àgua Fervente", fortaleza);
         setReutilizavel(false);
     }
+    
+    @Override
+    public List<Inimigo> getPotenciaisAlvos(){
+        List<Integer> locais;
+        locais = new ArrayList<>();
+        locais.add(1); // TODOS OS INIMIGOS EM ESPAÇOS CIRCULARES (local = 1)
+        potenciaisAlvos = new ArrayList<>(fortaleza.getInimigos(locais));
+        
+        return potenciaisAlvos;
+    }
+    
 }

@@ -312,17 +312,23 @@ public class Main {
             System.out.println(" -- AÇÕES DISPONÍVEIS: " + eventoAtual.getAPA());
             continuar = selecionarAcao(); // Este método vai tratar da seleção e aplicação da ação escolhida e retorna falso quando o jogador não desejar obter mais ações ou já as tiver esgotado
         }
-
-        m.setEstado(new AguardaCarta(m));
+        if(!(m.getEstado() instanceof JogoTerminado))
+            m.setEstado(new AguardaCarta(m));
     }
     private boolean selecionarAcao() {
         List<Integer> nrsNaoPermitidos = new ArrayList<>();
         List<Acao> acoesPermitidas = eventoAtual.getAcoesPermitidas();
         Acao acao, acaoEscolhida = null;
+        Inimigo inimigoEscolhido = null;
         boolean valido = false;
         int resposta = -1;
         int i = 0;
+        
+        
+        
         do{
+            if(m.getEstado() instanceof JogoTerminado)
+            return false;
             //ui_clearScreen();
             System.out.println("Escolha uma ação: ");
             i = 0;
@@ -362,11 +368,23 @@ public class Main {
         
         // AÇÃO: REPARAR MURALHA
         if(acaoEscolhida instanceof RepararMuralha){
-            System.out.println("Para poder aumentar a força da sua muralha em 1 unidade, deve conseguir um resultado >= a " + Constantes.REPARAR_MURALHA_MINIMO.getValor() + ".");
+            // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            
+            for(DRM drm : eventoAtual.getDrms()){
+                if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                    temDRMS = true;
+                    var += drm.getVar();
+                }
+            }
+            
+            
+            System.out.println("Para poder aumentar a força da sua muralha em 1 unidade, deve conseguir um resultado >= a " + Constantes.REPARAR_MURALHA_MINIMO.getValor() + " (+" + var + " DRM).");
             ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação");
             
             // APLICAR AÇÃO
-            int resultadoDaAcao = m.acao_RepararMuralha();
+            int resultadoDaAcao = m.acao_RepararMuralha(eventoAtual);
             
             System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
             if(resultadoDaAcao >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
@@ -377,7 +395,20 @@ public class Main {
         }
         // AÇÃO: MOTIVAR TROPAS
         else if(acaoEscolhida instanceof MotivarTropas){
-            System.out.println("Para poder motivar as suas tropas e aumentar a moral do seu povo em 1 unidade, deverá conseguir um resultado >= a " + Constantes.MOTIVAR_TROPAS_MINIMO.getValor() + ".");
+            
+            
+            // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            
+            for(DRM drm : eventoAtual.getDrms()){
+                if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                    temDRMS = true;
+                    var += drm.getVar();
+                }
+            }
+            
+            System.out.println("Para poder motivar as suas tropas e aumentar a moral do seu povo em 1 unidade, deverá conseguir um resultado >= a " + Constantes.MOTIVAR_TROPAS_MINIMO.getValor() + " (+" + var + " DRM).");
             System.out.println("Deseja sacrificar os seus suprimentos em 1 unidade, recebendo em troca +1 no resultado do dado?");
             
             valido = false;
@@ -400,7 +431,7 @@ public class Main {
             ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação.");
             
             // APLICAR AÇÃO
-            int resultadoDaAcao = m.acao_MotivarTropas(usarBonus);
+            int resultadoDaAcao = m.acao_MotivarTropas(usarBonus, eventoAtual);
             
             System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
             if(resultadoDaAcao >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor())
@@ -411,11 +442,23 @@ public class Main {
         // AÇÃO: RAID DE SUPRIMENTOS
         else if(acaoEscolhida instanceof Raid){
             // NESTA FASE, JÁ SABEMOS QUE EXISTEM SOLDADOS NO TÚNEL 
-            System.out.println("Para fazer raid de suprimentos em linhas inimigas, deverá conseguir um resultado >= 3. Se obtiver o resultado 6, consegiurá arrecadar 2 unidades de Suprimentos. Se o resultado for 1, as suas tropas serão capturadas.");
+            
+            // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            
+            for(DRM drm : eventoAtual.getDrms()){
+                if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                    temDRMS = true;
+                    var += drm.getVar();
+                }
+            }
+            
+            System.out.println("Para fazer raid de suprimentos em linhas inimigas, deverá conseguir um resultado >= 3. Se obtiver o resultado 6, consegiurá arrecadar 2 unidades de Suprimentos. Se o resultado for 1, as suas tropas serão capturadas." + " (+" + var + " DRM).");
             ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação.");
             
             // APLICAR AÇÃO
-            int resultadoDaAcao = m.acao_Raid();
+            int resultadoDaAcao = m.acao_Raid(eventoAtual);
             System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
             if(resultadoDaAcao >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
                 if(resultadoDaAcao >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
@@ -430,11 +473,23 @@ public class Main {
         // AÇÃO: SABOTAGEM
         else if(acaoEscolhida instanceof Sabotagem){
             // NESTA FASE, JÁ SABEMOS QUE EXISTEM SOLDADOS NO TÚNEL 
-            System.out.println("Para fazer sabotagem em linhas inimigas, deverá conseguir um resultado >= 5. Se o resultado for 1, as suas tropas serão capturadas.");
+            
+            // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            
+            for(DRM drm : eventoAtual.getDrms()){
+                if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                    temDRMS = true;
+                    var += drm.getVar();
+                }
+            }
+            
+            System.out.println("Para fazer sabotagem em linhas inimigas, deverá conseguir um resultado >= 5. Se o resultado for 1, as suas tropas serão capturadas." + " (+" + var + " DRM).");
             ui_PressioneNoEnterPara("rodar o dado e desvendar o destino desta ação.");
             
             // APLICAR AÇÃO
-            int resultadoDaAcao = m.acao_Sabotagem();
+            int resultadoDaAcao = m.acao_Sabotagem(eventoAtual);
             System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
             
             if(resultadoDaAcao >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor()){ // DEFAULT: 5, 6 <= -1 Catapulta dos Inimigos
@@ -444,6 +499,217 @@ public class Main {
                 System.out.println("Pouca sorte! Enquanto tentavam sabotar as catapultas inimigas, as suas tropas foram capturadas pelo inimigo :/");
             }
         }
+        
+        // AÇÃO: Movimentar Soldados no Túnel
+        else if(acaoEscolhida instanceof MovimentarSoldadosNoTunel){
+            valido = false;
+            do{
+                System.out.println("[1] Movimento FREE (Não Gasta Action Points)\n[2] Movimento FAST (Chegar diretamente ao fim do túnel; Custo: 2 APAs");
+                System.out.print("> ");
+                if(sc.hasNextInt()){
+                    resposta = sc.nextInt();
+                    sc.nextLine(); //  Para limpar o buffer do resto da linha
+                    if(resposta == 1 || resposta == 2){
+                        valido = true;
+                    }
+                }else
+                    sc.next();
+
+                //sc.next();
+        } while(!valido);
+            ui_PressioneNoEnterPara("movimentar os seus soldados no túnel.");
+            
+            // APLICAR AÇÃO
+           
+           if(resposta == 1){
+               eventoAtual.setAPA(eventoAtual.getAPA() + 1); // INCREMENTAR O NR. DE APAs PARA COMPENSAR A DECREMENTAÇÃO QUE É FEITA ABAIXO, UMA VEZ QUE ESTE MOVIMENTO É FREE
+               System.out.println("Os seus soldados movimentaram-se 1 unidade no túnel. ");
+           }else if(resposta == 2){
+               System.out.println("Os seus soldados movimentaram-se automaticamente até ao fim do túnel. ");
+           }
+           System.out.println("Estão agora na posição " + m.acao_movimentarSoldadosNoTunel(resposta) + ".");
+            
+        }
+        // AÇÃO: Ataque de Àgua Fervente
+        else if(acaoEscolhida instanceof AtaqueDeAguaFervente){
+            valido = false;
+            do{
+                int cnt = 1;
+                for(Inimigo inimigo : acaoEscolhida.getPotenciaisAlvos()){
+                    System.out.println("[" + cnt + "] Atacar " + inimigo + " (Local: A " + inimigo.getLocal() + " Unidades de Distância)");
+                    
+                    cnt++;
+                }
+                
+                System.out.println("[" + cnt + "] Voltar Atrás");
+                
+                System.out.print("> ");
+                if(sc.hasNextInt()){
+                    resposta = sc.nextInt();
+                    sc.nextLine(); //  Para limpar o buffer do resto da linha
+                    if(resposta > 0 && resposta <= acaoEscolhida.getPotenciaisAlvos().size() + 1){
+                        valido = true;
+                    }
+                }else
+                    sc.next();
+
+                //sc.next();
+        } while(!valido);
+            
+            if(resposta == acaoEscolhida.getPotenciaisAlvos().size() + 1){ // SE A OPÇÃO ESCOLHIDA É A DE VOLTAR ATRÁS
+                 eventoAtual.setAPA(eventoAtual.getAPA() + 1); // INCREMENTAR O NR. DE APAs PARA COMPENSAR A DECREMENTAÇÃO QUE É FEITA ABAIXO, UMA VEZ QUE NÃO FOI FEITO MOVIMENTO NENHUM
+            }
+            else{
+                // DETERMINAR A FACÇÃO INIMIGA QUE FOI ESCOLHIDA
+                inimigoEscolhido = m.getListaDeInimigos().get(m.getListaDeInimigos().indexOf(acaoEscolhida.getPotenciaisAlvos().get(resposta - 1)));
+                
+                // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+                boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+                int var  = 1; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+                
+                
+                System.out.println("O inimigo " + inimigoEscolhido + " tem nesta momento força = " + inimigoEscolhido.getForca() + ".");
+                System.out.println("Para conseguir atacar com sucesso o inimigo, deve rodar o dado e obter um resultado superior a " + inimigoEscolhido.getForca() + " (+" + var + " DRM).");
+                ui_PressioneNoEnterPara("tentar a sua sorte e realizar o ataque.");
+
+                // APLICAR AÇÃO
+                int resultadoDaAcao = m.acao_AtaqueDeAguaFervente(inimigoEscolhido, eventoAtual);
+                
+                
+                
+                System.out.println("O resultado do dado foi " + (resultadoDaAcao - 1) + " (+1 DRM).");
+                if(resultadoDaAcao > inimigoEscolhido.getForca())
+                    System.out.println("Parabéns! O seu ataque teve sucesso e o inimigo recuou uma posição.\n"
+                            + "O inimigo " + inimigoEscolhido + " está agora na posição " + inimigoEscolhido.getLocal() + ".");
+                else
+                    System.out.println("Má sorte! O seu ataque não teve sucesso :/");
+            }
+            
+        }
+        
+        
+        // AÇÃO: Ataque de Arqueiros
+        else if(acaoEscolhida instanceof AtaqueDeArqueiros){
+            valido = false;
+            do{
+                int cnt = 1;
+                for(Inimigo inimigo : acaoEscolhida.getPotenciaisAlvos()){
+                    System.out.println("[" + cnt + "] Atacar " + inimigo + " (Local: A " + inimigo.getLocal() + " Unidades de Distância)");
+                    
+                    cnt++;
+                }
+                
+                System.out.println("[" + cnt + "] Voltar Atrás");
+                
+                System.out.print("> ");
+                if(sc.hasNextInt()){
+                    resposta = sc.nextInt();
+                    sc.nextLine(); //  Para limpar o buffer do resto da linha
+                    if(resposta > 0 && resposta <= acaoEscolhida.getPotenciaisAlvos().size() + 1){
+                        valido = true;
+                    }
+                }else
+                    sc.next();
+
+                //sc.next();
+        } while(!valido);
+            
+            if(resposta == acaoEscolhida.getPotenciaisAlvos().size() + 1){ // SE A OPÇÃO ESCOLHIDA É A DE VOLTAR ATRÁS
+                 eventoAtual.setAPA(eventoAtual.getAPA() + 1); // INCREMENTAR O NR. DE APAs PARA COMPENSAR A DECREMENTAÇÃO QUE É FEITA ABAIXO, UMA VEZ QUE NÃO FOI FEITO MOVIMENTO NENHUM
+            }
+            else{
+                // DETERMINAR A FACÇÃO INIMIGA QUE FOI ESCOLHIDA
+                inimigoEscolhido = m.getListaDeInimigos().get(m.getListaDeInimigos().indexOf(acaoEscolhida.getPotenciaisAlvos().get(resposta - 1)));
+                // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+                boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+                int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+                
+                
+                
+                System.out.println("O inimigo " + inimigoEscolhido + " tem nesta momento força = " + inimigoEscolhido.getForca() + ".");
+                System.out.println("Para conseguir atacar com sucesso o inimigo, deve rodar o dado e obter um resultado superior a " + inimigoEscolhido.getForca() + " (+" + var + " DRM).");
+                ui_PressioneNoEnterPara("tentar a sua sorte e realizar o ataque.");
+
+                // APLICAR AÇÃO
+                int resultadoDaAcao = m.acao_AtaqueDeArqueiros(inimigoEscolhido, eventoAtual);
+                System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
+                if(resultadoDaAcao > inimigoEscolhido.getForca())
+                    System.out.println("Parabéns! O seu ataque teve sucesso e o inimigo recuou uma posição.\n"
+                            + "O inimigo " + inimigoEscolhido + " está agora na posição " + inimigoEscolhido.getLocal() + ".");
+                else
+                    System.out.println("Má sorte! O seu ataque não teve sucesso :/");
+            }
+            
+        }
+        
+        // AÇÃO: Ataque de Close Combat
+        else if(acaoEscolhida instanceof AtaqueDeCloseCombat){
+            valido = false;
+            do{
+                int cnt = 1;
+                
+                
+                for(Inimigo inimigo : acaoEscolhida.getPotenciaisAlvos()){
+                    System.out.println("[" + cnt + "] Atacar " + inimigo + " (Local: A " + inimigo.getLocal() + " Unidades de Distância)");
+                    
+                    cnt++;
+                }
+                
+                System.out.println("[" + cnt + "] Voltar Atrás");
+                
+                System.out.print("> ");
+                if(sc.hasNextInt()){
+                    resposta = sc.nextInt();
+                    sc.nextLine(); //  Para limpar o buffer do resto da linha
+                    if(resposta > 0 && resposta <= acaoEscolhida.getPotenciaisAlvos().size() + 1){
+                        valido = true;
+                    }
+                }else
+                    sc.next();
+
+                //sc.next();
+        } while(!valido);
+            
+            if(resposta == acaoEscolhida.getPotenciaisAlvos().size() + 1){ // SE A OPÇÃO ESCOLHIDA É A DE VOLTAR ATRÁS
+                 eventoAtual.setAPA(eventoAtual.getAPA() + 1); // INCREMENTAR O NR. DE APAs PARA COMPENSAR A DECREMENTAÇÃO QUE É FEITA ABAIXO, UMA VEZ QUE NÃO FOI FEITO MOVIMENTO NENHUM
+            }
+            else{
+                // DETERMINAR A FACÇÃO INIMIGA QUE FOI ESCOLHIDA
+                inimigoEscolhido = m.getListaDeInimigos().get(m.getListaDeInimigos().indexOf(acaoEscolhida.getPotenciaisAlvos().get(resposta - 1)));
+                System.out.println("O inimigo " + inimigoEscolhido + " tem nesta momento força = 4.");
+                System.out.println("Para conseguir atacar com sucesso o inimigo, deve rodar o dado e obter um resultado superior a 4.");
+                ui_PressioneNoEnterPara("tentar a sua sorte e realizar o ataque.");
+
+                // APLICAR AÇÃO
+                int resultadoDaAcao = m.acao_AtaqueDeCloseCombat(inimigoEscolhido);
+                System.out.println("O resultado do dado foi " + resultadoDaAcao + ".");
+                if(resultadoDaAcao > 4)
+                    System.out.println("Parabéns! O seu ataque teve sucesso e o inimigo recuou uma posição.\n"
+                            + "O inimigo " + inimigoEscolhido + " está agora na posição " + inimigoEscolhido.getLocal() + ".");
+                else if(resultadoDaAcao == 1)
+                    System.out.println("Má sorte! O seu ataque não teve sucesso e a moral do povo foi reduzida em 1 unidade :/");
+                else{
+                    System.out.println("Má sorte! O seu ataque não teve sucesso e o inimigo conseguiu penetrar a muralha. FUJAM TODOOS!");
+                }
+            }
+            
+        }
+        
+        
         
         if(!acaoEscolhida.isReutilizavel()) // SE A AÇÃO ATUAL NÃO FOR REUTILIZÁVEL
             eventoAtual.removerAcao(acaoEscolhida); // REMOVER A AÇÃO DO LEQUE DE AÇÕES DISPONÍVEIS

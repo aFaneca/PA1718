@@ -8,6 +8,13 @@ package Lógica;
 import Estados.AguardaInicio;
 import Estados.AguardaSelecaoDeAcao;
 import Estados.IEstados;
+import Estados.JogoTerminado;
+import Lógica.Ações.AtaqueDeAguaFervente;
+import Lógica.Ações.AtaqueDeArqueiros;
+import Lógica.Ações.MotivarTropas;
+import Lógica.Ações.Raid;
+import Lógica.Ações.RepararMuralha;
+import Lógica.Ações.Sabotagem;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
@@ -234,8 +241,19 @@ public class Mundo {
         setEstado(new AguardaSelecaoDeAcao(this));
     }
     
-    public int acao_RepararMuralha(){
-        int resultadoDoDado = rodaDado();
+    public int acao_RepararMuralha(Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof RepararMuralha){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        
+        int resultadoDoDado = rodaDado() + var;
         
         if(resultadoDoDado >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
             fortaleza.alteraMuralha(+1);
@@ -245,8 +263,18 @@ public class Mundo {
         return resultadoDoDado;
     }
     
-    public int acao_MotivarTropas(boolean usarBonus){
-        int resultadoDoDado = rodaDado();
+    public int acao_MotivarTropas(boolean usarBonus, Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof MotivarTropas){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + var;
         
         if(usarBonus){
             fortaleza.alteraSuprimentos(-1);
@@ -261,8 +289,18 @@ public class Mundo {
         return resultadoDoDado;
     }
     
-    public int acao_Raid(){
-        int resultadoDoDado = rodaDado();
+    public int acao_Raid(Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof Raid){ // SE ESSA DRM AFETA A AÇÃO "RAID"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + var;
         
         if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
             if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
@@ -274,11 +312,24 @@ public class Mundo {
             soldadosCapturados();
         }
         
+        estadoAtual = estadoAtual.proximoEstado();
+        
         return resultadoDoDado;
     }
     
-    public int acao_Sabotagem(){
-        int resultadoDoDado = rodaDado();
+    public int acao_Sabotagem(Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof Sabotagem){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        
+        int resultadoDoDado = rodaDado() + var;
         
         if(resultadoDoDado >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor()){ // DEFAULT: 5, 6 <= -1 Catapulta dos Inimigos
             fortaleza.alteraNrCatapultas(-1);
@@ -286,9 +337,108 @@ public class Mundo {
         }else if(resultadoDoDado <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor()){ // DEFAULT: 1 <= Soldados são capturados
             soldadosCapturados();
         }
+        estadoAtual = estadoAtual.proximoEstado();
+        return resultadoDoDado;
+    }
+    
+    public int acao_movimentarSoldadosNoTunel(int resposta){ // resposta == 1 => FREE | resposta == 2 => FAST
+        
+        // Se os soldados carregarem supplies, o movimento deles deve ser de volta para a fortaleza. Senão, movimento contrário
+        boolean aVoltarAoCastelo = (fortaleza.getSuprimentosFurtados() != 0) ? true : false;
+        int movimento = 0;
+        
+        if(resposta == 1){ //Movimentar 1 posição no túnel
+            if(aVoltarAoCastelo)
+                movimento = -1;
+            else
+                movimento = +1;
+        }else if(resposta == 2){
+            if(aVoltarAoCastelo)
+                movimento = -2;
+            else
+                movimento = +2;
+        }
+        
+        fortaleza.alteraPosSoldados(movimento);
+        
+        estadoAtual = estadoAtual.proximoEstado();
+        
+        return fortaleza.getPosicaoSoldados();
+    }
+    
+    public int acao_AtaqueDeArqueiros(Inimigo inimigoEscolhido, Evento eventoAtual) {
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof AtaqueDeArqueiros){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + var;
+
+        if(resultadoDoDado > inimigoEscolhido.forca){ // O ataque teve sucesso
+            //Recuar a posição do inimigo em 1 unidade
+            inimigoEscolhido.alterarLocal(+1);
+        }
+        
+        estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
+    
+    public int acao_AtaqueDeAguaFervente(Inimigo inimigoEscolhido, Evento eventoAtual) {
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + 1 + var; // +1 DRM
+        
+        if(resultadoDoDado > inimigoEscolhido.forca){ // O ataque teve sucesso
+            //Recuar a posição do inimigo em 1 unidade
+            inimigoEscolhido.alterarLocal(+1);
+        }
+        else if(resultadoDoDado == 1 && !temDRMS)
+            // REDUZIR MORAL EM -1
+            fortaleza.alteraPovo(-1);
+        
+        
+        estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    
+     public int acao_AtaqueDeCloseCombat(Inimigo inimigoEscolhido) {
+        estadoAtual = estadoAtual.proximoEstado();
+        int resultadoDoDado = rodaDado();
+        
+        if(resultadoDoDado > 4){ // O ataque teve sucesso
+            //Recuar a posição do inimigo em 1 unidade
+            inimigoEscolhido.alterarLocal(+1);
+        }else if(resultadoDoDado == 1){
+            // Reduz a moral do povo em 1 unidade
+            fortaleza.alteraPovo(-1);
+        }else{
+            // Perde o Jogo
+            setEstado(estadoAtual.fimDoJogo());
+        }
+
+        
+        
+        
+        
+        return resultadoDoDado;
+    }
+    
     
     public void evento_AtaqueDeCatapulta(){
         fortaleza.evento_AtaqueDeCatapulta();
@@ -351,6 +501,9 @@ public class Mundo {
         return fortaleza.posDaTorre();
     }
     
+    public List<Inimigo> getListaDeInimigos(){
+        return fortaleza.getListaDeInimigos();
+    }
 
     public void verInfo(){
         int nr = 1, nr1 = 1;
@@ -418,6 +571,8 @@ public class Mundo {
         
         return null;
     }
+
+    
 
 
 }

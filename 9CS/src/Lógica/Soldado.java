@@ -35,4 +35,23 @@ class Soldado {
         if(suprimentosFurtados > 2) suprimentosFurtados = 2;
         if(suprimentosFurtados < 0) suprimentosFurtados = 0;
     }
+    
+    
+    public int getLocal(){
+        
+        return local;
+    }
+    
+    
+    public int getSuprimentosFurtados(){
+        return suprimentosFurtados;
+    }
+    
+    
+    public void alteraPosicao (int var){
+        local += var;
+        
+        if(local < 0) local = 0;
+        if(local > 3) local = 3;
+    }
 }

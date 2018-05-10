@@ -35,6 +35,12 @@ public abstract class Evento {
     protected abstract boolean condicao();
 */
     protected abstract void acao();
+
+    public List<DRM> getDrms() {
+        return drms;
+    }
+    
+    
     
     
     

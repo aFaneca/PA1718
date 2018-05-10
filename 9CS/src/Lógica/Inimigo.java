@@ -29,6 +29,24 @@ public abstract class Inimigo {
         if(local > 3) local = 3;
     }
     
+    public int getForca(){
+        return forca;
+    }
+    
+    public void alterarForca(int var){
+        forca += var;
+        
+        if (forca < 0) forca = 0; //  A FORÇA NUNCA SERÁ MENOR QUE 0
+        //if (forca > 4) forca = 4;
+    }
+    
+    public void alterarLocal(int var){
+        local += var;
+        
+        if(local < 0) local = 0;
+        if(local > 3) local = 3;
+    }
+    
     @Override
     public String toString(){
         return nome;

@@ -7,6 +7,9 @@ package Lógica.Ações;
 
 import Lógica.Acao;
 import Lógica.Fortaleza;
+import Lógica.Inimigo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -18,4 +21,15 @@ public class AtaqueDeCloseCombat extends Acao{
         super("Ataque de Close Combat", fortaleza);
         setReutilizavel(true);
     }
+
+    @Override
+    public List<Inimigo> getPotenciaisAlvos(){
+        List<Integer> locais;
+        locais = new ArrayList<>();
+        locais.add(0); // TODOS OS INIMIGOS EM ESPAÇO DE CLOSE COMBAT (local = 0)
+        potenciaisAlvos = new ArrayList<>(fortaleza.getInimigos(locais));
+        
+        return potenciaisAlvos;
+    }
+
 }
