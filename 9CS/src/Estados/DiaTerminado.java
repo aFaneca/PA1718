@@ -6,12 +6,13 @@
 package Estados;
 
 import Lógica.Mundo;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class DiaTerminado extends EstadosAdapter{
+public class DiaTerminado extends EstadosAdapter implements Serializable{
     static int contagemDeDias = 1;
 
     public DiaTerminado(Mundo mundo) {

@@ -14,6 +14,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author me
  */
-public class SalvaDeFlechas extends Evento{
+public class SalvaDeFlechas extends Evento implements Serializable{
     List<Inimigo> inimigosAfetados;
     
     public SalvaDeFlechas(Carta carta, int numero, List<Inimigo> inim){

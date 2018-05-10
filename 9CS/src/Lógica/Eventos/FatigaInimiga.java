@@ -11,13 +11,14 @@ import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class FatigaInimiga extends Evento{
+public class FatigaInimiga extends Evento implements Serializable{
 
     public FatigaInimiga(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);

@@ -5,12 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
 import java.util.Random;
 /**
  *
  * @author me
  */
-class Dado {
+class Dado implements Serializable{
     Random random;
 
     public Dado(){

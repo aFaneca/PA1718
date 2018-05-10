@@ -5,6 +5,7 @@
  */
 package Lógica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author me
  */
-public abstract class Acao {
+public abstract class Acao implements Serializable{
     private String nome;
     private boolean reutilizavel; // ESTA AÇÃO PODE SER REUTILIZADA NO MESMO TURNO?
     protected Fortaleza fortaleza;

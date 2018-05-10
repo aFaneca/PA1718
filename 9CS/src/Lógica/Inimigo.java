@@ -5,11 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-public abstract class Inimigo {
+public abstract class Inimigo implements Serializable{
     protected int forca;
     protected int local; // 4 <= espaço inicial - 0 <= zona de close combat
     protected String nome;

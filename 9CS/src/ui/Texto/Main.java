@@ -9,9 +9,17 @@ import Estados.*;
 import Lógica.*;
 import Lógica.Ações.*;
 import Lógica.Eventos.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -83,7 +91,7 @@ public class Main {
             switch(n){
                 case 1: ui_clearScreen(); m.novoJogo();
                     break;
-                case 2:
+                case 2: ui_clearScreen(); continuarJogo();
                     break;
                 case 3: return;
 
@@ -126,16 +134,91 @@ public class Main {
         System.out.println("Com o chegar do fim do dia, os suprimentos armazenados na fortaleza foram reduzidos em 1 unidade.");
         m.alteraSuprimentos(-1);
         
-        // REBARALHAR CARTAS
-        ui_PressioneNoEnterPara("rebaralhar as cartas e começar um novo dia");
-        m.baralharCartas();
         
-        m.setEstado(m.getEstado().proximoEstado());
+        boolean valido = false;
+        int resposta = 0;
+        String nomeDoFicheiro;
+            do{
+                System.out.println("[1] Continuar para o novo dia\n[2] Sair e Guardar");
+                System.out.print("> ");
+                if(sc.hasNextInt()){
+                    resposta = sc.nextInt();
+                    sc.nextLine(); //  Para limpar o buffer do resto da linha
+                    if(resposta == 1 || resposta == 2){
+                        valido = true;
+                    }
+                }else
+                    sc.next();
+
+                //sc.next();
+        } while(!valido);
         
+            
+            if(resposta == 1){
+                // REBARALHAR CARTAS
+                ui_PressioneNoEnterPara("rebaralhar as cartas e começar um novo dia");
+                m.baralharCartas();
+
+                m.setEstado(m.getEstado().proximoEstado());
+            }else if(resposta == 2){
+                System.out.print("Escolha o nome para o ficheiro de backup: ");
+                nomeDoFicheiro = sc.next();
+                
+                guardarJogo(nomeDoFicheiro);
+            }
+
         if(m.getDia() == 3)
             motivoFimDoJogo = "Chegou ao fim do terceiro dia de cerco e as tropas inimigas levantam a bandeira branca. Parabéns pela vitória!";
     }
 
+    private void guardarJogo(String nomeDoFicheiro){
+    
+        
+        try {
+            ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream(nomeDoFicheiro));
+            os.writeObject(m);
+            os.close();
+        
+        } catch (FileNotFoundException ex) {
+            System.out.println("Erro a guardar ficheiro...");
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.out.println("Erro a guardar ficheiro...");
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        System.out.println("Jogo guardado no ficheiro " + nomeDoFicheiro + ". Esperamos voltar a vê-lo em breve!");
+        System.exit(0);
+    }
+    
+    private void continuarJogo(){
+        String nomeDoFicheiro;
+        System.out.print("Insira o nome do ficheiro de recuperação: ");
+        nomeDoFicheiro = sc.next();
+        boolean valido = false;
+        
+        while(!valido){
+            try {
+            ObjectInputStream is = new ObjectInputStream(new FileInputStream(nomeDoFicheiro));
+            m = (Mundo)is.readObject();
+            valido = true;
+        } catch (FileNotFoundException ex) {
+            System.out.println("Erro a abrir ficheiro de recuperação...");
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            System.out.println("Erro a abrir ficheiro de recuperação...");
+            //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+                System.out.println("Erro a recuperar dados do jogo...");
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+            // Recomeçar o jogo
+            ui_clearScreen();
+            run();     
+        }   
+    }
+    
     private void virarCarta(){
        cartaVirada = m.virarCarta();
        eventoAtual = m.eventoAtual(cartaVirada);

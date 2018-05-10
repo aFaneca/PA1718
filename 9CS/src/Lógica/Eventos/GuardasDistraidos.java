@@ -11,13 +11,14 @@ import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class GuardasDistraidos extends Evento {
+public class GuardasDistraidos extends Evento implements Serializable{
 
     public GuardasDistraidos(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);

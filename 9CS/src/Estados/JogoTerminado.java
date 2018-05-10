@@ -6,12 +6,13 @@
 package Estados;
 
 import Lógica.Mundo;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class JogoTerminado extends EstadosAdapter{
+public class JogoTerminado extends EstadosAdapter implements Serializable{
     
     public JogoTerminado(Mundo m){
         super(m);

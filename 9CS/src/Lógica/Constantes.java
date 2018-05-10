@@ -5,11 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-public enum Constantes {
+public enum Constantes implements Serializable{
     
     SOLDADOS_NO_TUNEL_SEM_SORTE(1),        // OS SOLDADOS NO TÚNEL SERÃO CAPTURADOS SE O DADO NÃO RETORNAR UM VALOR SUPERIOR AO DEFINIDO AQUI
     POSICAO_INICIAL_INIMIGOS(3),          // POSIÇÃO INICIAL DOS INIMIGOS (DEFAULT: A 3 CASAS DE DISTANCIA DA FORTALEZA

@@ -19,12 +19,13 @@ import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
 import Lógica.Eventos.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class Mundo {
+public class Mundo implements Serializable{
     private Dado dado;
     private Fortaleza fortaleza;
     private List<Carta> cartas;

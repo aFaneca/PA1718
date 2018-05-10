@@ -5,11 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-class Muralha {
+class Muralha implements Serializable{
     private int forca;
     private Fortaleza fortaleza;
     

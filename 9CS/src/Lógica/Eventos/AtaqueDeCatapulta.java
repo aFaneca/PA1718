@@ -10,13 +10,14 @@ import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class AtaqueDeCatapulta extends Evento{
+public class AtaqueDeCatapulta extends Evento implements Serializable{
      
 //    public AtaqueDeCatapulta(Carta carta, int numero){
 //        super(carta, numero);

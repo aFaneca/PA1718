@@ -8,6 +8,7 @@ package Lógica.Ações;
 import Lógica.Acao;
 import Lógica.Fortaleza;
 import Lógica.Inimigo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author me
  */
-public class AtaqueDeAguaFervente extends Acao{
+public class AtaqueDeAguaFervente extends Acao implements Serializable{
     
     public AtaqueDeAguaFervente(Fortaleza fortaleza){
         super("Ataque de Àgua Fervente", fortaleza);

@@ -12,13 +12,14 @@ import Lógica.Evento;
 import Lógica.Fortaleza;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class CatapultaReparada extends Evento {
+public class CatapultaReparada extends Evento implements Serializable{
 
     public CatapultaReparada(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);

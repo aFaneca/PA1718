@@ -8,6 +8,7 @@ package Lógica.Ações;
 import Lógica.Acao;
 import Lógica.Fortaleza;
 import Lógica.Inimigo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author me
  */
-public class AtaqueDeArqueiros extends Acao{
+public class AtaqueDeArqueiros extends Acao implements Serializable{
     private Inimigo inimigoEscolhido;
     
     

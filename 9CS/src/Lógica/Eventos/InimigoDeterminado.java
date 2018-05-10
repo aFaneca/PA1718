@@ -12,6 +12,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @author me
  */
-public class InimigoDeterminado extends Evento{
+public class InimigoDeterminado extends Evento implements Serializable{
     List<Inimigo> inimigosAfetados;
     
     public InimigoDeterminado(Carta carta, int numero, List<Inimigo> inim){

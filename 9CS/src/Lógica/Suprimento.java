@@ -5,11 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-class Suprimento {
+class Suprimento implements Serializable{
     private int nivel;
     private Fortaleza fortaleza;
     

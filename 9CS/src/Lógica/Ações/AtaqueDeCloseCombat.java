@@ -8,6 +8,7 @@ package Lógica.Ações;
 import Lógica.Acao;
 import Lógica.Fortaleza;
 import Lógica.Inimigo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  *
  * @author me
  */
-public class AtaqueDeCloseCombat extends Acao{
+public class AtaqueDeCloseCombat extends Acao implements Serializable{
     
     public AtaqueDeCloseCombat(Fortaleza fortaleza){
         super("Ataque de Close Combat", fortaleza);

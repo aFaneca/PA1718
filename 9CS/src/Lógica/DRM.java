@@ -5,6 +5,7 @@
  */
 package Lógica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author me
  */
-public class DRM { 
+public class DRM implements Serializable{ 
     // DICE RESULT MOFICATION
     protected Evento evento;
     protected int var; // variação no resultado

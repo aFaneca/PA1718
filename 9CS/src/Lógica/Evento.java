@@ -9,12 +9,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import Lógica.DRM;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public abstract class Evento {
+public abstract class Evento implements Serializable{
     protected String nome;
     protected int APA; // Action Poins Allowance
     //protected static Mundo mundo;

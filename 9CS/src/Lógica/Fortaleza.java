@@ -9,11 +9,12 @@ import Lógica.Ações.*;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Fortaleza {
+public class Fortaleza implements Serializable{
     private Mundo mundo;
     private Muralha muralha;
     private Povo povo;

@@ -6,9 +6,10 @@
 package Estados;
 
 import Lógica.Mundo;
+import java.io.Serializable;
 
 
-public class EstadosAdapter implements IEstados{
+public class EstadosAdapter implements IEstados, Serializable{
     protected Mundo mundo;
     
     public EstadosAdapter(Mundo mundo){

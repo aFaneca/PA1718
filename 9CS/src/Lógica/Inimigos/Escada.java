@@ -6,12 +6,13 @@
 package Lógica.Inimigos;
 
 import Lógica.Inimigo;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class Escada extends Inimigo{
+public class Escada extends Inimigo implements Serializable{
     
     
     public Escada(){

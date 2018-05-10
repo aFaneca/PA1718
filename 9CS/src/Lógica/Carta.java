@@ -5,6 +5,7 @@
  */
 package Lógica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author me
  */
-public class Carta {
+public class Carta implements Serializable{
     protected List<Evento> eventos;
     protected Mundo mundo;
     protected int nr;

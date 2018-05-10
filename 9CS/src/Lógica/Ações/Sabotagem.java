@@ -7,12 +7,13 @@ package Lógica.Ações;
 
 import Lógica.Acao;
 import Lógica.Fortaleza;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class Sabotagem extends Acao{
+public class Sabotagem extends Acao implements Serializable{
     
     public Sabotagem(Fortaleza fortaleza){
         super("Sabotagem", fortaleza);

@@ -14,6 +14,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Inimigos.Ariete;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author me
  */
-public class Reuniao extends Evento {
+public class Reuniao extends Evento implements Serializable{
     private List<Inimigo> inimigosAfetados;
     private List<Integer> locais;
     

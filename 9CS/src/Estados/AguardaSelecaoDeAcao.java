@@ -6,12 +6,13 @@
 package Estados;
 
 import Lógica.Mundo;
+import java.io.Serializable;
 
 /**
  *
  * @author me
- */
-public class AguardaSelecaoDeAcao extends EstadosAdapter{
+ */ 
+public class AguardaSelecaoDeAcao extends EstadosAdapter implements Serializable{
     
     public AguardaSelecaoDeAcao(Mundo m){
         super(m);

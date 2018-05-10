@@ -5,11 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-class Soldado {
+class Soldado implements Serializable{
     private int local; // 0 => no castelo | 1 => entrada do túnel | 2 => saida do túnel | 3 => linhas inimigas
     private boolean capturado;
     private Fortaleza fortaleza;

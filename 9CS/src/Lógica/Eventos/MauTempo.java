@@ -11,6 +11,7 @@ import Lógica.Carta;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  *
  * @author me
  */
-public class MauTempo extends Evento{
+public class MauTempo extends Evento implements Serializable{
 
     public MauTempo(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
