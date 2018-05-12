@@ -25,11 +25,10 @@ public class CoberturaDaEscuridao extends Evento implements Serializable{
         nome = "Cobertura da Escuridão";
         drms.add(new DRM(this, new Raid(carta.getFortaleza()), 1)); // +1 para Raid
         drms.add(new DRM(this, new Sabotagem(carta.getFortaleza()), 1)); // +1 para Sabotagem
+        drms.get(0).setAfetaInimigos(false);
+        drms.get(1).setAfetaInimigos(false);
+        
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+
 }

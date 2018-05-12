@@ -19,7 +19,8 @@ public class DRM implements Serializable{
     protected int var; // variação no resultado
     protected Acao acao; // ação afetada pela variação
     protected List<Inimigo> inimigosAfetados; 
-    protected boolean afetaAcoesDeAtaque = false; // SE ESTA DRM AFETA AÇÕES DE ATAQUE OU NÃO
+    protected boolean afetaInimigos;
+
 
     
     public DRM(Evento e, Acao acao, int var){ // CONSTRUTOR PADRÃO
@@ -27,6 +28,7 @@ public class DRM implements Serializable{
         this.var = var;
         this.acao = acao;
         inimigosAfetados = new ArrayList<>(evento.getInimigos());
+        afetaInimigos = true;
     }
     
     public DRM(Evento e, Acao acao, int var, List<Inimigo> inimigos){ // CONSTRUTOR PARA QUANDO O DRM SÓ AFETAR INIMIGOS ESPECÍFICOS
@@ -34,6 +36,7 @@ public class DRM implements Serializable{
         this.var = var;
         this.acao = acao;
         inimigosAfetados = new ArrayList<>(inimigos);
+        afetaInimigos = true;
     }
     
 //    public DRM(Acao acao, int var, ArrayList<Integer> locais){
@@ -50,7 +53,9 @@ public class DRM implements Serializable{
     }
     
     
-
+    public void setAfetaInimigos(boolean simOuNao){
+        afetaInimigos = simOuNao;
+    }
     
     public boolean isValida(){
         if(inimigosAfetados.isEmpty())
@@ -67,7 +72,7 @@ public class DRM implements Serializable{
         char sinal = (var > 0) ? '+' : ' '; // EXPRESSÃO TERNÁRIA
         
         str = "" + sinal + var + " para ação de " + acao;
-
+        if(afetaInimigos){
             str += " sobre unidades do tipo " + inimigosAfetados.get(0);
             if(inimigosAfetados.size() > 1){
                 for(int i = 1; i < inimigosAfetados.size() - 1; i++){
@@ -75,6 +80,8 @@ public class DRM implements Serializable{
                 }
                 str += " e " + inimigosAfetados.get(inimigosAfetados.size() - 1);
             }
+        }
+            
 
         //return "+" + var + " para ação de " + acao;
         return str;

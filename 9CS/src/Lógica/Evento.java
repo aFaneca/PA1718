@@ -35,7 +35,7 @@ public abstract class Evento implements Serializable{
     /*
     protected abstract boolean condicao();
 */
-    protected abstract void acao();
+    
 
     public List<DRM> getDrms() {
         return drms;

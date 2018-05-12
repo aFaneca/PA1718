@@ -23,9 +23,4 @@ public class SuprimentosEstragados extends Evento implements Serializable{
         nome = "Suprimentos Estragados";
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

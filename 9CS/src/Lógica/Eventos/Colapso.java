@@ -23,9 +23,5 @@ public class Colapso extends Evento implements Serializable{
         nome = "Colapso";
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }

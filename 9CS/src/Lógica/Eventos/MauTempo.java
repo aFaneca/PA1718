@@ -34,9 +34,4 @@ public class MauTempo extends Evento implements Serializable{
         acoesPermitidas.add(carta.getAcaoDaLista(carta.getSabotagem()));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

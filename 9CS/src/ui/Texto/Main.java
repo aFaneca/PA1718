@@ -224,19 +224,19 @@ public class Main {
        eventoAtual = m.eventoAtual(cartaVirada);
        
        // ANTES DE TUDO, VERIFICA SE EXISTEM SOLDADOS NO TUNEL
-       if(m.soldadosNoTunel()){
-           System.out.println("Temos soldados corajosos a atravessar os túneis.");
+       if(m.soldadosEmLinhasInimigas()){
+           System.out.println("Temos soldados corajosos em linhas inimigas.");
            ui_PressioneNoEnterPara("rodar o dado e determinar o seu destino.");
            
            int resultado = m.sorteDosSoldados();
-           if(resultado > Constantes.SOLDADOS_NO_TUNEL_SEM_SORTE.getValor()){
-               System.out.println("A sorte está do seu lado! O resultado do dado foi " + resultado + " e os soldados continuam indetetados no Túnel.");
+           if(resultado > Constantes.SOLDADOS_EM_LINHAS_INIMIGAS_SEM_SORTE.getValor()){
+               System.out.println("A sorte está do seu lado! O resultado do dado foi " + resultado + " e os soldados continuam indetetados em linhas inimigas.");
            }else{
                System.out.println("A sorte não está do seu lado! O resultado do dado foi " + resultado + " e os soldados foram capturados pelos inimigos");
                m.soldadosCapturados();
            }
        }else
-           System.out.println("Não tem soldados no túnel. Todos estão em segurança dentro do Castelo.");
+           System.out.println("Não tem soldados em linhas inimigas. Todos estão em segurança dentro do Castelo.");
        
        
        ui_PressioneNoEnterPara("virar uma carta.");

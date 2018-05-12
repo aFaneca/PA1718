@@ -35,9 +35,5 @@ public class InimigoDeterminado extends Evento implements Serializable{
         drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }

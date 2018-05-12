@@ -32,18 +32,4 @@ public class AtaqueDeCatapulta extends Evento implements Serializable{
     }
 
 
-    protected void acao() { 
-        //System.out.println(mundo.getFortaleza());
-        
-//        if(mundo.contaCatapultas() == 3)
-//            mundo.alteraMuralha(-2);
-//        else if(mundo.contaCatapultas() == 2)
-//            mundo.alteraMuralha(-1);
-//        else if(mundo.contaCatapultas() == 1){
-//            if(mundo.rodaDado() > 3)
-//                mundo.alteraMuralha(-1);
-//        }
-            
-       //System.out.println(mundo.getFortaleza()); 
-    }
 }
