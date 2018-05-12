@@ -9,22 +9,19 @@ import Lógica.Carta;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class Colapso extends Evento{
+public class Colapso extends Evento implements Serializable{
 
     public Colapso(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Colapso";
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }

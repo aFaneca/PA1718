@@ -13,6 +13,7 @@ import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,7 @@ import java.util.List;
  *
  * @author me
  */
-public class OleoQuente extends Evento {
+public class OleoQuente extends Evento implements Serializable{
     private List<Integer> locais;
     private List<Inimigo> inimigosAfetados;
     
@@ -38,9 +39,5 @@ public class OleoQuente extends Evento {
         drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), 2, inimigosAfetados));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }

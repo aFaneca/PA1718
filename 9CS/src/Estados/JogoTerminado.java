@@ -5,12 +5,17 @@
  */
 package Estados;
 
+import Lógica.Mundo;
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-public interface IEstados {
-    IEstados proximoEstado();
-    IEstados fimDoJogo();
-    IEstados fimDoDia();
+public class JogoTerminado extends EstadosAdapter implements Serializable{
+    
+    public JogoTerminado(Mundo m){
+        super(m);
+    }
+    
 }

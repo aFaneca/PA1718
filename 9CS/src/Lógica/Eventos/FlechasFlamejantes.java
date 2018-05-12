@@ -15,6 +15,7 @@ import Lógica.Inimigo;
 import Lógica.Inimigos.Ariete;
 import Lógica.Inimigos.Torre;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +23,7 @@ import java.util.List;
  *
  * @author me
  */
-public class FlechasFlamejantes extends Evento {
+public class FlechasFlamejantes extends Evento implements Serializable{
     protected List<Inimigo> inimigosAfetados;
     
     public FlechasFlamejantes(Carta carta, int numero, List<Inimigo> inim){
@@ -37,9 +38,5 @@ public class FlechasFlamejantes extends Evento {
         drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }

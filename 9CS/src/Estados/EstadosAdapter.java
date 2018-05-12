@@ -6,10 +6,11 @@
 package Estados;
 
 import Lógica.Mundo;
+import java.io.Serializable;
 
 
-public class EstadosAdapter implements IEstados{
-    private Mundo mundo;
+public class EstadosAdapter implements IEstados, Serializable{
+    protected Mundo mundo;
     
     public EstadosAdapter(Mundo mundo){
         this.mundo = mundo;
@@ -28,6 +29,9 @@ public class EstadosAdapter implements IEstados{
 
     @Override
     public IEstados fimDoDia() {return this;}
+    
+    @Override
+    public IEstados fimDoJogo() {return this;}
 
    
 }

@@ -6,12 +6,13 @@
 package Lógica.Inimigos;
 
 import Lógica.Inimigo;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class Ariete extends Inimigo{
+public class Ariete extends Inimigo implements Serializable{
     
     
     public Ariete(){

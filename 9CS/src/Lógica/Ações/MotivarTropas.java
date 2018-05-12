@@ -7,12 +7,13 @@ package Lógica.Ações;
 
 import Lógica.Acao;
 import Lógica.Fortaleza;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class MotivarTropas extends Acao{
+public class MotivarTropas extends Acao implements Serializable{
     
     public MotivarTropas(Fortaleza fortaleza){
         super("Motivar as Tropas", fortaleza);

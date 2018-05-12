@@ -5,6 +5,7 @@
  */
 package Lógica;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  *
  * @author me
  */
-public class Carta {
+public class Carta implements Serializable{
     protected List<Evento> eventos;
     protected Mundo mundo;
     protected int nr;
@@ -75,5 +76,21 @@ public class Carta {
 
     public List<Inimigo> getTodosOsInimigos() {
         return fortaleza.getTodosOsInimigos();
+    }
+    
+    public Acao getAcaoDaLista (Acao acao){
+        return fortaleza.getAcoes().get(fortaleza.getAcoes().indexOf(acao));
+    }
+    
+    public List<Acao> getAcoes(){
+        return fortaleza.getAcoes();
+    }
+
+    public Acao getRaid() {
+        return fortaleza.getRaid();
+    }
+    
+    public Acao getSabotagem() {
+        return fortaleza.getSabotagem();
     }
 }

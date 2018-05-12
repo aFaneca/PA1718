@@ -9,22 +9,20 @@ import Lógica.Carta;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class MorteDeUmLider extends Evento{
+public class MorteDeUmLider extends Evento implements Serializable{
 
     public MorteDeUmLider(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Morte de um Líder";
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+
     
 }

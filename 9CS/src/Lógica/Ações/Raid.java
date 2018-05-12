@@ -7,12 +7,13 @@ package Lógica.Ações;
 
 import Lógica.Acao;
 import Lógica.Fortaleza;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class Raid extends Acao{
+public class Raid extends Acao implements Serializable{
     
     public Raid(Fortaleza fortaleza){
         super("Raid", fortaleza);

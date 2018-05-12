@@ -7,12 +7,13 @@ package Lógica.Ações;
 
 import Lógica.Acao;
 import Lógica.Fortaleza;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public class MovimentarSoldadosNoTunel extends Acao{
+public class MovimentarSoldadosNoTunel extends Acao implements Serializable{
     
     public MovimentarSoldadosNoTunel(Fortaleza fortaleza){
         super("Movimentar Soldados no Túnel", fortaleza);

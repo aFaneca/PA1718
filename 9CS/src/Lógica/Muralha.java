@@ -5,11 +5,13 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+
 /**
  *
  * @author me
  */
-class Muralha {
+class Muralha implements Serializable{
     private int forca;
     private Fortaleza fortaleza;
     
@@ -23,7 +25,6 @@ class Muralha {
         forca += quant;
         if(forca > 4) forca = 4;
         if(forca < 0) forca = 0;
-            
     }
 
     public int getForca() {

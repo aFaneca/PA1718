@@ -11,23 +11,25 @@ import java.io.Serializable;
 /**
  *
  * @author me
- */
-public class AguardaCarta extends EstadosAdapter implements Serializable{
-
-    public AguardaCarta(Mundo m){
+ */ 
+public class AguardaSelecaoDeAcao extends EstadosAdapter implements Serializable{
+    
+    public AguardaSelecaoDeAcao(Mundo m){
         super(m);
-    }
-    
-
-    
-    public IEstados fimDoJogo(){
-        return new JogoTerminado(this.getMundo());
+        
     }
     
     @Override
+    public IEstados fimDoJogo(){
+        return new JogoTerminado(this.getMundo());
+    }
+
     public IEstados proximoEstado(){
         
-        
-        return new AguardaSelecaoDeAcao(this.getMundo());
+        if(mundo.getCartasViradas() % mundo.getCartas().size() == 0) // SE JÁ FORAM VIRADAS AS 7 CARTAS
+            return new DiaTerminado(this.getMundo());
+        else
+            return new AguardaCarta(mundo);
     }
+    
 }

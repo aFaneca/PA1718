@@ -12,6 +12,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @author me
  */
-public class Fe extends Evento{
+public class Fe extends Evento implements Serializable{
 
     protected List<Inimigo> inimigosAfetados;
     
@@ -39,9 +40,5 @@ public class Fe extends Evento{
         drms.add(new DRM(this, new MotivarTropas(carta.getFortaleza()), 1));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
     
 }

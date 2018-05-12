@@ -9,43 +9,54 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import Lógica.DRM;
+import java.io.Serializable;
 
 /**
  *
  * @author me
  */
-public abstract class Evento {
+public abstract class Evento implements Serializable{
     protected String nome;
     protected int APA; // Action Poins Allowance
     //protected static Mundo mundo;
     protected Carta carta;
     protected List<Inimigo> inimigos;
     protected List<DRM> drms; // Dice Result Modifications
-    
-    
-//    public Evento(Carta c, int var){
-//        APA = var;
-//        this.carta = c;
-//        this.inimigos = new ArrayList<>();
-//        this.drms = new ArrayList<>();
-//    }
-//    
-//    public Evento(Carta c, int var, List<Inimigo> inim){
-//        this(c, var);
-//        this.inimigos = new ArrayList<>(inim);
-//    }
+    protected List<Acao> acoesPermitidas; // LISTA DE AÇOES PERMITIDAS; POR DEFAULT, TODAS SÃO PERMITIDAS
    
     public Evento(Carta c, int var, List<Inimigo> inim){
         APA = var;
         this.carta = c;
         this.inimigos = new ArrayList<>(inim);
         this.drms = new ArrayList<>();
+        this.acoesPermitidas = new ArrayList<>(carta.getAcoes());
     }
     
     /*
     protected abstract boolean condicao();
 */
-    protected abstract void acao();
+    
+
+    public List<DRM> getDrms() {
+        return drms;
+    }
+    
+    
+    
+    
+    
+    public boolean temRestricoesDeAcoes(){
+        if(acoesPermitidas.isEmpty())
+            return false;
+        return true;
+    }
+    public List<Acao> getAcoesPermitidas(){
+        return acoesPermitidas;
+    }
+    
+    public void removerAcao(Acao acao){
+        acoesPermitidas.remove(acao);
+    }
     
     
     
@@ -92,5 +103,9 @@ public abstract class Evento {
 
     public List<Inimigo> getInimigos() {
         return carta.getTodosOsInimigos();
+    }
+    
+    public List<Inimigo> getInimigosDoEvento() {
+        return inimigos;
     }
 }

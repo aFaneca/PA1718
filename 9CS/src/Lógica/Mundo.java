@@ -6,18 +6,26 @@
 package Lógica;
 
 import Estados.AguardaInicio;
+import Estados.AguardaSelecaoDeAcao;
 import Estados.IEstados;
-import Lógica.Inimigos.UnidadesLentas;
+import Estados.JogoTerminado;
+import Lógica.Ações.AtaqueDeAguaFervente;
+import Lógica.Ações.AtaqueDeArqueiros;
+import Lógica.Ações.MotivarTropas;
+import Lógica.Ações.Raid;
+import Lógica.Ações.RepararMuralha;
+import Lógica.Ações.Sabotagem;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
 import Lógica.Eventos.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 
-public class Mundo {
+public class Mundo implements Serializable{
     private Dado dado;
     private Fortaleza fortaleza;
     private List<Carta> cartas;
@@ -36,7 +44,7 @@ public class Mundo {
         eventos = new ArrayList<>();
         gerarCartas();
         cartasViradas = 0;
-        dia = 3;
+        dia = 1;
     
     }
     
@@ -64,7 +72,7 @@ public class Mundo {
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
         inimigos.get(0).add(fortaleza.getTorre());
-        inimigos.get(1).add(fortaleza.getUnidadesLentas());
+        inimigos.get(1).addAll(fortaleza.getUnidadesLentas());
         cartas.add(new Carta(this, 2));
         eventos.clear();
         eventos.add(new Doenca(cartas.get(1), 2, inimigos.get(0)));
@@ -134,7 +142,7 @@ public class Mundo {
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
         inimigos.add(new ArrayList<>());
-        inimigos.get(0).add(fortaleza.getUnidadesLentas());
+        inimigos.get(0).addAll(fortaleza.getUnidadesLentas());
         inimigos.get(1).add(fortaleza.getEscada());
         inimigos.get(2).add(fortaleza.getAriete());
         inimigos.get(2).add(fortaleza.getTorre());
@@ -180,11 +188,11 @@ public class Mundo {
     }
     
     public Carta virarCarta(){
-       if(cartasViradas > 6){
+       if(cartasViradas > 6)
            cartasViradas = 0;
-          // setEstado(estadoAtual.fimDoDia());
-          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
-       }
+//          // setEstado(estadoAtual.fimDoDia());
+//          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
+//       }
        
         return cartas.get(cartasViradas++);
     }
@@ -193,10 +201,6 @@ public class Mundo {
     public Evento eventoAtual(Carta carta){
         return carta.getEventoAtual();
     }
-    
-//    public void aplicarEvento(Evento evento){
-//        evento.acao();
-//    }
     
     public int rodaDado(){
         return dado.rodaDado();
@@ -209,12 +213,23 @@ public class Mundo {
     public void alteraMuralha(int quant){
         fortaleza.alteraMuralha(quant);
     }
+    
+    public void alteraSuprimentos(int quant){
+        fortaleza.alteraSuprimentos(quant);
+    }
 
     public boolean soldadosNoTunel(){
 
         return fortaleza.soldadosNoTunel();
     }
     
+    public boolean soldadosEmLinhasInimigas(){
+        return fortaleza.soldadosEmLinhasInimigas();
+    }
+    
+    public void alteraPosSoldados(int var){
+        fortaleza.alteraPosSoldados(var);
+    }
     public int sorteDosSoldados(){
         return dado.rodaDado();
     }
@@ -227,9 +242,218 @@ public class Mundo {
         return evento.temDRM();
     }
     
+    public void avancaInimigos(Evento evento){
+        List<Inimigo> inimigosParaAvancar = new ArrayList<>();
+        
+        for(Inimigo i : evento.getInimigosDoEvento()){
+            i.setLocal(i.getLocal() - 1);
+        }
+        
+        // O ESTADO SEGUINTE É AguardaSelecaoDeAcao
+        setEstado(new AguardaSelecaoDeAcao(this));
+    }
     
-    public void evento_AtaqueDeCatapulta(){
-        fortaleza.evento_AtaqueDeCatapulta();
+    public int acao_RepararMuralha(Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof RepararMuralha){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        
+        int resultadoDoDado = rodaDado() + var;
+        
+        if(resultadoDoDado >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
+            fortaleza.alteraMuralha(+1);
+        
+        //estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    public int acao_MotivarTropas(boolean usarBonus, Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof MotivarTropas){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + var;
+        
+        if(usarBonus){
+            fortaleza.alteraSuprimentos(-1);
+            resultadoDoDado++; // +1 para o resultado do dado
+        }
+        
+        if(resultadoDoDado >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor())
+            fortaleza.alteraPovo(+1);
+        
+        //estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    public int acao_Raid(Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof Raid){ // SE ESSA DRM AFETA A AÇÃO "RAID"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + var;
+        
+        if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
+            if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
+                fortaleza.alteraSuprimentosFurtados(+2); 
+            }else{  // DEFAULT: 3,4,5 <= RAID COM SUCESSO DE 1 SUPRIMENTO
+                fortaleza.alteraSuprimentosFurtados(+1);
+            }
+        }else{ // DEFAULT: 1 <= SOLDADOS CAPTURADOS
+            soldadosCapturados();
+        }
+        
+        //estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    public int acao_Sabotagem(Evento eventoAtual){
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof Sabotagem){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        
+        int resultadoDoDado = rodaDado() + var;
+        
+        if(resultadoDoDado >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor()){ // DEFAULT: 5, 6 <= -1 Catapulta dos Inimigos
+            fortaleza.alteraNrCatapultas(-1);
+            
+        }else if(resultadoDoDado <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor()){ // DEFAULT: 1 <= Soldados são capturados
+            soldadosCapturados();
+        }
+        //estadoAtual = estadoAtual.proximoEstado();
+        return resultadoDoDado;
+    }
+    
+    public int acao_movimentarSoldadosNoTunel(int resposta){ // resposta == 1 => FREE | resposta == 2 => FAST
+        
+        // Se os soldados carregarem supplies, o movimento deles deve ser de volta para a fortaleza. Senão, movimento contrário
+        boolean aVoltarAoCastelo = (fortaleza.getSuprimentosFurtados() != 0) ? true : false;
+        int movimento = 0;
+        
+        if(resposta == 1){ //Movimentar 1 posição no túnel
+            if(aVoltarAoCastelo)
+                movimento = -1;
+            else
+                movimento = +1;
+        }else if(resposta == 2){
+            if(aVoltarAoCastelo)
+                movimento = -2;
+            else
+                movimento = +2;
+        }
+        
+        fortaleza.alteraPosSoldados(movimento);
+        
+        //estadoAtual = estadoAtual.proximoEstado();
+        
+        return fortaleza.getPosicaoSoldados();
+    }
+    
+    public int acao_AtaqueDeArqueiros(Inimigo inimigoEscolhido, Evento eventoAtual) {
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof AtaqueDeArqueiros){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + var;
+
+        if(resultadoDoDado > inimigoEscolhido.forca){ // O ataque teve sucesso
+            //Recuar a posição do inimigo em 1 unidade
+            inimigoEscolhido.alterarLocal(+1);
+        }
+        
+        //estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    public int acao_AtaqueDeAguaFervente(Inimigo inimigoEscolhido, Evento eventoAtual) {
+        boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+        int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+        
+        for(DRM drm : eventoAtual.drms){
+            if(drm.acao instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                temDRMS = true;
+                var += drm.var;
+            }
+        }
+        
+        int resultadoDoDado = rodaDado() + 1 + var; // +1 DRM
+        
+        if(resultadoDoDado > inimigoEscolhido.forca){ // O ataque teve sucesso
+            //Recuar a posição do inimigo em 1 unidade
+            inimigoEscolhido.alterarLocal(+1);
+        }
+        else if(resultadoDoDado == 1 && !temDRMS)
+            // REDUZIR MORAL EM -1
+            fortaleza.alteraPovo(-1);
+        
+        
+        //estadoAtual = estadoAtual.proximoEstado();
+        
+        return resultadoDoDado;
+    }
+    
+    
+     public int acao_AtaqueDeCloseCombat(Inimigo inimigoEscolhido) {
+        //estadoAtual = estadoAtual.proximoEstado();
+        int resultadoDoDado = rodaDado();
+        
+        if(resultadoDoDado > 4){ // O ataque teve sucesso
+            //Recuar a posição do inimigo em 1 unidade
+            inimigoEscolhido.alterarLocal(+1);
+        }else if(resultadoDoDado == 1){
+            // Reduz a moral do povo em 1 unidade
+            fortaleza.alteraPovo(-1);
+        }else{
+            // Perde o Jogo
+            setEstado(estadoAtual.fimDoJogo());
+        }
+
+        
+        
+        
+        
+        return resultadoDoDado;
+    }
+    
+    public int evento_AtaqueDeCatapulta(){
+        int danosMuralha = fortaleza.evento_AtaqueDeCatapulta();
+        return danosMuralha;
     }
     
     public void evento_Doenca(){
@@ -252,6 +476,19 @@ public class Mundo {
     public void removerTorre(){
         fortaleza.removerTorre();
     }
+    
+    public int getForcaMuralha(){
+        return fortaleza.getForcMuralha();
+    }
+    
+    public int getMoral(){
+        return fortaleza.getMoral();
+    }
+    
+    public int getSuprimentos(){
+        return fortaleza.getSuprimentos();
+    }
+    
     public List<DRM> getDRMS(Evento evento){
         return evento.drms;
     }
@@ -280,11 +517,20 @@ public class Mundo {
         return fortaleza;
     }
     
+    public int getCartasViradas(){
+        return cartasViradas;
+    }
+    
     public int getPosTorre(){ // OBTÉM A POSIÇÃO DA TORRE DE CERCO
         return fortaleza.posDaTorre();
     }
     
+    public List<Inimigo> getListaDeInimigos(){
+        return fortaleza.getListaDeInimigos();
+    }
 
+    
+    
     public void verInfo(){
         int nr = 1, nr1 = 1;
         
@@ -294,6 +540,9 @@ public class Mundo {
             for(Evento evento : carta.eventos){
                 System.out.println("\t\tNOME DO EVENTO: " + evento);
                 System.out.println("\t\tAPA: " + evento.APA);
+                System.out.println("\t\tTem Restrições de Ações: " + evento.temRestricoesDeAcoes());
+                if(evento.temRestricoesDeAcoes())
+                    System.out.println("\t\tAções Permitidas: " + evento.acoesPermitidas);
                 System.out.println("\t\tNr. de Inimigos: " + evento.inimigos.size());
                 for(Inimigo inimigo : evento.inimigos){
                     System.out.println("\t\t\tINIMIGO #" + nr1++ + " - " + inimigo);
@@ -304,6 +553,49 @@ public class Mundo {
             System.out.println("\n==========================================\n");
         }
         
+    }
+
+    public String verificaCondicoesFatais() {
+        /* CONDIÇÕES PARA FIM DO JOGO NO FINAL DO TURNO
+            - 2 facções estiverem na zona de close combat
+            - 1 das Forças (muralha, moral ou supplies) estiver a 0
+        */
+        boolean faccoesFatais = fortaleza.faccoesFatais(2); // 2 facções estão na zona de close combat?
+        boolean forcasFatais = fortaleza.forcasFatais(1); // 1 das forças está a 0?
+        
+        if(faccoesFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "2 ou mais facções entraram na zona de Close Combat";
+        }
+            
+        else if(forcasFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "1 das forças da fortaleza chegou a zero.";
+        }
+         
+        return null;
+    }
+
+    public String verificaCondicoesFataisImediatas(){
+        /* CONDIÇÕES PARA FIM IMEDIATO DO JOGO
+            - Uma 3a facção avançar para zona de close combat
+            - Uma 2a força fica a 0
+        */
+        boolean faccoesFatais = fortaleza.faccoesFatais(2); // 2 facções estão na zona de close combat?
+        boolean forcasFatais = fortaleza.forcasFatais(1); // 1 das forças está a 0?
+        
+        if(faccoesFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "3 ou mais facções entraram na zona de Close Combat, pelo que o jogador perdeu automaticamente o jogo.";
+        }
+            
+        else if(forcasFatais){
+            setEstado(estadoAtual.fimDoJogo());
+            return "2 das forças da fortaleza chegou a zero, pelo que o jogador perdeu automaticamente o jogo.";
+        }
+        
+        
+        return null;
     }
 
     

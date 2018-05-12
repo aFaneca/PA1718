@@ -12,17 +12,21 @@ import java.io.Serializable;
  *
  * @author me
  */
-public class AguardaInicio extends EstadosAdapter implements Serializable{
-    
-    public AguardaInicio(Mundo m){
-        super(m);
-    }
+public class DiaTerminado extends EstadosAdapter implements Serializable{
+    static int contagemDeDias = 1;
 
-@Override
+    public DiaTerminado(Mundo mundo) {
+        super(mundo);
+    }
+    
+    @Override
     public IEstados proximoEstado(){
-        //this.getMundo().
+        if(contagemDeDias++ == 3)
+            return new JogoTerminado(this.getMundo());
+        Mundo m  = super.getMundo();
+        
+        m.setDia(m.getDia() + 1);
         
         return new AguardaCarta(this.getMundo());
     }
-    
 }

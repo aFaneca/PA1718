@@ -11,13 +11,14 @@ import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class FatigaInimiga extends Evento{
+public class FatigaInimiga extends Evento implements Serializable{
 
     public FatigaInimiga(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
@@ -27,9 +28,5 @@ public class FatigaInimiga extends Evento{
         drms.add(new DRM(this, new Sabotagem(carta.getFortaleza()), +1));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+
 }

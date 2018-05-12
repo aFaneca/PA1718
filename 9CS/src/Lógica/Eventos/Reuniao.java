@@ -14,6 +14,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Inimigos.Ariete;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import java.util.List;
  *
  * @author me
  */
-public class Reuniao extends Evento {
+public class Reuniao extends Evento implements Serializable{
     private List<Inimigo> inimigosAfetados;
     private List<Integer> locais;
     
@@ -39,9 +40,4 @@ public class Reuniao extends Evento {
         drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), 1, inimigosAfetados));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

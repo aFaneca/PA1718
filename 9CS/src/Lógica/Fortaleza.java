@@ -9,12 +9,12 @@ import Lógica.Ações.*;
 import Lógica.Inimigos.Escada;
 import Lógica.Inimigos.Torre;
 import Lógica.Inimigos.Ariete;
-import Lógica.Inimigos.UnidadesLentas;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class Fortaleza {
+public class Fortaleza implements Serializable{
     private Mundo mundo;
     private Muralha muralha;
     private Povo povo;
@@ -23,8 +23,8 @@ public class Fortaleza {
     private Torre torre;      // INIMIGO
     private Escada escada;   // INIMIGO
     private Ariete ariete;  // INIMIGO
-    private UnidadesLentas unidadesLentas; // INIMIGO
-    private List<Acao> acoes;
+    private List<Inimigo> unidadesLentas;
+    private List<Acao> acoes; // Lista de todas as ações existentes no jogo
     private AtaqueDeAguaFervente ataqueDeAguaFervente; // AÇÃO
     private AtaqueDeArqueiros ataqueDeArqueiros; // AÇÃO
     private AtaqueDeCloseCombat ataqueDeCloseCombat; // AÇÃO
@@ -70,6 +70,11 @@ public class Fortaleza {
     }
 
     
+    public int getPosicaoSoldados(){
+        return soldados.getLocal();
+    }
+    
+    
     public void alteraNrCatapultas(int var){
         nrCatapultas += var;
         
@@ -81,10 +86,29 @@ public class Fortaleza {
         muralha.alteraForca(alteracao);
     }
     
+    public void alteraSuprimentos(int alteracao){
+        suprimento.alterarNivel(alteracao);
+    }
+    
+    public void alteraPovo(int var){
+        povo.alterarMoral(var);
+    }
+    
+    public void alteraPosSoldados(int var){
+        soldados.alteraPosicao(var);
+    }
+    
     public boolean soldadosNoTunel(){
         return soldados.noTunel();
     }
     
+    public boolean soldadosEmLinhasInimigas(){
+        return soldados.emLinhasInimigas();
+    }
+    
+    public void alteraSuprimentosFurtados(int var){
+        soldados.alteraSuprimentosFurtados(var);
+    }
     
     public void soldadosCapturados(){
         // ELIMINAR REGISTO DOS SOLDADOS ATUAIS E GERAR NOVOS SOLDADOS
@@ -102,6 +126,8 @@ public class Fortaleza {
  
     }
     
+    
+    
     // RETORNA UMA LISTA COM OS INIMIGOS QUE SE ENCONTRAREM NAS POSIÇÕES PASSADAS COMO ARGUMENTOS ("LOCAIS")
     public List<Inimigo> getInimigos(List<Integer> locais){
         List<Inimigo> inimigosNaPosicao = new ArrayList<>();
@@ -115,17 +141,40 @@ public class Fortaleza {
         
         return inimigosNaPosicao;
     }
+   
+    
+    public List<Inimigo> getListaDeInimigos(){
+        return inimigos;
+    }
     
     // EVENTOS
-    public void evento_AtaqueDeCatapulta(){
-        if(mundo.contaCatapultas() == 3)
+    public int evento_AtaqueDeCatapulta(){
+        int danoMuralha = 0;
+        if(mundo.contaCatapultas() == 3){
             mundo.alteraMuralha(-2);
-        else if(mundo.contaCatapultas() == 2)
+            danoMuralha = -2;
+        }else if(mundo.contaCatapultas() == 2){
             mundo.alteraMuralha(-1);
-        else if(mundo.contaCatapultas() == 1){
-            if(mundo.rodaDado() > 3)
+            danoMuralha = -1;
+        }else if(mundo.contaCatapultas() == 1){
+            if(mundo.rodaDado() > 3){
                 mundo.alteraMuralha(-1);
+                danoMuralha = -1;
+            }
         }
+        return danoMuralha;
+    }
+    
+    public int getForcMuralha(){
+        return muralha.getForca();
+    }
+    
+    public int getMoral(){
+        return povo.getMoral();
+    }
+    
+    public int getSuprimentos(){
+        return suprimento.getNivel();
     }
     
     public void evento_Doenca(){
@@ -140,7 +189,6 @@ public class Fortaleza {
     void evento_MorteDeUmLider() {
         povo.alterarMoral(-1);
     }
-
     
     // GETTERS & SETTERS
     public int getNrCatapultas() {
@@ -159,7 +207,29 @@ public class Fortaleza {
         return ariete;
     }
     
-    public UnidadesLentas getUnidadesLentas(){
+    public List<Inimigo> getUnidadesLentas(){
+        unidadesLentas = new ArrayList<>(); // REINICIALIZA A LISTA
+        int local = Constantes.POSICAO_INICIAL_INIMIGOS.getValor();
+        
+        return encontraUnidadesMaisLentas(local);
+    }
+
+    
+    
+    public List<Inimigo> encontraUnidadesMaisLentas(int local){
+        
+        
+        for(Inimigo i : inimigos){
+            // ENCONTRAR AS QUE SE ENCONTRAM MAIS LONGE DO CASTELO, A COMEÇAR PELA POSIÇÃO MAIS AFASTADA
+            if(i.local == local){
+                unidadesLentas.add(i);
+            }
+        }
+        
+        if(unidadesLentas.isEmpty()){ //
+            encontraUnidadesMaisLentas(--local); // RECURSIVIDADE
+        }
+        
         return unidadesLentas;
     }
 
@@ -203,22 +273,42 @@ public class Fortaleza {
         return inimigos;
     }
     
-    
-    
-    
+    public int getSuprimentosFurtados(){
+        return soldados.getSuprimentosFurtados();
+    }
+
+    public boolean faccoesFatais(int n) {
+        // VERIFICAR SE 2 OU MAIS FACÇÕES ESTÃO NA ZONA DE CLOSE COMBAT (local = 0)
+        int contador = 0;
+        
+        for(Inimigo i : inimigos){
+            if(i.local == 0)
+                contador++;
+        }
+        if(contador >= n) return true;
+        
+       return false;
+    }
+
+    public boolean forcasFatais(int n) {
+        // VERIFICAR SE ALGUMA DAS FORÇAS ESTÁ A 0
+        int contador = 0;
+        
+        if(muralha.getForca() == 0) contador++;
+        if(povo.getMoral() == 0) contador++;
+        if(suprimento.getNivel() == 0) contador ++;
+        
+        if(contador >= n)
+            return true;
+        
+        return false;
+    }
+
     @Override
     public String toString(){
         return "## DETALHES DA FORTALEZA ##\n" 
                 + "FORÇA DA MURALHA: " + muralha.getForca()
                 + "\n MORAL DO POVO: " + povo.getMoral()
                 + "\n NIVEL DE SUPRIMENTOS: " + suprimento.getNivel();
-    }
-
-   
-
-    
-
-    
-
-    
+    }   
 }

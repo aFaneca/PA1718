@@ -10,13 +10,14 @@ import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class AtaqueDeCatapulta extends Evento{
+public class AtaqueDeCatapulta extends Evento implements Serializable{
      
 //    public AtaqueDeCatapulta(Carta carta, int numero){
 //        super(carta, numero);
@@ -31,18 +32,4 @@ public class AtaqueDeCatapulta extends Evento{
     }
 
 
-    protected void acao() { 
-        //System.out.println(mundo.getFortaleza());
-        
-//        if(mundo.contaCatapultas() == 3)
-//            mundo.alteraMuralha(-2);
-//        else if(mundo.contaCatapultas() == 2)
-//            mundo.alteraMuralha(-1);
-//        else if(mundo.contaCatapultas() == 1){
-//            if(mundo.rodaDado() > 3)
-//                mundo.alteraMuralha(-1);
-//        }
-            
-       //System.out.println(mundo.getFortaleza()); 
-    }
 }

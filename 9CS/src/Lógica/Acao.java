@@ -5,14 +5,19 @@
  */
 package Lógica;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author me
  */
-public class Acao {
+public abstract class Acao implements Serializable{
     private String nome;
     private boolean reutilizavel; // ESTA AÇÃO PODE SER REUTILIZADA NO MESMO TURNO?
-    private Fortaleza fortaleza;
+    protected Fortaleza fortaleza;
+    protected List<Inimigo> potenciaisAlvos; // PARA OS ATAQUES DE ARQUEIROS, AGUA FERVENTE E CLOSE COMBAT
     
     public Acao(String nome, Fortaleza fortaleza){
         this.nome = nome;
@@ -25,6 +30,10 @@ public class Acao {
 
     public void setReutilizavel(boolean reutilizavel) {
         this.reutilizavel = reutilizavel;
+    }
+    
+    public List<Inimigo> getPotenciaisAlvos(){
+        return null;
     }
     
     @Override

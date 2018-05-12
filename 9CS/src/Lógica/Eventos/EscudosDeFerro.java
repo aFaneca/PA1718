@@ -12,6 +12,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Inimigos.*;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import java.util.List;
  *
  * @author me
  */
-public class EscudosDeFerro extends Evento{
+public class EscudosDeFerro extends Evento implements Serializable{
 
     /*  -1 em Ataques a Torres de Cerco
         Assim, aplica-se às seguintes ações:
@@ -40,9 +41,5 @@ public class EscudosDeFerro extends Evento{
         drms.add(new DRM(this, new AtaqueDeCloseCombat(carta.getFortaleza()), -1, inimigosAfetados));
     }
 
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
+
 }

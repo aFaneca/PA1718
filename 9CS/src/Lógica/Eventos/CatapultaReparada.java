@@ -12,22 +12,19 @@ import Lógica.Evento;
 import Lógica.Fortaleza;
 import Lógica.Inimigo;
 import Lógica.Mundo;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author me
  */
-public class CatapultaReparada extends Evento {
+public class CatapultaReparada extends Evento implements Serializable{
 
     public CatapultaReparada(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         nome = "Catapulta Reparada";
         drms.add(new DRM(this, new RepararMuralha(carta.getFortaleza()), 1)); // +1 para ações de reparação da muralha
     }
-
-    @Override
-    protected void acao() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }    
+   
 }
