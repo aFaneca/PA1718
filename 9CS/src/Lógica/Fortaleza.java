@@ -126,7 +126,17 @@ public class Fortaleza implements Serializable{
  
     }
     
+    public int getForcaDaMuralha(){
+        return muralha.getForca();
+    }
     
+    public int getMoralDoPovo(){
+        return povo.getMoral();
+    }
+    
+    public int getSuprimentos(){
+        return suprimento.getNivel();
+    }
     
     // RETORNA UMA LISTA COM OS INIMIGOS QUE SE ENCONTRAREM NAS POSIÇÕES PASSADAS COMO ARGUMENTOS ("LOCAIS")
     public List<Inimigo> getInimigos(List<Integer> locais){

@@ -44,7 +44,7 @@ public class Mundo implements Serializable{
         eventos = new ArrayList<>();
         gerarCartas();
         cartasViradas = 0;
-        dia = 1;
+        dia = 2;
     
     }
     
@@ -471,6 +471,7 @@ public class Mundo implements Serializable{
     
     public void evento_CatapultaReparada(){
         fortaleza.alteraNrCatapultas(1);
+        
     }
     
     public void removerTorre(){
@@ -516,7 +517,18 @@ public class Mundo implements Serializable{
     public List<Inimigo> getListaDeInimigos(){
         return fortaleza.getListaDeInimigos();
     }
-
+    
+    public int getForcaDaMuralha(){
+        return fortaleza.getForcaDaMuralha();
+    }
+    
+    public int getMoralDoPovo(){
+        return fortaleza.getMoralDoPovo();
+    }
+    
+    public int getSuprimentos(){
+        return fortaleza.getSuprimentos();
+    }
     
     
     public void verInfo(){

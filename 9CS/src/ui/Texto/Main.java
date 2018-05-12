@@ -312,6 +312,7 @@ public class Main {
     }
     
     private void avancaInimigos(Evento evento){ // AVANÇA OS INIMIGOS ASSOCIADOS A ESTE EVENTO
+        m.avancaInimigos(evento);
         if(evento.getInimigosDoEvento().isEmpty()){ // Nenhuma unidade inimiga se deve mover quando existem ataques de trebuchets (não necessita de filtração, porque nesses casos, a lista já se encontra vazia de qualquer forma
             System.out.println("De acordo com esta carta, nenhum inimigo avançará nenhuma posição neste turno.");
         }else{
@@ -320,7 +321,7 @@ public class Main {
                 System.out.println("O inimigo " + i + " encontra-se agora na localização " + i.getLocal() + ".");
             }
         }
-        m.avancaInimigos(evento);
+        
         
     }
     
@@ -328,11 +329,12 @@ public class Main {
     private void EVENTO_ataqueDeCatapulta(Evento evento) {
         //m.aplicarEvento(evento);
         m.evento_AtaqueDeCatapulta();
+        System.out.println("Sofreu danos na sua muralha. Agora a mesma tem força = " + m.getForcaDaMuralha() + ".");
     }
 
     private void EVENTO_catapultaReparada() {
         m.evento_CatapultaReparada();
-        System.out.println("Adicionada 1 Catapulta à sua defesa. Agora possui " + m.contaCatapultas() + " catapultas.");
+        System.out.println("Adicionada 1 Catapulta ao inimigo. Agora possui " + m.contaCatapultas() + " catapultas.");
         
         
     }
@@ -352,7 +354,7 @@ public class Main {
 
     private void EVENTO_doenca() {
         m.evento_Doenca();
-        System.out.println("A moral e os suprimentos foram reduzidos em 1 unidade.");
+        System.out.println("A moral e os suprimentos foram reduzidos em 1 unidade. Agora tem " + m.getMoralDoPovo() + " de moral e " + m.getSuprimentos() + " de suprimentos.");
     }
 
     private void EVENTO_escudosDeFerro() {
