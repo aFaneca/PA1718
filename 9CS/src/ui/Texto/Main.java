@@ -93,7 +93,7 @@ public class Main {
                     break;
                 case 2: ui_clearScreen(); continuarJogo();
                     break;
-                case 3: return;
+                case 3: System.exit(0);return;
 
                 default: ui_clearScreen(); 
                     break;
