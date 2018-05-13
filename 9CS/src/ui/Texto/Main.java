@@ -103,8 +103,6 @@ public class Main {
                 sc.next(); 
         }
 
-        //ui_CliqueNoEnterPara("continuar");
-        //ui_clearScreen();
          
     }
     

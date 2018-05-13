@@ -19,12 +19,7 @@ import java.util.List;
  */
 public class AtaqueDeCatapulta extends Evento implements Serializable{
      
-//    public AtaqueDeCatapulta(Carta carta, int numero){
-//        super(carta, numero);
-//        //this.mundo = mundo;
-//        nome = "Ataque de Catapulta";
-//    }    
-    
+
     public AtaqueDeCatapulta(Carta carta, int numero, List<Inimigo> inim){
         super(carta, numero, inim);
         //this.mundo = mundo;
