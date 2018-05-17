@@ -27,7 +27,7 @@ import java.util.logging.Logger;
  * Amadeus Alves
  * António Faneca
  */
-public class Main {
+public class textoView {
     private Scanner sc;
     private int valorLido;
     boolean sair; 
@@ -36,7 +36,7 @@ public class Main {
     Evento eventoAtual;
     Carta cartaVirada;
     
-    public Main(){
+    public textoView(){
         sc = new Scanner(System.in);
         sair = false;
         m = new Mundo();
@@ -179,10 +179,10 @@ public class Main {
         
         } catch (FileNotFoundException ex) {
             System.out.println("Erro a guardar ficheiro...");
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(textoView.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             System.out.println("Erro a guardar ficheiro...");
-            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(textoView.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         System.out.println("Jogo guardado no ficheiro " + nomeDoFicheiro + ". Esperamos voltar a vê-lo em breve!");
@@ -208,7 +208,7 @@ public class Main {
             //Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
                 System.out.println("Erro a recuperar dados do jogo...");
-                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(textoView.class.getName()).log(Level.SEVERE, null, ex);
         }
             
             // Recomeçar o jogo
@@ -292,7 +292,7 @@ public class Main {
    } 
    
     public static void main(String[] args) {
-        Main main = new Main();
+        textoView main = new textoView();
         main.run();
      
     }
