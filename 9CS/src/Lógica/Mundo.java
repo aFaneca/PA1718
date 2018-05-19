@@ -23,9 +23,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class Mundo implements Serializable{
+public class Mundo extends Observable implements Serializable{
     private Dado dado;
     private Fortaleza fortaleza;
     private List<Carta> cartas;
@@ -44,7 +46,7 @@ public class Mundo implements Serializable{
         eventos = new ArrayList<>();
         gerarCartas();
         cartasViradas = 0;
-        dia = 2;
+        dia = 1;
     
     }
     
@@ -212,6 +214,8 @@ public class Mundo implements Serializable{
     
     public void alteraMuralha(int quant){
         fortaleza.alteraMuralha(quant);
+        setChanged();
+        notifyObservers(this);
     }
     
     public void alteraSuprimentos(int quant){
@@ -230,6 +234,7 @@ public class Mundo implements Serializable{
     public void alteraPosSoldados(int var){
         fortaleza.alteraPosSoldados(var);
     }
+    
     public int sorteDosSoldados(){
         return dado.rodaDado();
     }
@@ -427,8 +432,7 @@ public class Mundo implements Serializable{
         
         return resultadoDoDado;
     }
-    
-    
+     
      public int acao_AtaqueDeCloseCombat(Inimigo inimigoEscolhido) {
         //estadoAtual = estadoAtual.proximoEstado();
         int resultadoDoDado = rodaDado();
@@ -500,6 +504,8 @@ public class Mundo implements Serializable{
     
     public void setDia(int d){
         this.dia = d;
+        setChanged();
+        notifyObservers(this);
     }
     
     public Fortaleza getFortaleza(){
@@ -597,8 +603,6 @@ public class Mundo implements Serializable{
         
         return null;
     }
-
-    
 
 
 }

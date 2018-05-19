@@ -33,23 +33,34 @@ import Lógica.Eventos.Reuniao;
 import Lógica.Eventos.SalvaDeFlechas;
 import Lógica.Eventos.SuprimentosEstragados;
 import Lógica.Mundo;
-import ui.GUI.menuInicialView;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import ui.GUI.JogoView;
+import ui.GUI.MenuInicialView;
 
 /**
  *
  * @author me
  */
-public class Controlador { // CONTROLLER
+public class Controlador implements ActionListener{ // CONTROLLER
     private Mundo m; // MODEL
-    private menuInicialView menuInicial; // VIEW
+    private MenuInicialView menuInicial; // VIEW
+    private JogoView jogoView; // VIEW
     boolean sair;
     private String motivoFimDoJogo;
     Evento eventoAtual;
     Carta cartaVirada;
     
-    public Controlador(Mundo m, menuInicialView menuInicial){
+    public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
         this.menuInicial = menuInicial;
+        this.jogoView = jogoView;
+        m.addObserver(jogoView); // Adiciona a View JogoView à lista de observers do Observable "Mundo", que é o Modelo no padrão MVC
+        menuInicial.addListener(this, menuInicial.getBotao_sair());
+        menuInicial.addListener(this, menuInicial.getBotao_continuarJogo());
+        menuInicial.addListener(this, menuInicial.getBotao_iniciarJogo());
     }
     
     public void run() {
@@ -87,6 +98,28 @@ public class Controlador { // CONTROLLER
     
     private void virarCarta(){
        menuInicial.setVisible(false);
+       // PARA TESTES
+       jogoView.getLabel_forcaDaMuralha().setText("->Força da Muralha: " + m.getForcaDaMuralha());
+       jogoView.getLabel_dia().setText("->Dia: " + m.getDia());
+       
+       jogoView.setVisible(true);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       m.setDia(3);
+       m.alteraMuralha(-2);
+       
+        try {
+            
+
+            Thread.sleep(10000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       //
+       
        cartaVirada = m.virarCarta();
        eventoAtual = m.eventoAtual(cartaVirada);
        
@@ -161,5 +194,21 @@ public class Controlador { // CONTROLLER
 //       // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
 //       verificaCondicoesFatais();   
    } 
+    
+    
+     @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        Object origem = e.getSource();
+         if(origem == (menuInicial.getBotao_sair())){
+             System.exit(0);
+         }
+         else if(origem == (menuInicial.getBotao_iniciarJogo())){
+             m.novoJogo();
+         }
+         else if(origem == (menuInicial.getBotao_continuarJogo())){
+             menuInicial.mostraErro("Ainda não implementado...");
+         }
+    }
     
 }

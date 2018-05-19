@@ -7,7 +7,8 @@ package Main;
 
 import Controlador.Controlador;
 import Lógica.Mundo;
-import ui.GUI.menuInicialView;
+import ui.GUI.JogoView;
+import ui.GUI.MenuInicialView;
 
 /**
  *
@@ -19,8 +20,9 @@ public class main {
     public static void main(String[] args) {
          Mundo mundo = new Mundo(); // MODELO
          
-         menuInicialView menuInicial = new menuInicialView(); // Vista
-         Controlador controlador = new Controlador(mundo, menuInicial); // Controlador
+         MenuInicialView menuInicial = new MenuInicialView(); // Vista
+         JogoView jogoView = new JogoView(); // VISTA
+         Controlador controlador = new Controlador(mundo, menuInicial, jogoView); // Controlador
          
          controlador.run();
          //menuInicial.setVisible(true);
