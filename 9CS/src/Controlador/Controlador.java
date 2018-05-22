@@ -99,8 +99,8 @@ public class Controlador implements ActionListener{ // CONTROLLER
     private void virarCarta(){
        menuInicial.setVisible(false);
        // PARA TESTES
-       jogoView.getLabel_forcaDaMuralha().setText("->Força da Muralha: " + m.getForcaDaMuralha());
-       jogoView.getLabel_dia().setText("->Dia: " + m.getDia());
+//       jogoView.getLabel_forcaDaMuralha().setText("->Força da Muralha: " + m.getForcaDaMuralha());
+//       jogoView.getLabel_dia().setText("->Dia: " + m.getDia());
        
        jogoView.setVisible(true);
         try {
@@ -108,8 +108,11 @@ public class Controlador implements ActionListener{ // CONTROLLER
         } catch (InterruptedException ex) {
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
-       m.setDia(3);
-       m.alteraMuralha(-2);
+       m.alteraPosSoldados(+1);
+       m.setDia(m.getDia() + 1);
+       m.alteraPovo(-1);
+       m.alteraMuralha(-1);
+       m.alteraSuprimentos(-1);
        
         try {
             

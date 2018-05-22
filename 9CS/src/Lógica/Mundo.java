@@ -215,13 +215,26 @@ public class Mundo extends Observable implements Serializable{
     public void alteraMuralha(int quant){
         fortaleza.alteraMuralha(quant);
         setChanged();
-        notifyObservers(this);
+        notifyObservers();
     }
     
     public void alteraSuprimentos(int quant){
         fortaleza.alteraSuprimentos(quant);
+        setChanged();
+        notifyObservers();
     }
-
+    
+    public void alteraPosSoldados(int var){
+        fortaleza.alteraPosSoldados(var);
+        setChanged();
+        notifyObservers();
+    }
+    
+    public void alteraPovo(int var){
+        fortaleza.alteraPovo(var);
+        setChanged();
+        notifyObservers();
+    }
     public boolean soldadosNoTunel(){
 
         return fortaleza.soldadosNoTunel();
@@ -231,9 +244,7 @@ public class Mundo extends Observable implements Serializable{
         return fortaleza.soldadosEmLinhasInimigas();
     }
     
-    public void alteraPosSoldados(int var){
-        fortaleza.alteraPosSoldados(var);
-    }
+   
     
     public int sorteDosSoldados(){
         return dado.rodaDado();
@@ -504,8 +515,12 @@ public class Mundo extends Observable implements Serializable{
     
     public void setDia(int d){
         this.dia = d;
+        
+        if(dia > 3) dia = 3;
+        if(dia < 1) dia = 1;
+        
         setChanged();
-        notifyObservers(this);
+        notifyObservers();
     }
     
     public Fortaleza getFortaleza(){
@@ -536,6 +551,9 @@ public class Mundo extends Observable implements Serializable{
         return fortaleza.getSuprimentos();
     }
     
+    public int getPosDosSoldados(){
+        return fortaleza.getPosicaoSoldados();
+    }
     
     public void verInfo(){
         int nr = 1, nr1 = 1;

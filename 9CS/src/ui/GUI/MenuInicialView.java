@@ -42,7 +42,7 @@ public class MenuInicialView extends JFrame{
     JButton botao_iniciarJogo;
     JButton botao_sair;
     JButton botao_continuarJogo;
-    BufferedImage wPic;
+    //BufferedImage wPic;
     JLabel logotipo;
     Icon icon_abrirFicheiro = new ImageIcon("imagens/icon_abrirFicheiro.png");
     Icon icon_adicionar = new ImageIcon("imagens/icon_adicionar.png");
@@ -117,7 +117,7 @@ public class MenuInicialView extends JFrame{
     
     
     public void mostraErro(String mensagemDeErro){
-        JOptionPane.showMessageDialog(this, mensagemDeErro);
+        JOptionPane.showMessageDialog(this, mensagemDeErro, "Mensagem do Sistema", JOptionPane.INFORMATION_MESSAGE);
     }
     
    

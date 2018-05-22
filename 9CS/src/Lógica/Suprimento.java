@@ -26,7 +26,7 @@ class Suprimento implements Serializable{
     
     public void alterarNivel(int quant){
         nivel += quant;
-        if(nivel > 2) nivel = 2;
-        if(nivel < 1) nivel = 1;
+        if(nivel > 4) nivel = 4;
+        if(nivel < 0) nivel = 0;
     }
 }

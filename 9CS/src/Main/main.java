@@ -21,7 +21,7 @@ public class main {
          Mundo mundo = new Mundo(); // MODELO
          
          MenuInicialView menuInicial = new MenuInicialView(); // Vista
-         JogoView jogoView = new JogoView(); // VISTA
+         JogoView jogoView = new JogoView(mundo); // VISTA
          Controlador controlador = new Controlador(mundo, menuInicial, jogoView); // Controlador
          
          controlador.run();
