@@ -107,6 +107,7 @@ public class textoView {
     }
     
     private void fimDoDia(){
+        
         System.out.println("O dia " + (m.getDia()) + " chegou ao fim.");
     /*
         As cartas devem ser rebaralhadas para o próximo dia
@@ -119,19 +120,19 @@ public class textoView {
         // SOLDADOS NO TÚNEL, VOLTAM AUTOMATICAMENTE PARA O CASTELO
         if(m.soldadosNoTunel()){
             System.out.println("Os seus soldados estão de volta à fortaleza.");
-            m.alteraPosSoldados(-3); // COMO TUDO ESTÁ CONFIGURADO PARA QUE A POSIÇÃO DOS SOLDADOS NUNCA SEJA < 0, ISTO GARANTE QUE ELES VOLTAM PARA A POSIÇÃO 0, INDEPENDENTEMENTE DA POSIÇÃO EM QUE ESTÃO ATUALMENTE
+//            m.alteraPosSoldados(-3); // COMO TUDO ESTÁ CONFIGURADO PARA QUE A POSIÇÃO DOS SOLDADOS NUNCA SEJA < 0, ISTO GARANTE QUE ELES VOLTAM PARA A POSIÇÃO 0, INDEPENDENTEMENTE DA POSIÇÃO EM QUE ESTÃO ATUALMENTE
         }
             
         // SOLDADOS EM TERRITÓRIO INIMIGO, SÃO CAPTURADOS
         if(m.soldadosEmLinhasInimigas()){
             System.out.println("Como os seus soldados em linhas inimigas não voltaram para o castelo antes do anoitecer, foram capturados :/");
-            m.soldadosCapturados();
+//            m.soldadosCapturados();
         }
         
         // REDUZIR SUPPLIES EM 1 UNIDADE
         System.out.println("Com o chegar do fim do dia, os suprimentos armazenados na fortaleza foram reduzidos em 1 unidade.");
-        m.alteraSuprimentos(-1);
         
+        m.fimDoDia();
         
         boolean valido = false;
         int resposta = 0;
@@ -342,11 +343,12 @@ public class textoView {
     }
 
     private void EVENTO_colapso() {
-        // A TORRE DE CERCO É REMOVIDA DO JOGO SE ESTIVER NA POSIÇÃO INICIAL
-        if(m.getPosTorre() == Constantes.POSICAO_INICIAL_INIMIGOS.getValor()){ // SE A POSIÇÃO DA TORRE FOR A INICIAL
-            m.removerTorre();
+
+        int resultado = m.evento_Colapso();
+        
+        if(resultado == 1)
             System.out.println("Uma vez que a Torre de Cerco ainda se encontrava na posição inicial, a mesma foi destruída permanentemente. Menos uma preocupação!");
-        }else
+        else if(resultado == 0)
             System.out.println("Uma vez que a Torre de Cerco já não se encontrava na posição inicial, nada aconteceu.");
     }
 

@@ -259,14 +259,9 @@ public class Mundo extends Observable implements Serializable{
     }
     
     public void avancaInimigos(Evento evento){
-        List<Inimigo> inimigosParaAvancar = new ArrayList<>();
         
-        for(Inimigo i : evento.getInimigosDoEvento()){
-            i.setLocal(i.getLocal() - 1);
-        }
+        setEstado(estadoAtual.avancaInimigos(evento));
         
-        // O ESTADO SEGUINTE É AguardaSelecaoDeAcao
-        setEstado(new AguardaSelecaoDeAcao(this));
     }
     
     public int acao_RepararMuralha(Evento eventoAtual){
@@ -283,10 +278,9 @@ public class Mundo extends Observable implements Serializable{
         
         int resultadoDoDado = rodaDado() + var;
         
-        if(resultadoDoDado >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
-            fortaleza.alteraMuralha(+1);
+        // Aplica a ação
+        estadoAtual.acao_RepararMuralha(resultadoDoDado);
         
-        //estadoAtual = estadoAtual.proximoEstado();
         
         return resultadoDoDado;
     }
@@ -304,15 +298,11 @@ public class Mundo extends Observable implements Serializable{
         
         int resultadoDoDado = rodaDado() + var;
         
-        if(usarBonus){
-            fortaleza.alteraSuprimentos(-1);
+        if(usarBonus)
             resultadoDoDado++; // +1 para o resultado do dado
-        }
         
-        if(resultadoDoDado >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor())
-            fortaleza.alteraPovo(+1);
-        
-        //estadoAtual = estadoAtual.proximoEstado();
+        // Aplica a ação
+        estadoAtual.acao_MotivarTropas(resultadoDoDado, usarBonus);
         
         return resultadoDoDado;
     }
@@ -330,17 +320,9 @@ public class Mundo extends Observable implements Serializable{
         
         int resultadoDoDado = rodaDado() + var;
         
-        if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
-            if(resultadoDoDado >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
-                fortaleza.alteraSuprimentosFurtados(+2); 
-            }else{  // DEFAULT: 3,4,5 <= RAID COM SUCESSO DE 1 SUPRIMENTO
-                fortaleza.alteraSuprimentosFurtados(+1);
-            }
-        }else{ // DEFAULT: 1 <= SOLDADOS CAPTURADOS
-            soldadosCapturados();
-        }
-        
-        //estadoAtual = estadoAtual.proximoEstado();
+        // Aplica a ação
+        estadoAtual.acao_Raid(resultadoDoDado);
+
         
         return resultadoDoDado;
     }
@@ -355,17 +337,13 @@ public class Mundo extends Observable implements Serializable{
                 var += drm.var;
             }
         }
-        
-        
+
         int resultadoDoDado = rodaDado() + var;
         
-        if(resultadoDoDado >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor()){ // DEFAULT: 5, 6 <= -1 Catapulta dos Inimigos
-            fortaleza.alteraNrCatapultas(-1);
-            
-        }else if(resultadoDoDado <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor()){ // DEFAULT: 1 <= Soldados são capturados
-            soldadosCapturados();
-        }
-        //estadoAtual = estadoAtual.proximoEstado();
+        // Aplica a ação
+        estadoAtual.acao_Sabotagem(resultadoDoDado);
+        
+
         return resultadoDoDado;
     }
     
@@ -373,46 +351,29 @@ public class Mundo extends Observable implements Serializable{
         
         // Se os soldados carregarem supplies, o movimento deles deve ser de volta para a fortaleza. Senão, movimento contrário
         boolean aVoltarAoCastelo = (fortaleza.getSuprimentosFurtados() != 0) ? true : false;
-        int movimento = 0;
         
-        if(resposta == 1){ //Movimentar 1 posição no túnel
-            if(aVoltarAoCastelo)
-                movimento = -1;
-            else
-                movimento = +1;
-        }else if(resposta == 2){
-            if(aVoltarAoCastelo)
-                movimento = -2;
-            else
-                movimento = +2;
-        }
-        
-        fortaleza.alteraPosSoldados(movimento);
-        
-        //estadoAtual = estadoAtual.proximoEstado();
-        
+        // Aplica Ação
+        estadoAtual.acao_movimentarSoldadosNoTunel(resposta, aVoltarAoCastelo);
+
         return fortaleza.getPosicaoSoldados();
     }
     
     public int acao_AtaqueDeArqueiros(Inimigo inimigoEscolhido, Evento eventoAtual) {
+        
         boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
         int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
         
-        for(DRM drm : eventoAtual.drms){
-            if(drm.acao instanceof AtaqueDeArqueiros){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+        for(DRM drm : eventoAtual.getDrms()){
+            if(drm.getAcao() instanceof AtaqueDeArqueiros){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
                 temDRMS = true;
-                var += drm.var;
+                var += drm.getVar();
             }
         }
         
         int resultadoDoDado = rodaDado() + var;
-
-        if(resultadoDoDado > inimigoEscolhido.forca){ // O ataque teve sucesso
-            //Recuar a posição do inimigo em 1 unidade
-            inimigoEscolhido.alterarLocal(+1);
-        }
         
-        //estadoAtual = estadoAtual.proximoEstado();
+        // Aplica ação
+        estadoAtual.acao_AtaqueDeArqueiros(resultadoDoDado, var, inimigoEscolhido, eventoAtual);
         
         return resultadoDoDado;
     }
@@ -430,36 +391,21 @@ public class Mundo extends Observable implements Serializable{
         
         int resultadoDoDado = rodaDado() + 1 + var; // +1 DRM
         
-        if(resultadoDoDado > inimigoEscolhido.forca){ // O ataque teve sucesso
-            //Recuar a posição do inimigo em 1 unidade
-            inimigoEscolhido.alterarLocal(+1);
-        }
-        else if(resultadoDoDado == 1 && !temDRMS)
-            // REDUZIR MORAL EM -1
-            fortaleza.alteraPovo(-1);
+        // Aplica ação
+        estadoAtual.acao_AtaqueDeAguaFervente(resultadoDoDado, var, inimigoEscolhido, eventoAtual, temDRMS);
         
-        
-        //estadoAtual = estadoAtual.proximoEstado();
+       
         
         return resultadoDoDado;
     }
      
-     public int acao_AtaqueDeCloseCombat(Inimigo inimigoEscolhido) {
+    public int acao_AtaqueDeCloseCombat(Inimigo inimigoEscolhido) {
         //estadoAtual = estadoAtual.proximoEstado();
         int resultadoDoDado = rodaDado();
         
-        if(resultadoDoDado > 4){ // O ataque teve sucesso
-            //Recuar a posição do inimigo em 1 unidade
-            inimigoEscolhido.alterarLocal(+1);
-        }else if(resultadoDoDado == 1){
-            // Reduz a moral do povo em 1 unidade
-            fortaleza.alteraPovo(-1);
-        }else{
-            // Perde o Jogo
-            setEstado(estadoAtual.fimDoJogo());
-        }
-
         
+        // Aplica ação
+        setEstado(estadoAtual.acao_AtaqueDeCloseCombat(resultadoDoDado, inimigoEscolhido));
         
         
         
@@ -468,25 +414,40 @@ public class Mundo extends Observable implements Serializable{
     
     
     public void evento_AtaqueDeCatapulta(){
-        fortaleza.evento_AtaqueDeCatapulta();
+        
+        estadoAtual.evento_AtaqueDeCatapulta();
     }
     
     public void evento_Doenca(){
         // REDUZIR MORAL E SUPRIMENTOS
-        fortaleza.evento_Doenca();
+        estadoAtual.evento_Doenca();
+        
     }
     
     public void evento_SuprimentosEstragados() {
-        fortaleza.evento_SuprimentosEstragados();
+        estadoAtual.evento_SuprimentosEstragados();
+        
     }
     
     public void evento_MorteDeUmLider() {
-        fortaleza.evento_MorteDeUmLider();
+        estadoAtual.evento_MorteDeUmLider();
+        
     }
     
     public void evento_CatapultaReparada(){
         fortaleza.alteraNrCatapultas(1);
         
+    }
+    
+    public int evento_Colapso(){
+        // A TORRE DE CERCO É REMOVIDA DO JOGO SE ESTIVER NA POSIÇÃO INICIAL
+        if(getPosTorre() == Constantes.POSICAO_INICIAL_INIMIGOS.getValor()){ // SE A POSIÇÃO DA TORRE FOR A INICIAL
+            removerTorre();
+            return 1;
+            
+        }else
+            return 0;
+            
     }
     
     public void removerTorre(){
@@ -622,5 +583,16 @@ public class Mundo extends Observable implements Serializable{
         return null;
     }
 
+    public void alteraSuprimentosFurtados(int var) {
+        fortaleza.alteraSuprimentosFurtados(var);
+    }
 
+    public void alteraNrCatapultas(int var) {
+        fortaleza.alteraNrCatapultas(var);
+    }
+
+    
+    public void fimDoDia(){
+        estadoAtual.aplicarAcoes();
+    }
 }

@@ -174,11 +174,11 @@ public class Fortaleza implements Serializable{
         suprimento.alterarNivel(-1);
     }
     
-    void evento_SuprimentosEstragados() {
+    public void evento_SuprimentosEstragados() {
         suprimento.alterarNivel(-1);
     }
     
-    void evento_MorteDeUmLider() {
+    public void evento_MorteDeUmLider() {
         povo.alterarMoral(-1);
     }
 
