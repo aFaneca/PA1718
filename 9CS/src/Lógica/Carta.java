@@ -93,4 +93,8 @@ public class Carta implements Serializable{
     public Acao getSabotagem() {
         return fortaleza.getSabotagem();
     }
+    
+    public int getNr(){
+        return nr;
+    }
 }

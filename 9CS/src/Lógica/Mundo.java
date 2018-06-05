@@ -25,9 +25,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 public class Mundo extends Observable implements Serializable{
+    private final static Logger logger = Logger.getLogger(Mundo.class.getName());
     private Dado dado;
     private Fortaleza fortaleza;
     private List<Carta> cartas;
@@ -36,6 +39,7 @@ public class Mundo extends Observable implements Serializable{
     private IEstados estadoAtual; 
     private static int cartasViradas;
     private int dia;
+    private Carta cartaAtual;
     
     
     public Mundo(){
@@ -44,6 +48,7 @@ public class Mundo extends Observable implements Serializable{
         fortaleza = new Fortaleza(this);
         cartas = new ArrayList<>();
         eventos = new ArrayList<>();
+        cartaAtual = null;
         gerarCartas();
         cartasViradas = 0;
         dia = 1;
@@ -196,7 +201,14 @@ public class Mundo extends Observable implements Serializable{
 //          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
 //       }
        
-        return cartas.get(cartasViradas++);
+        cartaAtual = cartas.get(cartasViradas++);
+        
+        
+        logger.log(Level.INFO, " - {0} -", cartaAtual.getNr());
+        setChanged();
+        notifyObservers();
+        
+        return cartaAtual;
     }
     
     
@@ -490,6 +502,10 @@ public class Mundo extends Observable implements Serializable{
     
     public int getCartasViradas(){
         return cartasViradas;
+    }
+    
+    public Carta getCartaAtual(){
+        return cartaAtual;
     }
     
     public int getPosTorre(){ // OBTÉM A POSIÇÃO DA TORRE DE CERCO

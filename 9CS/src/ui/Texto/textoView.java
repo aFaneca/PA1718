@@ -39,7 +39,7 @@ public class textoView {
     public textoView(){
         sc = new Scanner(System.in);
         sair = false;
-        m = new Mundo();
+        m = new Mundo(); 
     }
     
     private void run() {

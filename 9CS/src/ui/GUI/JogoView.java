@@ -6,6 +6,7 @@
 package ui.GUI;
 
 
+import Lógica.Carta;
 import Lógica.Mundo;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -13,6 +14,7 @@ import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -35,7 +37,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 import sun.java2d.SunGraphicsEnvironment;
 
 /**
@@ -56,8 +60,10 @@ public class JogoView extends JFrame implements Observer{
     Icon icon_smileMuitoFeliz, icon_smileBemFeliz, icon_smileFeliz, icon_smileTriste, icon_smileZangado;
     Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4;
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
-    JLabel img_cartaAtual, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
+    JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos;
+
+    
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
         this.setResizable(true); // Permite que a janela seja redimensionada
@@ -67,6 +73,8 @@ public class JogoView extends JFrame implements Observer{
         this.setUndecorated(false);
         this.setLayout(new BorderLayout());
         this.m = m;
+        
+        
         
         // Inicialização dos ícones
         icon_guardar = new ImageIcon("imagens/icon_guardar.png");
@@ -94,6 +102,7 @@ public class JogoView extends JFrame implements Observer{
         icon_tunel1 = new ImageIcon("imagens/icon_tunel1.png");
         icon_tunel2 = new ImageIcon("imagens/icon_tunel2.png");
         icon_fortaleza = new ImageIcon("imagens/icon_castelo.png");
+        img_carta0  = new JLabel(new ImageIcon("imagens/cartas/0.png"));
         img_carta1 = new JLabel(new ImageIcon("imagens/cartas/1.JPG"));
         img_carta2 = new JLabel(new ImageIcon("imagens/cartas/2.JPG"));
         img_carta3 = new JLabel(new ImageIcon("imagens/cartas/3.JPG"));
@@ -109,7 +118,6 @@ public class JogoView extends JFrame implements Observer{
         label_localDosSoldados = new JLabel();
         label_moralDoPovo = new JLabel();
         label_nivelDosSuprimentos = new JLabel();
-        
         
         configuraMenu();
                 
@@ -198,6 +206,7 @@ public class JogoView extends JFrame implements Observer{
         configuraNivelDosSuprimentos();
         configuraForcaDaMuralha();
         configuraLocalDosSoldados();
+        configuraCartaAtual();
         desenhoDosProgressosInimigos.repaint();
     }
 
@@ -216,14 +225,7 @@ public class JogoView extends JFrame implements Observer{
         painelEsquerda.setBackground(Color.decode("#2c3e50"));
         painelEsquerda.setBorder(BorderFactory.createEmptyBorder(0,10,10,10));  // Adiciona bordas ao redor do jPanel
         
-        
-        
-        
-        // Adiciona elementos ao painel
-        
-        painelEsquerda.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
-        painelEsquerda.add(img_carta1);
-        painelEsquerda.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
+        configuraCartaAtual();
     }
 
     private void configuraPainelDireita() {
@@ -250,6 +252,52 @@ public class JogoView extends JFrame implements Observer{
     }
 
   
+    private void configuraCartaAtual(){
+        painelEsquerda.removeAll(); // Remover a imagem anterior
+        
+        JLabel label_NomeDaCarta = new JLabel();
+        JLabel label_NomeDoEvento = new JLabel();
+        // Descobrir qual a carta atual
+        Carta cartaAtual = m.getCartaAtual();
+        JLabel img_CartaAtual = img_carta0;
+        
+        if(cartaAtual == null){
+            img_CartaAtual = img_carta0;
+        }else if(cartaAtual.getNr() == 1){
+            img_CartaAtual = img_carta1;
+        }else if(cartaAtual.getNr() == 2){
+            img_CartaAtual = img_carta2;
+        }else if(cartaAtual.getNr() == 3){
+            img_CartaAtual = img_carta3;
+        }else if(cartaAtual.getNr() == 4){
+            img_CartaAtual = img_carta4;
+        }else if(cartaAtual.getNr() == 5){
+            img_CartaAtual = img_carta5;
+        }else if(cartaAtual.getNr() == 6){
+            img_CartaAtual = img_carta6;
+        }else if(cartaAtual.getNr() == 7){
+            img_CartaAtual = img_carta7;
+        }
+        label_NomeDaCarta.setForeground(Color.white);
+        label_NomeDaCarta.setFont(new Font("Serif", Font.CENTER_BASELINE, 30));
+        if(cartaAtual != null)
+            label_NomeDaCarta.setText("" + cartaAtual);
+        
+        if(cartaAtual != null)
+            label_NomeDoEvento.setText("Evento: " + m.eventoAtual(cartaAtual));
+        
+        label_NomeDoEvento.setForeground(Color.white);
+        label_NomeDoEvento.setFont(new Font("Serif", Font.CENTER_BASELINE, 30));
+        
+        
+        // Adiciona elementos ao painel
+        
+        painelEsquerda.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
+        painelEsquerda.add(label_NomeDaCarta);
+        painelEsquerda.add(img_CartaAtual);
+        painelEsquerda.add(label_NomeDoEvento);
+        painelEsquerda.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
+    }
     
     private void configuraPainelBase() {
         painelBase.setBackground(Color.decode("#2c3e50"));
@@ -257,11 +305,10 @@ public class JogoView extends JFrame implements Observer{
 
     private void configuraPainelCentro() {
         painelCentro.setLayout(new BorderLayout());
-        painelCentro.add(desenhoDosProgressosInimigos);
+        painelCentro.add(desenhoDosProgressosInimigos, BorderLayout.CENTER);
         desenhoDosProgressosInimigos.setBackground(Color.decode("#34495e"));
         painelCentro.setBackground(Color.decode("#34495e"));
-        
-        
+
     }
 
     
@@ -381,6 +428,4 @@ public class JogoView extends JFrame implements Observer{
         label_localDosSoldados.setIcon(iconeEscolhido);
     }
 
-    
-    
 }

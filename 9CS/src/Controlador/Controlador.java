@@ -108,12 +108,8 @@ public class Controlador implements ActionListener{ // CONTROLLER
         } catch (InterruptedException ex) {
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
-       m.alteraPosSoldados(+1);
-       m.setDia(m.getDia() + 1);
-       m.alteraPovo(-1);
-       m.alteraMuralha(-1);
-       m.alteraSuprimentos(-1);
-       m.alteraLocalEscadas(-1);
+       m.virarCarta();
+       
        
         try {
             
@@ -124,9 +120,9 @@ public class Controlador implements ActionListener{ // CONTROLLER
         }
        //
        
-       cartaVirada = m.virarCarta();
-       eventoAtual = m.eventoAtual(cartaVirada);
-       
+//       cartaVirada = m.virarCarta();
+//       eventoAtual = m.eventoAtual(cartaVirada);
+//       
        
        
 //       // ANTES DE TUDO, VERIFICA SE EXISTEM SOLDADOS NO TUNEL
