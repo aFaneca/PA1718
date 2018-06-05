@@ -42,6 +42,10 @@ import sun.java2d.SunGraphicsEnvironment;
  *
  * @author me
  */
+
+
+
+
 public class JogoView extends JFrame implements Observer{
     Mundo m;
     JLabel label_dia, label_forcaDaMuralha, label_nivelDosSuprimentos, label_moralDoPovo, label_localDosSoldados;
@@ -53,7 +57,7 @@ public class JogoView extends JFrame implements Observer{
     Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4;
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
-    
+    JPanel desenhoDosProgressosInimigos;
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
         this.setResizable(true); // Permite que a janela seja redimensionada
@@ -117,8 +121,11 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelTopo();
         painelBase = new JPanel();
         configuraPainelBase();
+        desenhoDosProgressosInimigos = new DesenhoDosProgressosInimigos(m);
         painelCentro = new JPanel();
         configuraPainelCentro();
+        
+        
         
         add(painelEsquerda, BorderLayout.WEST);
         add(painelDireita, BorderLayout.EAST);
@@ -190,7 +197,8 @@ public class JogoView extends JFrame implements Observer{
         configuraMoralDoPovo();
         configuraNivelDosSuprimentos();
         configuraForcaDaMuralha();
-        configuraLocalDosSoldados(); 
+        configuraLocalDosSoldados();
+        desenhoDosProgressosInimigos.repaint();
     }
 
     public void mostraPopup(String mensagemDeErro){
@@ -248,7 +256,12 @@ public class JogoView extends JFrame implements Observer{
     }
 
     private void configuraPainelCentro() {
+        painelCentro.setLayout(new BorderLayout());
+        painelCentro.add(desenhoDosProgressosInimigos);
+        desenhoDosProgressosInimigos.setBackground(Color.decode("#34495e"));
         painelCentro.setBackground(Color.decode("#34495e"));
+        
+        
     }
 
     

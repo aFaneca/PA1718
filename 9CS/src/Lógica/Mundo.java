@@ -496,6 +496,14 @@ public class Mundo extends Observable implements Serializable{
         return fortaleza.posDaTorre();
     }
     
+    public int getPosArietes(){ // OBTÉM A POSIÇÃO DA TORRE DE CERCO
+        return fortaleza.posArietes();
+    }
+    
+    public int getPosEscadas(){ // OBTÉM A POSIÇÃO DA TORRE DE CERCO
+        return fortaleza.posEscadas();
+    }
+    
     public List<Inimigo> getListaDeInimigos(){
         return fortaleza.getListaDeInimigos();
     }
@@ -589,6 +597,10 @@ public class Mundo extends Observable implements Serializable{
 
     public void alteraNrCatapultas(int var) {
         fortaleza.alteraNrCatapultas(var);
+    }
+    
+    public void alteraLocalEscadas(int var){
+        fortaleza.getListaDeInimigos().get(fortaleza.getListaDeInimigos().indexOf(fortaleza.getEscada())).setLocal(1);
     }
 
     

@@ -121,6 +121,19 @@ public class Fortaleza implements Serializable{
         return -1;
     }
     
+    public int posArietes() {
+        if(inimigos.contains(ariete))
+            return inimigos.get(inimigos.indexOf(ariete)).local;
+        return -1;
+    }
+    
+    public int posEscadas() {
+        if(inimigos.contains(escada))
+            return inimigos.get(inimigos.indexOf(escada)).local;
+        return -1;
+    }
+    
+    
     public void removerTorre(){
         inimigos.remove(torre);
  
@@ -304,4 +317,5 @@ public class Fortaleza implements Serializable{
                 + "\n MORAL DO POVO: " + povo.getMoral()
                 + "\n NIVEL DE SUPRIMENTOS: " + suprimento.getNivel();
     }   
+
 }

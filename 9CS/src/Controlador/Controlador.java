@@ -113,6 +113,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
        m.alteraPovo(-1);
        m.alteraMuralha(-1);
        m.alteraSuprimentos(-1);
+       m.alteraLocalEscadas(-1);
        
         try {
             
