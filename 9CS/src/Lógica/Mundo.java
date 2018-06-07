@@ -34,7 +34,7 @@ public class Mundo extends Observable implements Serializable{
     private Dado dado;
     private Fortaleza fortaleza;
     private List<Carta> cartas;
-    private List<List<Inimigo>> inimigos;
+    
     private List<Evento> eventos;
     private IEstados estadoAtual; 
     private static int cartasViradas;
@@ -56,6 +56,8 @@ public class Mundo extends Observable implements Serializable{
     }
     
     public void gerarCartas(){
+        List<List<Inimigo>> inimigos;
+        
         // INICIALIZAÇÃO
         inimigos = new ArrayList<>(3);
         

@@ -61,6 +61,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
         menuInicial.addListener(this, menuInicial.getBotao_sair());
         menuInicial.addListener(this, menuInicial.getBotao_continuarJogo());
         menuInicial.addListener(this, menuInicial.getBotao_iniciarJogo());
+        jogoView.addListener(this, jogoView.getBotao_Continuar());
     }
     
     public void run() {
@@ -109,7 +110,8 @@ public class Controlador implements ActionListener{ // CONTROLLER
             Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
         }
        m.virarCarta();
-       
+       m.setDia(m.getDia() + 1);
+       m.alteraPosSoldados(+1);
        
         try {
             
@@ -208,6 +210,10 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (menuInicial.getBotao_continuarJogo())){
              menuInicial.mostraErro("Ainda não implementado...");
+         }
+         else if(origem == (jogoView.getBotao_Continuar())){
+             jogoView.mostraPopup("VAMOS CONTINUAR!!!");
+             jogoView.trocarPainel("painelAcoes");
          }
     }
     

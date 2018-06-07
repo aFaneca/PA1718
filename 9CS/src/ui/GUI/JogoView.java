@@ -6,9 +6,13 @@
 package ui.GUI;
 
 
+import Lógica.Acao;
+import Lógica.Ações.*;
 import Lógica.Carta;
+import Lógica.Evento;
 import Lógica.Mundo;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
@@ -19,8 +23,11 @@ import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import javafx.scene.layout.Border;
@@ -29,6 +36,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -61,8 +69,13 @@ public class JogoView extends JFrame implements Observer{
     Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4;
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
-    JPanel desenhoDosProgressosInimigos;
-
+    JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
+    JPanel painelInfo, painelAcoes, painelAcoes2;
+    CardLayout cl;
+    JButton botao_Continuar;
+    JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
+    JButton botao_NaoRealizarMaisAcoes;
+    JLabel label_mensagemInicial, label_acoesDisponiveis;
     
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
@@ -111,6 +124,16 @@ public class JogoView extends JFrame implements Observer{
         img_carta6 = new JLabel(new ImageIcon("imagens/cartas/6.JPG"));
         img_carta7 = new JLabel(new ImageIcon("imagens/cartas/7.JPG"));
         
+        // Inicialização dos Botões das Ações
+        botao_AtaqueDeAguaFervente = new JButton("Ataque de Água Fervente");
+        botao_AtaqueDeArqueiros = new JButton("Ataque de Arqueiros");
+        botao_AtaqueDeCloseCombat = new JButton("Ataque De Close Combat");
+        botao_MotivarTropas = new JButton("Motivar as Tropas");
+        botao_MovimentarSoldadosNoTunel = new JButton("Movimentar Soldados no Túnel");
+        botao_Raid = new JButton("Raid");
+        botao_RepararMuralha = new JButton("Reparar Muralha");
+        botao_Sabotagem = new JButton("Sabotagem");
+        botao_NaoRealizarMaisAcoes = new JButton("Não Fazer Nada");
         
         // Inicialização das jLabels
         label_dia = new JLabel();
@@ -118,6 +141,8 @@ public class JogoView extends JFrame implements Observer{
         label_localDosSoldados = new JLabel();
         label_moralDoPovo = new JLabel();
         label_nivelDosSuprimentos = new JLabel();
+        label_mensagemInicial = new JLabel("", SwingConstants.CENTER);
+        label_acoesDisponiveis = new JLabel("", SwingConstants.CENTER);
         
         configuraMenu();
                 
@@ -131,9 +156,12 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelBase();
         desenhoDosProgressosInimigos = new DesenhoDosProgressosInimigos(m);
         painelCentro = new JPanel();
+        painelCentroBaixo = new JPanel();
+        painelInfo = new JPanel();
+        painelAcoes = new JPanel();
+        painelAcoes2 = new JPanel();
+        cl = new CardLayout();
         configuraPainelCentro();
-        
-        
         
         add(painelEsquerda, BorderLayout.WEST);
         add(painelDireita, BorderLayout.EAST);
@@ -208,6 +236,7 @@ public class JogoView extends JFrame implements Observer{
         configuraLocalDosSoldados();
         configuraCartaAtual();
         desenhoDosProgressosInimigos.repaint();
+        configuraPainelAcoes();
     }
 
     public void mostraPopup(String mensagemDeErro){
@@ -308,10 +337,153 @@ public class JogoView extends JFrame implements Observer{
         painelCentro.add(desenhoDosProgressosInimigos, BorderLayout.CENTER);
         desenhoDosProgressosInimigos.setBackground(Color.decode("#34495e"));
         painelCentro.setBackground(Color.decode("#34495e"));
+        configuraPainelCentroBaixo();
+        painelCentro.add(painelCentroBaixo, BorderLayout.SOUTH);
 
     }
 
+    private void configuraPainelCentroBaixo(){
+        
+        painelCentroBaixo.setLayout(cl);
+        
+        /* 
+            Que diferentes Paineis vão estar no CardLayour?
+                - Painel com texto e um botão para avançar - painelInfo
+                - Painel com as ações disponíveis (para escolha) - painelAcoes
+                - Painel com opções das ações de ataque
+                - Painel com opções da ação de Movimentar Soldados no Túnel
+                - ...
+        */
     
+        
+        configuraPainelInfo("<html>Bem-vindo! Clique em <FONT COLOR = YELLOW>\"Continuar\"</FONT> para prosseguir com o jogo!</html>");
+        configuraPainelAcoes();
+        
+        painelCentroBaixo.add(painelInfo, "painelInfo");
+        painelCentroBaixo.add(painelAcoes, "painelAcoes");
+       
+    
+    }
+    
+    private void configuraPainelInfo(String mensagem){
+        
+        /*
+            Este painel é composto por:
+                - 1 bloco de texto informativo em cima - label_Mensagem
+                - 1 botão em baixo que permite avançar para a próxima secção do jogo - botao_Continuar
+        
+        */
+        painelInfo.setLayout(new BorderLayout());
+        painelInfo.setBackground(Color.decode("#405972"));
+        painelInfo.setPreferredSize(new Dimension(200,300));
+        
+        JLabel label_Mensagem = new JLabel("", SwingConstants.CENTER);
+        label_Mensagem.setText(mensagem);
+        label_Mensagem.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Mensagem.setForeground(Color.white);
+        
+        botao_Continuar = new JButton("Continuar >>");
+        botao_Continuar.setBorderPainted(false);
+        botao_Continuar.setFocusPainted(false);
+        botao_Continuar.setForeground(Color.white);
+        botao_Continuar.setPreferredSize(new Dimension(120,80));
+        botao_Continuar.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar.setBackground(Color.decode("#104919"));
+        painelInfo.add(botao_Continuar, BorderLayout.AFTER_LAST_LINE);
+        painelInfo.add(label_Mensagem, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcoes(){
+        List<JButton> botoesDisponiveis;
+        List<Acao> acoesDisponiveis = new ArrayList<>();
+
+        /*
+            Este painel vai mostrar a seguinte informação:
+                - Mensagem inicial a introduzir a escolha de ações
+                - Nr. de APAs Disponíveis
+                - Lista de Ações - JRadioButton (dentro do seu próprio painel interno) - painelAcoes2
+        */
+        painelAcoes.setLayout(new BorderLayout());
+        painelAcoes.setBackground(Color.decode("#405972"));
+        
+        label_mensagemInicial.setText("<html><center>Por favor, selecione uma das ações abaixo para aplicar!</center></html>");
+        label_mensagemInicial.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_mensagemInicial.setForeground(Color.white);
+        
+        
+        
+        // PAINEL DE ACOES 2 - LISTA DAS AÇÕES DISPONÍVEIS
+        painelAcoes2.setBackground(new Color(0,0,0,0)); // TRANSPARENTE (r, g, b, a <- opacidade)
+        // Descobrir a lista de ações permitidas pelo Evento Atual
+            // Descobrir qual a carta atual
+        Carta cartaAtual = m.getCartaAtual();
+        if(cartaAtual != null){
+            // Nr. de Ações Disponíveis
+            label_acoesDisponiveis.setText("Ações Disponíveis: " + m.eventoAtual(cartaAtual).getAPA() + m.eventoAtual(cartaAtual));
+            label_acoesDisponiveis.setFont(new Font("Serif", Font.PLAIN, 30));
+            
+            
+            Evento eventoAtual = m.eventoAtual(cartaAtual);
+            acoesDisponiveis.addAll(eventoAtual.getAcoesPermitidas());   
+        }
+        
+        
+        
+        
+        
+        
+        // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
+        // que vai cruzar os botões recebidos com a lista de ações disponíveis e fazer a filtração
+        botoesDisponiveis = new ArrayList<>(getBotoesDisponiveis(acoesDisponiveis));
+        
+        for(JButton botao : botoesDisponiveis){
+             botao.setVerticalTextPosition(SwingConstants.TOP);
+             botao.setHorizontalTextPosition(SwingConstants.CENTER);
+             painelAcoes2.add(botao);
+        }
+        
+        
+        // Fazer as adições ao painel principal
+        painelAcoes.add(label_mensagemInicial, BorderLayout.NORTH);
+        painelAcoes.add(label_acoesDisponiveis, BorderLayout.CENTER);
+        painelAcoes.add(painelAcoes2, BorderLayout.SOUTH);
+        
+    }
+    
+    
+    
+    // Faz o cruzamento entre os botões disponíveis e a lista recebida de ações disponíveis e retorna um resultado filtrado dessa lista
+    List<JButton> getBotoesDisponiveis(List<Acao> acoes){
+        List<JButton> botoesFiltrados = new ArrayList<>();
+        
+        for(Acao a : acoes){
+            if(a instanceof AtaqueDeAguaFervente)
+                botoesFiltrados.add(botao_AtaqueDeAguaFervente);
+            else if(a instanceof AtaqueDeArqueiros)
+                botoesFiltrados.add(botao_AtaqueDeAguaFervente);
+            else if(a instanceof AtaqueDeCloseCombat)
+                botoesFiltrados.add(botao_AtaqueDeCloseCombat);
+            else if(a instanceof MotivarTropas)
+                botoesFiltrados.add(botao_MotivarTropas);
+            else if(a instanceof MovimentarSoldadosNoTunel)
+                botoesFiltrados.add(botao_MovimentarSoldadosNoTunel);
+            else if(a instanceof Raid)
+                botoesFiltrados.add(botao_Raid);
+            else if(a instanceof RepararMuralha)
+                botoesFiltrados.add(botao_RepararMuralha);
+            else if(a instanceof Sabotagem)
+                botoesFiltrados.add(botao_Sabotagem);
+        }
+        
+        botoesFiltrados.add(botao_NaoRealizarMaisAcoes);
+        return botoesFiltrados;
+    }
+    
+    
+    // Troca entre os vários Paineis de CardLayout
+    public void trocarPainel(String painelEscolhido){ 
+        cl.show(painelCentroBaixo, painelEscolhido);
+    }
     
     private void configuraDia(){
         // jLabel que indica o dia atual
@@ -427,5 +599,25 @@ public class JogoView extends JFrame implements Observer{
         label_localDosSoldados.setToolTipText("Soldados: " + local);
         label_localDosSoldados.setIcon(iconeEscolhido);
     }
+    
+    public void addListener(ActionListener controlador, JButton botao){
+        botao.addActionListener(controlador);	
+    }
+    
+    
+    
+    // GETTERS & SETTERS
+
+    public JButton getBotao_Continuar() {
+        return botao_Continuar;
+    }
+
+    public CardLayout getCl() {
+        return cl;
+    }
+    
+    
+     
+          
 
 }
