@@ -7,6 +7,7 @@ package Controlador;
 
 import Estados.AguardaCarta;
 import Estados.AguardaInicio;
+import Estados.AguardaLeituraDeInfo;
 import Estados.AguardaSelecaoDeAcao;
 import Estados.DiaTerminado;
 import Estados.IEstados;
@@ -62,17 +63,28 @@ public class Controlador implements ActionListener{ // CONTROLLER
         menuInicial.addListener(this, menuInicial.getBotao_continuarJogo());
         menuInicial.addListener(this, menuInicial.getBotao_iniciarJogo());
         jogoView.addListener(this, jogoView.getBotao_Continuar());
+        jogoView.addListener(this, jogoView.getBotao_RodarDado_SoldadosEmLinhasInimigas());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_SoldadosSeguros());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_RodarDado());
+        
     }
     
     public void run() {
         while (!sair) {      
             IEstados estado = m.getEstado();  
             
-            
+
             if(estado instanceof AguardaInicio){
                 menuInicial.setVisible(true);
 
             }
+            else if(estado instanceof AguardaLeituraDeInfo){
+                
+                menuInicial.setVisible(false);
+                jogoView.setVisible(true);
+                
+            }
+                
                 //m.novoJogo();
             else if(estado instanceof AguardaCarta){
                 virarCarta();
@@ -98,36 +110,41 @@ public class Controlador implements ActionListener{ // CONTROLLER
     }
     
     private void virarCarta(){
-       menuInicial.setVisible(false);
+//       menuInicial.setVisible(false);
        // PARA TESTES
 //       jogoView.getLabel_forcaDaMuralha().setText("->Força da Muralha: " + m.getForcaDaMuralha());
 //       jogoView.getLabel_dia().setText("->Dia: " + m.getDia());
        
-       jogoView.setVisible(true);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-        }
-       m.virarCarta();
-       m.setDia(m.getDia() + 1);
-       m.alteraPosSoldados(+1);
-       
-        try {
-            
-
-            Thread.sleep(10000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-        }
+//       jogoView.setVisible(true);
+//        try {
+//            Thread.sleep(3000);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//       m.virarCarta();
+//       m.setDia(m.getDia() + 1);
+//       m.alteraPosSoldados(+1);
+//       
+//        try {
+//            
+//
+//            Thread.sleep(10000);
+//        } catch (InterruptedException ex) {
+//            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+//        }
        //
        
-//       cartaVirada = m.virarCarta();
-//       eventoAtual = m.eventoAtual(cartaVirada);
+       cartaVirada = m.virarCarta();
+       eventoAtual = m.eventoAtual(cartaVirada);
+       
+       
+       
+       
+       m.setEstado(m.getEstado().proximoEstado());
 //       
        
        
-//       // ANTES DE TUDO, VERIFICA SE EXISTEM SOLDADOS NO TUNEL
+//       // ANTES DE TUDO, VERIFICA SE EXISTEM SOLDADOS EM LINHAS INIMIGAS
 //       if(m.soldadosEmLinhasInimigas()){
 //           System.out.println("Temos soldados corajosos em linhas inimigas.");
 //           ui_PressioneNoEnterPara("rodar o dado e determinar o seu destino.");
@@ -207,13 +224,28 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (menuInicial.getBotao_iniciarJogo())){
              m.novoJogo();
+             jogoView.trocarPainel("painelInfo");
          }
          else if(origem == (menuInicial.getBotao_continuarJogo())){
              menuInicial.mostraErro("Ainda não implementado...");
          }
          else if(origem == (jogoView.getBotao_Continuar())){
-             jogoView.mostraPopup("VAMOS CONTINUAR!!!");
-             jogoView.trocarPainel("painelAcoes");
+             m.getEstado().verificarSoldados(jogoView);
+             //jogoView.trocarPainel("painelAcoes");
+         }
+         else if(origem == (jogoView.getBotao_RodarDado_SoldadosEmLinhasInimigas())){
+             // Continuar para a secção de Rodar Dado
+             m.getEstado().testaSorteDosSoldados();
+             jogoView.trocarPainel("painelRodarDado");
+         }
+         else if(origem == (jogoView.getBotao_Continuar_SoldadosSeguros())){
+             // Continuar para a secção VirarCarta
+             m.setEstado(m.getEstado().virarCarta());
+         }
+         else if(origem == (jogoView.getBotao_Continuar_RodarDado())){
+             System.out.println("ADFAS");
+             // Continuar para a secção VirarCarta
+             m.setEstado(m.getEstado().virarCarta());
          }
     }
     

@@ -6,9 +6,11 @@
 package ui.GUI;
 
 
+import Estados.AguardaLeituraDeInfo;
 import Lógica.Acao;
 import Lógica.Ações.*;
 import Lógica.Carta;
+import Lógica.Constantes;
 import Lógica.Evento;
 import Lógica.Mundo;
 import java.awt.BorderLayout;
@@ -70,12 +72,13 @@ public class JogoView extends JFrame implements Observer{
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
-    JPanel painelInfo, painelAcoes, painelAcoes2;
+    JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado;
     CardLayout cl;
-    JButton botao_Continuar;
+    JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros;
     JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
-    JButton botao_NaoRealizarMaisAcoes;
+    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
+    JLabel label_Mensagem;
     
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
@@ -134,6 +137,10 @@ public class JogoView extends JFrame implements Observer{
         botao_RepararMuralha = new JButton("Reparar Muralha");
         botao_Sabotagem = new JButton("Sabotagem");
         botao_NaoRealizarMaisAcoes = new JButton("Não Fazer Nada");
+
+        // Inicialização dos jButtons
+        botao_Continuar_RodarDado = new JButton("Virar Carta >>");
+        
         
         // Inicialização das jLabels
         label_dia = new JLabel();
@@ -160,8 +167,12 @@ public class JogoView extends JFrame implements Observer{
         painelInfo = new JPanel();
         painelAcoes = new JPanel();
         painelAcoes2 = new JPanel();
+        painelSoldadosSeguros = new JPanel();
+        painelSoldadosEmLinhasInimigas = new JPanel();
+        painelRodarDado = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
+        
         
         add(painelEsquerda, BorderLayout.WEST);
         add(painelDireita, BorderLayout.EAST);
@@ -236,7 +247,11 @@ public class JogoView extends JFrame implements Observer{
         configuraLocalDosSoldados();
         configuraCartaAtual();
         desenhoDosProgressosInimigos.repaint();
-        configuraPainelAcoes();
+        configuraPainelRodarDado();
+
+        
+        if(m.getEstado() instanceof AguardaLeituraDeInfo)
+            trocarPainel("painelInfo");
     }
 
     public void mostraPopup(String mensagemDeErro){
@@ -326,6 +341,10 @@ public class JogoView extends JFrame implements Observer{
         painelEsquerda.add(img_CartaAtual);
         painelEsquerda.add(label_NomeDoEvento);
         painelEsquerda.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
+        
+        //painelEsquerda.repaint();
+        painelEsquerda.revalidate();
+        //painelCentroBaixo.revalidate();
     }
     
     private void configuraPainelBase() {
@@ -343,12 +362,15 @@ public class JogoView extends JFrame implements Observer{
     }
 
     private void configuraPainelCentroBaixo(){
-        
+
         painelCentroBaixo.setLayout(cl);
         
         /* 
             Que diferentes Paineis vão estar no CardLayour?
                 - Painel com texto e um botão para avançar - painelInfo
+                - Painel que verifica a posição dos soldados antes de virar carta (SOLDADOS NO CASTELO) - painelSoldadosSeguros
+                - Painel que verifica a posição dos soldados antes de virar carta (SOLDADOS EM LINHAS INIMIGAS) - painelSoldadosEmLinhasInimigas
+                - Painel com o resultado da rodagem do dado - painelRodaDado
                 - Painel com as ações disponíveis (para escolha) - painelAcoes
                 - Painel com opções das ações de ataque
                 - Painel com opções da ação de Movimentar Soldados no Túnel
@@ -356,17 +378,110 @@ public class JogoView extends JFrame implements Observer{
         */
     
         
-        configuraPainelInfo("<html>Bem-vindo! Clique em <FONT COLOR = YELLOW>\"Continuar\"</FONT> para prosseguir com o jogo!</html>");
+        configuraPainelInfo();
+        configuraPainelSoldadosSeguros();
+        configuraPainelSoldadosEmLinhasInimigas();
         configuraPainelAcoes();
+        configuraPainelRodarDado();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
-       
-    
+        painelCentroBaixo.add(painelSoldadosSeguros, "painelSoldadosSeguros");
+        painelCentroBaixo.add(painelSoldadosEmLinhasInimigas, "painelSoldadosEmLinhasInimigas");
+        painelCentroBaixo.add(painelRodarDado, "painelRodarDado");
+        
+        painelCentroBaixo.revalidate();
     }
     
-    private void configuraPainelInfo(String mensagem){
+    private void configuraPainelRodarDado(){
+        painelRodarDado.removeAll();
+        painelRodarDado.setLayout(new BorderLayout());
+        painelRodarDado.setBackground(Color.decode("#405972"));
+        painelRodarDado.setPreferredSize(new Dimension(200,300));
         
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        int resultado = m.getUltimoResultadoDoDado();
+        if(resultado > Constantes.SOLDADOS_EM_LINHAS_INIMIGAS_SEM_SORTE.getValor()){
+            // TUDO CORREU BEM
+            label_Msg.setText("O Resultado do dado foi " + m.getUltimoResultadoDoDado() + ". Os seus soldados continuam em segurança!");
+        }else{
+            // SOLDADOS CAPTURADOS
+            label_Msg.setText("O Resultado do dado foi " + m.getUltimoResultadoDoDado() + ". Os seus soldados foram capturados!");
+        }
+        
+
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        
+        
+        
+        
+        botao_Continuar_RodarDado.setBorderPainted(false);
+        botao_Continuar_RodarDado.setFocusPainted(false);
+        botao_Continuar_RodarDado.setForeground(Color.white);
+        botao_Continuar_RodarDado.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_RodarDado.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_RodarDado.setBackground(Color.decode("#104919"));
+        painelRodarDado.add(botao_Continuar_RodarDado, BorderLayout.AFTER_LAST_LINE);
+        painelRodarDado.add(label_Msg, BorderLayout.CENTER);
+        
+    }
+    private void configuraPainelSoldadosSeguros(){
+        /*
+            Este painel é composto por:
+                - 1 bloco de texto informativo em cima - label_Mensagem
+                - 1 botão em baixo que permite avançar para a próxima secção do jogo - botao_Continuar
+        
+        */
+        painelSoldadosSeguros.setLayout(new BorderLayout());
+        painelSoldadosSeguros.setBackground(Color.decode("#405972"));
+        painelSoldadosSeguros.setPreferredSize(new Dimension(200,300));
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("Não tem nenhum soldado em linhas inimigas. Todos estão em segurança :)");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        
+        botao_Continuar_SoldadosSeguros = new JButton("Virar Carta >>");
+        botao_Continuar_SoldadosSeguros.setBorderPainted(false);
+        botao_Continuar_SoldadosSeguros.setFocusPainted(false);
+        botao_Continuar_SoldadosSeguros.setForeground(Color.white);
+        botao_Continuar_SoldadosSeguros.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_SoldadosSeguros.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_SoldadosSeguros.setBackground(Color.decode("#104919"));
+        painelSoldadosSeguros.add(botao_Continuar_SoldadosSeguros, BorderLayout.AFTER_LAST_LINE);
+        painelSoldadosSeguros.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelSoldadosEmLinhasInimigas(){
+        /*
+            Este painel é composto por:
+                - 1 bloco de texto informativo em cima - label_Mensagem
+                - 1 botão em baixo que permite avançar para a próxima secção do jogo - botao_Continuar
+        
+        */
+        painelSoldadosEmLinhasInimigas.setLayout(new BorderLayout());
+        painelSoldadosEmLinhasInimigas.setBackground(Color.decode("#405972"));
+        painelSoldadosEmLinhasInimigas.setPreferredSize(new Dimension(200,300));
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("Tem soldados em linhas inimigas. Rode o dado para determinar o seu destino...");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+      
+        botao_RodarDado_SoldadosEmLinhasInimigas = new JButton("Rodar o Dado >>");
+        botao_RodarDado_SoldadosEmLinhasInimigas.setBorderPainted(false);
+        botao_RodarDado_SoldadosEmLinhasInimigas.setFocusPainted(false);
+        botao_RodarDado_SoldadosEmLinhasInimigas.setForeground(Color.white);
+        botao_RodarDado_SoldadosEmLinhasInimigas.setPreferredSize(new Dimension(120,80));
+        botao_RodarDado_SoldadosEmLinhasInimigas.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_RodarDado_SoldadosEmLinhasInimigas.setBackground(Color.decode("#104919"));
+        painelSoldadosEmLinhasInimigas.add(botao_RodarDado_SoldadosEmLinhasInimigas, BorderLayout.AFTER_LAST_LINE);
+        painelSoldadosEmLinhasInimigas.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelInfo(){
+
         /*
             Este painel é composto por:
                 - 1 bloco de texto informativo em cima - label_Mensagem
@@ -377,8 +492,8 @@ public class JogoView extends JFrame implements Observer{
         painelInfo.setBackground(Color.decode("#405972"));
         painelInfo.setPreferredSize(new Dimension(200,300));
         
-        JLabel label_Mensagem = new JLabel("", SwingConstants.CENTER);
-        label_Mensagem.setText(mensagem);
+        label_Mensagem = new JLabel("", SwingConstants.CENTER);
+        label_Mensagem.setText(m.getMensagemParaJogador());
         label_Mensagem.setFont(new Font("Serif", Font.PLAIN, 30));
         label_Mensagem.setForeground(Color.white);
         
@@ -426,12 +541,7 @@ public class JogoView extends JFrame implements Observer{
             Evento eventoAtual = m.eventoAtual(cartaAtual);
             acoesDisponiveis.addAll(eventoAtual.getAcoesPermitidas());   
         }
-        
-        
-        
-        
-        
-        
+   
         // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
         // que vai cruzar os botões recebidos com a lista de ações disponíveis e fazer a filtração
         botoesDisponiveis = new ArrayList<>(getBotoesDisponiveis(acoesDisponiveis));
@@ -481,8 +591,10 @@ public class JogoView extends JFrame implements Observer{
     
     
     // Troca entre os vários Paineis de CardLayout
-    public void trocarPainel(String painelEscolhido){ 
+    public void trocarPainel(String painelEscolhido){
+        label_Mensagem.setText(m.getMensagemParaJogador());
         cl.show(painelCentroBaixo, painelEscolhido);
+        
     }
     
     private void configuraDia(){
@@ -614,6 +726,18 @@ public class JogoView extends JFrame implements Observer{
 
     public CardLayout getCl() {
         return cl;
+    }
+
+    public JButton getBotao_RodarDado_SoldadosEmLinhasInimigas() {
+        return botao_RodarDado_SoldadosEmLinhasInimigas;
+    }
+
+    public JButton getBotao_Continuar_SoldadosSeguros() {
+        return botao_Continuar_SoldadosSeguros;
+    }
+
+    public JButton getBotao_Continuar_RodarDado() {
+        return botao_Continuar_RodarDado;
     }
     
     

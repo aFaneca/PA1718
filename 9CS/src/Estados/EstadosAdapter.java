@@ -9,6 +9,7 @@ import Lógica.Evento;
 import Lógica.Inimigo;
 import Lógica.Mundo;
 import java.io.Serializable;
+import ui.GUI.JogoView;
 
 
 public class EstadosAdapter implements IEstados, Serializable{
@@ -114,4 +115,23 @@ public class EstadosAdapter implements IEstados, Serializable{
     public IEstados aplicarAcoes() {
         return this;
     }
+    
+    @Override
+    public IEstados virarCarta(){
+        return this;
+    }
+    
+    public IEstados mostraInfo(String mensagem){
+
+        return this;
+    }
+
+    public IEstados verificarSoldados(JogoView view){
+        return this;
+    }
+    
+     public IEstados testaSorteDosSoldados(){
+         return this;
+     }
+
 }

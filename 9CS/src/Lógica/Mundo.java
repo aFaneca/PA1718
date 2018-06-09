@@ -40,11 +40,11 @@ public class Mundo extends Observable implements Serializable{
     private static int cartasViradas;
     private int dia;
     private Carta cartaAtual;
-    
+    private String mensagemParaJogador; // mensagem a mostrar ao utilizador
     
     public Mundo(){
         estadoAtual = new AguardaInicio(this);
-        dado = new Dado();
+        dado = new Dado(this);
         fortaleza = new Fortaleza(this);
         cartas = new ArrayList<>();
         eventos = new ArrayList<>();
@@ -52,7 +52,6 @@ public class Mundo extends Observable implements Serializable{
         gerarCartas();
         cartasViradas = 0;
         dia = 1;
-    
     }
     
     public void gerarCartas(){
@@ -193,7 +192,10 @@ public class Mundo extends Observable implements Serializable{
     
     public void novoJogo(){
         baralharCartas();
-        setEstado(estadoAtual.proximoEstado());
+        mensagemParaJogador = "<html>Bem-vindo! Clique em <FONT COLOR = YELLOW>\"Continuar\"</FONT> para prosseguir com o jogo!</html>";
+        setEstado(estadoAtual.mostraInfo(mensagemParaJogador));
+        setChanged();
+        notifyObservers();
     }
     
     public Carta virarCarta(){
@@ -207,6 +209,7 @@ public class Mundo extends Observable implements Serializable{
         
         
         logger.log(Level.INFO, " - {0} -", cartaAtual.getNr());
+        
         setChanged();
         notifyObservers();
         
@@ -266,6 +269,7 @@ public class Mundo extends Observable implements Serializable{
     
     public void soldadosCapturados(){
         fortaleza.soldadosCapturados();
+        notificaAlteracao();
     }
     
     public boolean temDRM(Evento evento){
@@ -624,5 +628,23 @@ public class Mundo extends Observable implements Serializable{
     
     public void fimDoDia(){
         estadoAtual.aplicarAcoes();
+    }
+    
+    
+    public void setMensagemParaJogador(String msg){
+        mensagemParaJogador = msg;
+    }
+    
+    public String getMensagemParaJogador(){
+        return mensagemParaJogador;
+    }
+    
+    public int getUltimoResultadoDoDado(){
+        return dado.getUltimoResultado();
+    }
+
+    public void notificaAlteracao() {
+        setChanged();
+        notifyObservers();
     }
 }

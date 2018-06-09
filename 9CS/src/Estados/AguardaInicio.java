@@ -19,10 +19,10 @@ public class AguardaInicio extends EstadosAdapter implements Serializable{
     }
 
 @Override
-    public IEstados proximoEstado(){
+    public IEstados mostraInfo(String mensagem){
         //this.getMundo().
         
-        return new AguardaCarta(this.getMundo());
+        return new AguardaLeituraDeInfo(this.getMundo(), mensagem);
     }
     
 }

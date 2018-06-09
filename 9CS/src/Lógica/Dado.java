@@ -13,9 +13,11 @@ import java.util.Random;
  */
 class Dado implements Serializable{
     Random random;
-
-    public Dado(){
+    int ultimoResultado;
+    Mundo m;
+    public Dado(Mundo m){
         random = new Random();
+        this.m = m;
     }
     
     
@@ -23,6 +25,18 @@ class Dado implements Serializable{
         int min = 1;
         int max = 6;
         
-        return random.nextInt(max) + min;
+        setUltimoResultado(random.nextInt(max) + min);
+
+        return ultimoResultado;
+    }
+    
+    
+    public int getUltimoResultado(){
+        return ultimoResultado;
+    }
+    
+    public void setUltimoResultado(int valor){
+        ultimoResultado = valor;
+        m.notificaAlteracao();
     }
 }

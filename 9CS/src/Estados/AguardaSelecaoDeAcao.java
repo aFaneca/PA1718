@@ -17,6 +17,7 @@ import java.io.Serializable;
  */ 
 public class AguardaSelecaoDeAcao extends EstadosAdapter implements Serializable{
     Mundo m;
+    
     public AguardaSelecaoDeAcao(Mundo m){
         super(m);
         this.m = m;

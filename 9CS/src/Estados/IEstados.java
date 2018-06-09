@@ -7,6 +7,7 @@ package Estados;
 
 import Lógica.Evento;
 import Lógica.Inimigo;
+import ui.GUI.JogoView;
 
 /**
  *
@@ -38,4 +39,9 @@ public interface IEstados {
     
     IEstados avancaInimigos(Evento evento);
     IEstados aplicarAcoes(); // Aplica as ações de final de dia (reduzir supplies, etc)
+    
+    public IEstados virarCarta();
+    public IEstados mostraInfo(String mensagem);
+    public IEstados verificarSoldados(JogoView view);
+     public IEstados testaSorteDosSoldados();
 }
