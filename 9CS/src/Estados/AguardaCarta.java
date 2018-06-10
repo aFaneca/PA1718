@@ -35,7 +35,9 @@ public class AguardaCarta extends EstadosAdapter implements Serializable{
     @Override
     public IEstados avancaInimigos(Evento evento){
         for(Inimigo i : evento.getInimigosDoEvento()){
-            i.setLocal(i.getLocal() - 1);
+            //i.setLocal(i.getLocal() - 1);
+            i.alterarLocal(-1);
+            m.notificaAlteracao();
         }
         
         // O ESTADO SEGUINTE É AguardaSelecaoDeAcao

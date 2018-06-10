@@ -53,6 +53,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
     private String motivoFimDoJogo;
     Evento eventoAtual;
     Carta cartaVirada;
+    boolean pausa;
     
     public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
@@ -66,40 +67,56 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.addListener(this, jogoView.getBotao_RodarDado_SoldadosEmLinhasInimigas());
         jogoView.addListener(this, jogoView.getBotao_Continuar_SoldadosSeguros());
         jogoView.addListener(this, jogoView.getBotao_Continuar_RodarDado());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_Eventos());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_DRMS());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_AvancoInimigo());
+        
+        // Adicionar listeners a todos os botões de ações
+        jogoView.addListener(this, jogoView.getBotao_MotivarTropas());
+        jogoView.addListener(this, jogoView.getBotao_MovimentarSoldadosNoTunel());
+        jogoView.addListener(this, jogoView.getBotao_NaoRealizarMaisAcoes());
+        jogoView.addListener(this, jogoView.getBotao_Raid());
+        jogoView.addListener(this, jogoView.getBotao_RepararMuralha());
+        jogoView.addListener(this, jogoView.getBotao_Sabotagem());
+        jogoView.addListener(this, jogoView.getBotao_AtaqueDeAguaFervente());
+        jogoView.addListener(this, jogoView.getBotao_AtaqueDeArqueiros());
+        jogoView.addListener(this, jogoView.getBotao_AtaqueDeCloseCombat());
+        pausa = false;
         
     }
     
     public void run() {
-        while (!sair) {      
+        while (!sair) {     
+//            if(pausa) // Só executar este loop nas fases em que o jogo não está em pausa
+//                continue; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
             IEstados estado = m.getEstado();  
-            
-
+            //System.out.println(estado);
             if(estado instanceof AguardaInicio){
                 menuInicial.setVisible(true);
 
             }
             else if(estado instanceof AguardaLeituraDeInfo){
-                
+
                 menuInicial.setVisible(false);
                 jogoView.setVisible(true);
-                
+
             }
-                
                 //m.novoJogo();
             else if(estado instanceof AguardaCarta){
                 virarCarta();
             }
-            
+
             else if(estado instanceof AguardaSelecaoDeAcao){
                 //processaAcoes();
+                jogoView.trocarPainel("painelAcoes");
             }
-                
-            
+
+
             else if(estado instanceof DiaTerminado){
                 //fimDoDia();
             }
-                
-            
+
+
             else if(estado instanceof JogoTerminado){
                 //fimDoJogo();
                 sair = true;
@@ -110,6 +127,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
     }
     
     private void virarCarta(){
+        
 //       menuInicial.setVisible(false);
        // PARA TESTES
 //       jogoView.getLabel_forcaDaMuralha().setText("->Força da Muralha: " + m.getForcaDaMuralha());
@@ -133,75 +151,33 @@ public class Controlador implements ActionListener{ // CONTROLLER
 //            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
 //        }
        //
-       
+       pausa = true;
        cartaVirada = m.virarCarta();
        eventoAtual = m.eventoAtual(cartaVirada);
        
        
        
-       
-       m.setEstado(m.getEstado().proximoEstado());
-//       
-       
-       
-//       // ANTES DE TUDO, VERIFICA SE EXISTEM SOLDADOS EM LINHAS INIMIGAS
-//       if(m.soldadosEmLinhasInimigas()){
-//           System.out.println("Temos soldados corajosos em linhas inimigas.");
-//           ui_PressioneNoEnterPara("rodar o dado e determinar o seu destino.");
-//           
-//           int resultado = m.sorteDosSoldados();
-//           if(resultado > Constantes.SOLDADOS_EM_LINHAS_INIMIGAS_SEM_SORTE.getValor()){
-//               System.out.println("A sorte está do seu lado! O resultado do dado foi " + resultado + " e os soldados continuam indetetados em linhas inimigas.");
-//           }else{
-//               System.out.println("A sorte não está do seu lado! O resultado do dado foi " + resultado + " e os soldados foram capturados pelos inimigos");
-//               m.soldadosCapturados();
-//           }
-//       }else
-//           System.out.println("Não tem soldados em linhas inimigas. Todos estão em segurança dentro do Castelo.");
-//       
-//       
-//       ui_PressioneNoEnterPara("virar uma carta.");
-//       // VIRA A CARTA NO TOPO DO BARALHO
-//       System.out.println("Encontrou a carta " + cartaVirada + ".");
-//       System.out.println("Enfrentará agora o Evento " + eventoAtual + ".");
-//       
-//       // DESCOBRE QUAL O EVENTO ATUAL E APLICA-O
-//       if(eventoAtual instanceof AtaqueDeCatapulta)
-//           EVENTO_ataqueDeCatapulta(eventoAtual);
-//       else if(eventoAtual instanceof CatapultaReparada)
-//           EVENTO_catapultaReparada();
-//       else if(eventoAtual instanceof CoberturaDaEscuridao)
-//           EVENTO_coberturaDaEscuridao();
-//       else if(eventoAtual instanceof Colapso)
-//           EVENTO_colapso();
-//       else if(eventoAtual instanceof Doenca)
-//           EVENTO_doenca();
-//       else if(eventoAtual instanceof EscudosDeFerro)
-//           EVENTO_escudosDeFerro();
-//       else if(eventoAtual instanceof FatigaInimiga)
-//           EVENTO_fatigaInimiga();
-//       else if(eventoAtual instanceof Fe)
-//           EVENTO_fe();
-//       else if(eventoAtual instanceof FlechasFlamejantes)
-//           EVENTO_flechasFlamejantes();
-//       else if(eventoAtual instanceof GuardasDistraidos)
-//           EVENTO_guardasDistraidos();
-//       else if(eventoAtual instanceof InimigoDeterminado)
-//           EVENTO_inimigoDeterminado();
-//       else if(eventoAtual instanceof MauTempo)
-//           EVENTO_mauTempo();
-//       else if(eventoAtual instanceof MorteDeUmLider)
-//           EVENTO_morteDeUmLider();
-//       else if(eventoAtual instanceof OleoQuente)
-//           EVENTO_oleoQuente();
-//       else if(eventoAtual instanceof PortaFortificada)
-//           EVENTO_portaFortificada();
-//      else if(eventoAtual instanceof Reuniao)
-//           EVENTO_reuniao();
-//       else if(eventoAtual instanceof SalvaDeFlechas)
-//           EVENTO_salvaDeFlechas();
-//       else if(eventoAtual instanceof SuprimentosEstragados)
-//           EVENTO_suprimentosEstragados();
+       //m.setEstado(m.getEstado().proximoEstado());
+        
+       // DESCOBRE QUAL O EVENTO ATUAL E APLICA-O
+       if(eventoAtual instanceof AtaqueDeCatapulta)
+            EVENTO_ataqueDeCatapulta();
+       else if(eventoAtual instanceof CatapultaReparada)
+           EVENTO_catapultaReparada();
+       else if(eventoAtual instanceof Colapso)
+           EVENTO_colapso();
+       else if(eventoAtual instanceof Doenca)
+           EVENTO_doenca();
+       else if(eventoAtual instanceof MorteDeUmLider)
+           EVENTO_morteDeUmLider();
+       else if(eventoAtual instanceof SuprimentosEstragados)
+           EVENTO_suprimentosEstragados();
+       else                                      // Se não for nenhum dos eventos acima (que englobam impactos diretos no jogo),
+           jogoView.trocarPainel("painelDRMS"); //  direcionar diretamente para este painel
+
+                      // Fica aqui parado até que pausa = false (que vai ser sinalizado no listener abaixo
+       while(pausa){System.out.println("A Virar Carta...");}; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
+
 //       
 //       // MOSTRA OS DRMS ASSOCIADOS AO EVENTO
 //       mostraDRMS(eventoAtual);
@@ -213,6 +189,52 @@ public class Controlador implements ActionListener{ // CONTROLLER
 //       // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
 //       verificaCondicoesFatais();   
    } 
+    
+    
+    
+
+    private void EVENTO_ataqueDeCatapulta() {
+        m.evento_AtaqueDeCatapulta(); // Aplica o evento
+        m.setMensagemParaJogador("Sofreu danos na sua muralha, que agora tem força de " + m.getForcaDaMuralha() + ".");  
+        jogoView.trocarPainel("painelEventos");
+    }
+
+    private void EVENTO_catapultaReparada() {
+        m.evento_CatapultaReparada(); // Aplica o evento
+        m.setMensagemParaJogador("Adicionada 1 Catapulta ao inimigo. Agora possui " + m.contaCatapultas() + " catapultas.");
+        jogoView.trocarPainel("painelEventos");
+        
+    }
+
+    private void EVENTO_colapso() {
+        int resultado = m.evento_Colapso();
+        
+        if(resultado == 1)
+            m.setMensagemParaJogador("<html>Uma vez que a Torre de Cerco ainda se encontrava na posição inicial, a mesma foi destruída permanentemente. <br/>Menos uma preocupação!</html>");
+        else if(resultado == 0)
+            m.setMensagemParaJogador("Uma vez que a Torre de Cerco já não se encontrava na posição inicial, nada aconteceu.");
+    
+        jogoView.trocarPainel("painelEventos");
+    }
+
+    private void EVENTO_doenca() {
+        m.evento_Doenca();
+        m.setMensagemParaJogador("A moral e os suprimentos foram reduzidos em 1 unidade. Agora tem " + m.getMoralDoPovo() + " de moral e " + m.getSuprimentos() + " de suprimentos.");
+        jogoView.trocarPainel("painelEventos");
+    }
+
+    private void EVENTO_morteDeUmLider() {
+        m.evento_MorteDeUmLider();
+        m.setMensagemParaJogador("Que dia negro! Um dos seus líderes morreu e com isso a população perdeu 1 unidade de moral!");
+        jogoView.trocarPainel("painelEventos");
+    }
+
+    private void EVENTO_suprimentosEstragados() {
+        m.evento_SuprimentosEstragados();
+        m.setMensagemParaJogador("Devido ao clima atípico, os seus fazendeiros reportam que parte da colheita está estragada :(");
+        jogoView.trocarPainel("painelEventos");
+    }
+    
     
     
      @Override
@@ -243,9 +265,57 @@ public class Controlador implements ActionListener{ // CONTROLLER
              m.setEstado(m.getEstado().virarCarta());
          }
          else if(origem == (jogoView.getBotao_Continuar_RodarDado())){
-             System.out.println("ADFAS");
              // Continuar para a secção VirarCarta
              m.setEstado(m.getEstado().virarCarta());
+         }
+         else if(origem == (jogoView.getBotao_Continuar_Eventos())){
+             jogoView.trocarPainel("painelDRMS");
+             
+         }
+         else if(origem == (jogoView.getBotao_Continuar_DRMS())){
+             m.avancaInimigos(eventoAtual); // muda para o estado "aguardaSelecaoDeAcao"
+             jogoView.trocarPainel("painelAvancoInimigo");
+         }
+         else if(origem == (jogoView.getBotao_Continuar_AvancoInimigo())){
+             System.out.println(m.getEstado());
+             pausa = false;
+
+         }
+         
+         // LISTENERS DOS BOTÕES DE AÇÕES
+         else if(origem == (jogoView.getBotao_AtaqueDeAguaFervente())){
+             System.out.println("Ataque De Àgua Fervente");
+             pausa = false;
+
+         }
+         else if(origem == (jogoView.getBotao_AtaqueDeArqueiros())){
+             System.out.println("Ataque De Arqueiros");
+         }
+         else if(origem == (jogoView.getBotao_AtaqueDeCloseCombat())){
+             System.out.println("Ataque De Close Combat");
+         }
+         else if(origem == (jogoView.getBotao_MotivarTropas())){
+             System.out.println("Motivar Tropas");
+         }
+         else if(origem == (jogoView.getBotao_MovimentarSoldadosNoTunel())){
+             System.out.println("Movimentar Soldados No Túnel");
+         }
+         else if(origem == (jogoView.getBotao_NaoRealizarMaisAcoes())){
+             System.out.println("Não Realizar Mais Ações");
+             m.setEstado(m.getEstado().proximoEstado());
+
+         }
+         else if(origem == (jogoView.getBotao_RepararMuralha())){
+             System.out.println("Reparar Muralha");
+         }
+         else if(origem == (jogoView.getBotao_Raid())){
+             System.out.println("Raid");
+
+         }
+         else if(origem == (jogoView.getBotao_Sabotagem())){
+             System.out.println("Sabotagem");
+
+
          }
     }
     

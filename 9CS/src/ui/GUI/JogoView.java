@@ -11,7 +11,9 @@ import Lógica.Acao;
 import Lógica.Ações.*;
 import Lógica.Carta;
 import Lógica.Constantes;
+import Lógica.DRM;
 import Lógica.Evento;
+import Lógica.Inimigo;
 import Lógica.Mundo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -62,21 +64,22 @@ import sun.java2d.SunGraphicsEnvironment;
 
 public class JogoView extends JFrame implements Observer{
     Mundo m;
-    JLabel label_dia, label_forcaDaMuralha, label_nivelDosSuprimentos, label_moralDoPovo, label_localDosSoldados;
+    JLabel label_dia, label_forcaDaMuralha, label_nivelDosSuprimentos, label_moralDoPovo, label_localDosSoldados, label_nivelDosSuprimentosFurtados;
     JMenuBar menuBar_menu;
     JMenu menu_jogo, menu_sobre;
     JMenuItem menuItem_sair, menuItem_sobre;
     Icon icon_guardar, icon_carregar, icon_sair, icon_dia1, icon_dia2, icon_dia3, icon_suprimentos0, icon_suprimentos1, icon_suprimentos2, icon_suprimentos3, icon_suprimentos4;
     Icon icon_smileMuitoFeliz, icon_smileBemFeliz, icon_smileFeliz, icon_smileTriste, icon_smileZangado;
-    Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4;
+    Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4, icon_mochila0, icon_mochila1, icon_mochila2;
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
     JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado;
+    JPanel painelEventos, painelDRMS, painelAvancoInimigo;
     CardLayout cl;
     JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros;
     JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
-    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado;
+    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
     JLabel label_Mensagem;
     
@@ -118,6 +121,9 @@ public class JogoView extends JFrame implements Observer{
         icon_tunel1 = new ImageIcon("imagens/icon_tunel1.png");
         icon_tunel2 = new ImageIcon("imagens/icon_tunel2.png");
         icon_fortaleza = new ImageIcon("imagens/icon_castelo.png");
+        icon_mochila0 = new ImageIcon("imagens/icon_mochila0.png");
+        icon_mochila1 = new ImageIcon("imagens/icon_mochila1.png");
+        icon_mochila2 = new ImageIcon("imagens/icon_mochila2.png");
         img_carta0  = new JLabel(new ImageIcon("imagens/cartas/0.png"));
         img_carta1 = new JLabel(new ImageIcon("imagens/cartas/1.JPG"));
         img_carta2 = new JLabel(new ImageIcon("imagens/cartas/2.JPG"));
@@ -140,6 +146,9 @@ public class JogoView extends JFrame implements Observer{
 
         // Inicialização dos jButtons
         botao_Continuar_RodarDado = new JButton("Virar Carta >>");
+        botao_Continuar_Eventos = new JButton("Continuar >>");
+        botao_Continuar_DRMS = new JButton("Continuar >>");
+        botao_Continuar_AvancoInimigo = new JButton("Continuar >>");
         
         
         // Inicialização das jLabels
@@ -148,8 +157,10 @@ public class JogoView extends JFrame implements Observer{
         label_localDosSoldados = new JLabel();
         label_moralDoPovo = new JLabel();
         label_nivelDosSuprimentos = new JLabel();
+        label_nivelDosSuprimentosFurtados = new JLabel();
         label_mensagemInicial = new JLabel("", SwingConstants.CENTER);
         label_acoesDisponiveis = new JLabel("", SwingConstants.CENTER);
+        
         
         configuraMenu();
                 
@@ -170,6 +181,9 @@ public class JogoView extends JFrame implements Observer{
         painelSoldadosSeguros = new JPanel();
         painelSoldadosEmLinhasInimigas = new JPanel();
         painelRodarDado = new JPanel();
+        painelEventos = new JPanel();
+        painelDRMS = new JPanel();
+        painelAvancoInimigo = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -246,8 +260,13 @@ public class JogoView extends JFrame implements Observer{
         configuraForcaDaMuralha();
         configuraLocalDosSoldados();
         configuraCartaAtual();
+        configuraSuprimentosFurtados();
         desenhoDosProgressosInimigos.repaint();
         configuraPainelRodarDado();
+        configuraPainelEventos();
+        configuraPainelDRMS();
+        configuraPainelAvancoInimigo();
+        configuraPainelAcoes();
 
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
@@ -282,6 +301,7 @@ public class JogoView extends JFrame implements Observer{
         configuraNivelDosSuprimentos();
         configuraForcaDaMuralha();
         configuraLocalDosSoldados();
+        configuraSuprimentosFurtados();
 
         // Adiciona elementos ao painel
         
@@ -292,6 +312,7 @@ public class JogoView extends JFrame implements Observer{
         painelDireita.add(label_nivelDosSuprimentos);
         painelDireita.add(label_moralDoPovo);
         painelDireita.add(label_localDosSoldados);
+        painelDireita.add(label_nivelDosSuprimentosFurtados);
         painelDireita.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
     }
 
@@ -383,14 +404,124 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelSoldadosEmLinhasInimigas();
         configuraPainelAcoes();
         configuraPainelRodarDado();
+        configuraPainelEventos();
+        configuraPainelDRMS();
+        configuraPainelAvancoInimigo();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
         painelCentroBaixo.add(painelSoldadosSeguros, "painelSoldadosSeguros");
         painelCentroBaixo.add(painelSoldadosEmLinhasInimigas, "painelSoldadosEmLinhasInimigas");
         painelCentroBaixo.add(painelRodarDado, "painelRodarDado");
-        
+        painelCentroBaixo.add(painelEventos, "painelEventos");
+        painelCentroBaixo.add(painelDRMS, "painelDRMS");
+        painelCentroBaixo.add(painelAvancoInimigo, "painelAvancoInimigo");
         painelCentroBaixo.revalidate();
+    }
+    
+    private void configuraPainelAvancoInimigo(){
+        painelAvancoInimigo.removeAll();
+ 
+        painelAvancoInimigo.setLayout(new BorderLayout());
+        painelAvancoInimigo.setBackground(Color.decode("#405972"));
+        painelAvancoInimigo.setPreferredSize(new Dimension(200,300));
+        
+        // Descobrir quais os DRMS associados a este evento e fazer o seu display
+        String msg = "<html>";
+        if(m.getCartaAtual() != null){
+            Carta cartaVirada = m.getCartaAtual();
+            Evento eventoAtual = m.eventoAtual(cartaVirada);
+            if(eventoAtual.getInimigosDoEvento().isEmpty()){ // Nenhuma unidade inimiga se deve mover quando existem ataques de trebuchets (não necessita de filtração, porque nesses casos, a lista já se encontra vazia de qualquer forma
+                msg += ("De acordo com esta carta, nenhum inimigo avançará nenhuma posição neste turno.");
+            }else{
+            for(Inimigo i : eventoAtual.getInimigosDoEvento()){
+                msg += ("O inimigo " + i + " encontra-se agora na localização " + i.getLocal() + ".<br/>");
+            }
+        }
+        
+            msg += "</html>";
+        }
+
+        //
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText(msg);
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+      
+        
+        botao_Continuar_AvancoInimigo.setBorderPainted(false);
+        botao_Continuar_AvancoInimigo.setFocusPainted(false);
+        botao_Continuar_AvancoInimigo.setForeground(Color.white);
+        botao_Continuar_AvancoInimigo.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_AvancoInimigo.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_AvancoInimigo.setBackground(Color.decode("#104919"));
+        painelAvancoInimigo.add(botao_Continuar_AvancoInimigo, BorderLayout.AFTER_LAST_LINE);
+        painelAvancoInimigo.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelDRMS(){
+        painelDRMS.removeAll();
+ 
+        painelDRMS.setLayout(new BorderLayout());
+        painelDRMS.setBackground(Color.decode("#405972"));
+        painelDRMS.setPreferredSize(new Dimension(200,300));
+        
+        // Descobrir quais os DRMS associados a este evento e fazer o seu display
+        String msg = "<html>";
+        if(m.getCartaAtual() != null){
+            Carta cartaVirada = m.getCartaAtual();
+            Evento eventoAtual = m.eventoAtual(cartaVirada);
+            if(m.temDRM(eventoAtual)){ // SE O EVENTO POSSUI DRMs
+                List<DRM> drms = new ArrayList<>(m.getDRMS(eventoAtual));
+                for(DRM drm : drms){
+                    if(drm.isValida())
+                        msg += ("Este evento concedeu-lhe a seguinte DRM: " + drm + ".<br/>");
+                }      
+            }else
+                msg += ("Este evento não lhe concedeu qualquer DRM.");
+            
+            msg += "</html>";
+        }
+
+        //
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText(msg);
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+      
+        //botao_Continuar_DRMS = new JButton("Continuar >>");
+        botao_Continuar_DRMS.setBorderPainted(false);
+        botao_Continuar_DRMS.setFocusPainted(false);
+        botao_Continuar_DRMS.setForeground(Color.white);
+        botao_Continuar_DRMS.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_DRMS.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_DRMS.setBackground(Color.decode("#104919"));
+        painelDRMS.add(botao_Continuar_DRMS, BorderLayout.AFTER_LAST_LINE);
+        painelDRMS.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelEventos(){
+        painelEventos.removeAll();
+        painelEventos.setLayout(new BorderLayout());
+        painelEventos.setBackground(Color.decode("#405972"));
+        painelEventos.setPreferredSize(new Dimension(200,300));
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText(m.getMensagemParaJogador());
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+      
+        //botao_Continuar_Eventos = new JButton("Continuar >>");
+        botao_Continuar_Eventos.setBorderPainted(false);
+        botao_Continuar_Eventos.setFocusPainted(false);
+        botao_Continuar_Eventos.setForeground(Color.white);
+        botao_Continuar_Eventos.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_Eventos.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_Eventos.setBackground(Color.decode("#104919"));
+        painelEventos.add(botao_Continuar_Eventos, BorderLayout.AFTER_LAST_LINE);
+        painelEventos.add(label_Msg, BorderLayout.CENTER);
     }
     
     private void configuraPainelRodarDado(){
@@ -518,12 +649,13 @@ public class JogoView extends JFrame implements Observer{
                 - Nr. de APAs Disponíveis
                 - Lista de Ações - JRadioButton (dentro do seu próprio painel interno) - painelAcoes2
         */
+        painelAcoes.removeAll();
         painelAcoes.setLayout(new BorderLayout());
         painelAcoes.setBackground(Color.decode("#405972"));
-        
-        label_mensagemInicial.setText("<html><center>Por favor, selecione uma das ações abaixo para aplicar!</center></html>");
-        label_mensagemInicial.setFont(new Font("Serif", Font.PLAIN, 30));
-        label_mensagemInicial.setForeground(Color.white);
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("<html><center>Por favor, selecione uma das ações abaixo para aplicar!</center></html>");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
         
         
         
@@ -534,7 +666,7 @@ public class JogoView extends JFrame implements Observer{
         Carta cartaAtual = m.getCartaAtual();
         if(cartaAtual != null){
             // Nr. de Ações Disponíveis
-            label_acoesDisponiveis.setText("Ações Disponíveis: " + m.eventoAtual(cartaAtual).getAPA() + m.eventoAtual(cartaAtual));
+            label_acoesDisponiveis.setText("Ações Disponíveis: " + m.eventoAtual(cartaAtual).getAPA() + " para o evento " + m.eventoAtual(cartaAtual));
             label_acoesDisponiveis.setFont(new Font("Serif", Font.PLAIN, 30));
             
             
@@ -554,7 +686,7 @@ public class JogoView extends JFrame implements Observer{
         
         
         // Fazer as adições ao painel principal
-        painelAcoes.add(label_mensagemInicial, BorderLayout.NORTH);
+        painelAcoes.add(label_Msg, BorderLayout.NORTH);
         painelAcoes.add(label_acoesDisponiveis, BorderLayout.CENTER);
         painelAcoes.add(painelAcoes2, BorderLayout.SOUTH);
         
@@ -594,6 +726,7 @@ public class JogoView extends JFrame implements Observer{
     public void trocarPainel(String painelEscolhido){
         label_Mensagem.setText(m.getMensagemParaJogador());
         cl.show(painelCentroBaixo, painelEscolhido);
+        //m.notificaAlteracao();
         
     }
     
@@ -638,6 +771,22 @@ public class JogoView extends JFrame implements Observer{
         label_moralDoPovo.setIcon(iconeEscolhido);
     }
 
+    private void configuraSuprimentosFurtados(){
+         // jLabel que indica o nível atual dos suprimentos (supplies)
+        label_nivelDosSuprimentosFurtados.setAlignmentX(CENTER_ALIGNMENT);
+        label_nivelDosSuprimentosFurtados.setToolTipText("Suprimentos Furtados: " + m.getSuprimentosFurtados());
+        Icon iconeEscolhido = null;
+        switch(m.getSuprimentosFurtados()){
+            case 2: iconeEscolhido = icon_mochila2;
+                break;
+            case 1: iconeEscolhido = icon_mochila1;
+                break;
+            case 0: iconeEscolhido = icon_mochila0;
+                break;
+        }
+        
+        label_nivelDosSuprimentosFurtados.setIcon(iconeEscolhido);
+    }
     private void configuraNivelDosSuprimentos() {
         // jLabel que indica o nível atual dos suprimentos (supplies)
         label_nivelDosSuprimentos.setAlignmentX(CENTER_ALIGNMENT);
@@ -738,6 +887,54 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_Continuar_RodarDado() {
         return botao_Continuar_RodarDado;
+    }
+
+    public JButton getBotao_Continuar_Eventos() {
+        return botao_Continuar_Eventos;
+    }
+
+    public JButton getBotao_Continuar_DRMS() {
+        return botao_Continuar_DRMS;
+    }
+
+    public JButton getBotao_Continuar_AvancoInimigo() {
+        return botao_Continuar_AvancoInimigo;
+    }
+
+    public JButton getBotao_AtaqueDeAguaFervente() {
+        return botao_AtaqueDeAguaFervente;
+    }
+
+    public JButton getBotao_AtaqueDeArqueiros() {
+        return botao_AtaqueDeArqueiros;
+    }
+
+    public JButton getBotao_AtaqueDeCloseCombat() {
+        return botao_AtaqueDeCloseCombat;
+    }
+
+    public JButton getBotao_MotivarTropas() {
+        return botao_MotivarTropas;
+    }
+
+    public JButton getBotao_MovimentarSoldadosNoTunel() {
+        return botao_MovimentarSoldadosNoTunel;
+    }
+
+    public JButton getBotao_Raid() {
+        return botao_Raid;
+    }
+
+    public JButton getBotao_RepararMuralha() {
+        return botao_RepararMuralha;
+    }
+
+    public JButton getBotao_Sabotagem() {
+        return botao_Sabotagem;
+    }
+
+    public JButton getBotao_NaoRealizarMaisAcoes() {
+        return botao_NaoRealizarMaisAcoes;
     }
     
     

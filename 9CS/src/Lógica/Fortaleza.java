@@ -318,4 +318,17 @@ public class Fortaleza implements Serializable{
                 + "\n NIVEL DE SUPRIMENTOS: " + suprimento.getNivel();
     }   
 
+    void alteraPosArietes(int var) {
+        inimigos.get(inimigos.indexOf(ariete)).alterarLocal(var);
+               
+    }
+
+    void alteraPosEscadas(int var) {
+        inimigos.get(inimigos.indexOf(escada)).alterarLocal(var);
+    }
+
+    void alteraPosTorres(int var) {
+        inimigos.get(inimigos.indexOf(torre)).alterarLocal(var);
+    }
+
 }

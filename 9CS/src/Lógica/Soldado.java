@@ -19,7 +19,7 @@ class Soldado implements Serializable{
     
     public Soldado(Fortaleza fortaleza){
         this.fortaleza = fortaleza;
-        local = 3;
+        local = 0;
         capturado = false;
         suprimentosFurtados = 0;
     }

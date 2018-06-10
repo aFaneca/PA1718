@@ -51,7 +51,7 @@ public class Mundo extends Observable implements Serializable{
         cartaAtual = null;
         gerarCartas();
         cartasViradas = 0;
-        dia = 1;
+        dia = 2;
     }
     
     public void gerarCartas(){
@@ -187,6 +187,7 @@ public class Mundo extends Observable implements Serializable{
     
     public void baralharCartas(){
         Collections.shuffle(cartas);
+        logger.log(Level.INFO, " - {0} -", cartas);
     }
     
     
@@ -194,8 +195,7 @@ public class Mundo extends Observable implements Serializable{
         baralharCartas();
         mensagemParaJogador = "<html>Bem-vindo! Clique em <FONT COLOR = YELLOW>\"Continuar\"</FONT> para prosseguir com o jogo!</html>";
         setEstado(estadoAtual.mostraInfo(mensagemParaJogador));
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
     }
     
     public Carta virarCarta(){
@@ -210,8 +210,7 @@ public class Mundo extends Observable implements Serializable{
         
         logger.log(Level.INFO, " - {0} -", cartaAtual.getNr());
         
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
         
         return cartaAtual;
     }
@@ -231,26 +230,22 @@ public class Mundo extends Observable implements Serializable{
     
     public void alteraMuralha(int quant){
         fortaleza.alteraMuralha(quant);
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
     }
     
     public void alteraSuprimentos(int quant){
         fortaleza.alteraSuprimentos(quant);
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
     }
     
     public void alteraPosSoldados(int var){
         fortaleza.alteraPosSoldados(var);
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
     }
     
     public void alteraPovo(int var){
         fortaleza.alteraPovo(var);
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
     }
     public boolean soldadosNoTunel(){
 
@@ -542,6 +537,10 @@ public class Mundo extends Observable implements Serializable{
         return fortaleza.getSuprimentos();
     }
     
+    public int getSuprimentosFurtados(){
+        return fortaleza.getSuprimentosFurtados();
+    }
+    
     public int getPosDosSoldados(){
         return fortaleza.getPosicaoSoldados();
     }
@@ -615,6 +614,7 @@ public class Mundo extends Observable implements Serializable{
 
     public void alteraSuprimentosFurtados(int var) {
         fortaleza.alteraSuprimentosFurtados(var);
+        notificaAlteracao();
     }
 
     public void alteraNrCatapultas(int var) {
@@ -633,6 +633,7 @@ public class Mundo extends Observable implements Serializable{
     
     public void setMensagemParaJogador(String msg){
         mensagemParaJogador = msg;
+        notificaAlteracao();
     }
     
     public String getMensagemParaJogador(){
@@ -646,5 +647,18 @@ public class Mundo extends Observable implements Serializable{
     public void notificaAlteracao() {
         setChanged();
         notifyObservers();
+    }
+    
+    public void alteraPosArietes(int var){
+        fortaleza.alteraPosArietes(var);
+        notificaAlteracao();
+    }
+    public void alteraPosEscadas(int var){
+        fortaleza.alteraPosEscadas(var);
+        notificaAlteracao();
+    }
+    public void alteraPosTorres(int var){
+        fortaleza.alteraPosTorres(var);
+        notificaAlteracao();
     }
 }

@@ -108,7 +108,7 @@ public class DesenhoDosProgressosInimigos extends JPanel{
         
         
         //
-        posTorres = m.getPosTorre();
+        posTorres = m.getPosTorre(); // retorna -1 se já não existirem torres no jogo
         posEscadas = m.getPosEscadas();
         posArietes = m.getPosArietes();
 

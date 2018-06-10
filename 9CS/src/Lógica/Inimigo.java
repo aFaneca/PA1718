@@ -25,10 +25,11 @@ public abstract class Inimigo implements Serializable{
         return local;
     }
     
+
+    
     public void setLocal(int l){
         local = l;
-        if(local < 0) local = 0;
-        if(local > 3) local = 3;
+        
     }
     
     public int getForca(){
@@ -46,7 +47,7 @@ public abstract class Inimigo implements Serializable{
         local += var;
         
         if(local < 0) local = 0;
-        if(local > 3) local = 3;
+        if(local > 4) local = 4;
     }
     
     @Override
