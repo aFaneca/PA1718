@@ -11,7 +11,9 @@ import Estados.IEstados;
 import Estados.JogoTerminado;
 import Lógica.Ações.AtaqueDeAguaFervente;
 import Lógica.Ações.AtaqueDeArqueiros;
+import Lógica.Ações.AtaqueDeCloseCombat;
 import Lógica.Ações.MotivarTropas;
+import Lógica.Ações.MovimentarSoldadosNoTunel;
 import Lógica.Ações.Raid;
 import Lógica.Ações.RepararMuralha;
 import Lógica.Ações.Sabotagem;
@@ -51,7 +53,7 @@ public class Mundo extends Observable implements Serializable{
         cartaAtual = null;
         gerarCartas();
         cartasViradas = 0;
-        dia = 2;
+        dia = 1;
     }
     
     public void gerarCartas(){
@@ -463,6 +465,74 @@ public class Mundo extends Observable implements Serializable{
             
     }
     
+    public Acao getAcao(Evento evento, String acao){
+        
+        if(acao == "AtaqueDeAguaFervente"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof AtaqueDeAguaFervente)
+                    return ac;
+            }
+        }
+        else if(acao == "AtaqueDeArqueiros"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof AtaqueDeArqueiros)
+                    return ac;
+            }
+        }
+        else if(acao == "AtaqueDeCloseCombat"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof AtaqueDeCloseCombat)
+                    return ac;
+            }
+        }
+        else if(acao == "MotivarTropas"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof MotivarTropas)
+                    return ac;
+            }
+        }
+        else if(acao == "MovimentarSoldadosNoTunel"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof MovimentarSoldadosNoTunel)
+                    return ac;
+            }
+        }
+        else if(acao == "Raid"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof Raid)
+                    return ac;
+            }
+        }
+        else if(acao == "RepararMuralha"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof RepararMuralha)
+                    return ac;
+            }
+        }
+        else if(acao == "Sabotagem"){
+            for(Acao ac : evento.getAcoesPermitidas()){
+                if(ac instanceof Sabotagem)
+                    return ac;
+            }
+        }
+        
+        return null;
+    }
+    
+    public void consomeAcaoAtual(String acao){
+        Carta cartaVirada = getCartaAtual();
+        Evento eventoAtual = eventoAtual(cartaVirada);
+        Acao acaoEscolhida = getAcao(eventoAtual, acao); // recebe a ação atual
+
+        if(!acaoEscolhida.isReutilizavel()) // SE A AÇÃO ATUAL NÃO FOR REUTILIZÁVEL
+            eventoAtual.removerAcao(acaoEscolhida); // REMOVER A AÇÃO DO LEQUE DE AÇÕES DISPONÍVEIS
+
+        eventoAtual.decrementaAPA(); // RETIRAR DO NR. DE APA'S DISPONÍVEIS O QUE FOI UTILIZADO AGORA
+        System.out.println("fdsfsad" + eventoAtual.getAcoesPermitidas());
+
+        notificaAlteracao();      
+    }
+    
     public void removerTorre(){
         fortaleza.removerTorre();
     }
@@ -644,6 +714,9 @@ public class Mundo extends Observable implements Serializable{
         return dado.getUltimoResultado();
     }
 
+    public void setUltimoResultadoDoDado(int nr){
+        dado.ultimoResultado = nr;
+    }
     public void notificaAlteracao() {
         setChanged();
         notifyObservers();

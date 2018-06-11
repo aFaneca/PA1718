@@ -53,7 +53,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
     private String motivoFimDoJogo;
     Evento eventoAtual;
     Carta cartaVirada;
-    boolean pausa;
+    boolean pausa, pausa_acoes;
     
     public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
@@ -81,7 +81,10 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.addListener(this, jogoView.getBotao_AtaqueDeAguaFervente());
         jogoView.addListener(this, jogoView.getBotao_AtaqueDeArqueiros());
         jogoView.addListener(this, jogoView.getBotao_AtaqueDeCloseCombat());
-        pausa = false;
+        
+        jogoView.addListener(this, jogoView.getBotao_RodarDado_repararMuralha());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_repararMuralha());
+        pausa = pausa_acoes = false;
         
     }
     
@@ -109,6 +112,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
             else if(estado instanceof AguardaSelecaoDeAcao){
                 //processaAcoes();
                 jogoView.trocarPainel("painelAcoes");
+                selecaoDeAcao();
             }
 
 
@@ -126,31 +130,14 @@ public class Controlador implements ActionListener{ // CONTROLLER
         
     }
     
-    private void virarCarta(){
+    private void selecaoDeAcao(){
+        pausa_acoes = true;
         
-//       menuInicial.setVisible(false);
-       // PARA TESTES
-//       jogoView.getLabel_forcaDaMuralha().setText("->Força da Muralha: " + m.getForcaDaMuralha());
-//       jogoView.getLabel_dia().setText("->Dia: " + m.getDia());
-       
-//       jogoView.setVisible(true);
-//        try {
-//            Thread.sleep(3000);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//       m.virarCarta();
-//       m.setDia(m.getDia() + 1);
-//       m.alteraPosSoldados(+1);
-//       
-//        try {
-//            
-//
-//            Thread.sleep(10000);
-//        } catch (InterruptedException ex) {
-//            Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-       //
+        while(pausa_acoes){System.out.println("A Selecionar Ação...");};
+    }
+    
+    private void virarCarta(){
+
        pausa = true;
        cartaVirada = m.virarCarta();
        eventoAtual = m.eventoAtual(cartaVirada);
@@ -235,6 +222,13 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.trocarPainel("painelEventos");
     }
     
+    // AÇÕES
+    private void acao_repararMuralha(){
+        m.setUltimoResultadoDoDado(m.acao_RepararMuralha(eventoAtual)); // De forma a que o ultimo resultado possa contabilizar também os DRMs adicionados posateriormente
+        m.consomeAcaoAtual("RepararMuralha");
+        jogoView.trocarPainel("painelAcao_repararMuralha2");
+    }
+
     
     
      @Override
@@ -303,10 +297,13 @@ public class Controlador implements ActionListener{ // CONTROLLER
          else if(origem == (jogoView.getBotao_NaoRealizarMaisAcoes())){
              System.out.println("Não Realizar Mais Ações");
              m.setEstado(m.getEstado().proximoEstado());
+             pausa_acoes = false;
 
          }
          else if(origem == (jogoView.getBotao_RepararMuralha())){
              System.out.println("Reparar Muralha");
+             jogoView.trocarPainel("painelAcao_repararMuralha");
+             
          }
          else if(origem == (jogoView.getBotao_Raid())){
              System.out.println("Raid");
@@ -314,9 +311,16 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_Sabotagem())){
              System.out.println("Sabotagem");
-
-
          }
+         
+         else if(origem == (jogoView.getBotao_RodarDado_repararMuralha())){
+             // Rodar o dado e determinar o destino da ação
+             acao_repararMuralha();
+         }
+         else if(origem == (jogoView.getBotao_Continuar_repararMuralha())){
+             pausa_acoes = false;
+         }
+             
     }
     
 }

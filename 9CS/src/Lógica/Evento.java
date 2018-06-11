@@ -64,6 +64,10 @@ public abstract class Evento implements Serializable{
 
     public void setAPA(int APA) {this.APA = APA;}
     
+    public void decrementaAPA(){
+        APA--;
+    }
+    
     protected boolean temDRM(){
         if(drms.isEmpty())
             return false;

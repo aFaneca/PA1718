@@ -75,11 +75,11 @@ public class JogoView extends JFrame implements Observer{
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
     JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado;
-    JPanel painelEventos, painelDRMS, painelAvancoInimigo;
+    JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2;
     CardLayout cl;
-    JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros;
+    JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros, botao_Continuar_repararMuralha;
     JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
-    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo;
+    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
     JLabel label_Mensagem;
     
@@ -149,6 +149,8 @@ public class JogoView extends JFrame implements Observer{
         botao_Continuar_Eventos = new JButton("Continuar >>");
         botao_Continuar_DRMS = new JButton("Continuar >>");
         botao_Continuar_AvancoInimigo = new JButton("Continuar >>");
+        botao_RodarDado_repararMuralha = new JButton("Rodar Dado >>");
+        botao_Continuar_repararMuralha = new JButton("Continuar >>");
         
         
         // Inicialização das jLabels
@@ -184,6 +186,8 @@ public class JogoView extends JFrame implements Observer{
         painelEventos = new JPanel();
         painelDRMS = new JPanel();
         painelAvancoInimigo = new JPanel();
+        painelAcao_repararMuralha = new JPanel();
+        painelAcao_repararMuralha2 = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -267,6 +271,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelDRMS();
         configuraPainelAvancoInimigo();
         configuraPainelAcoes();
+        configuraPainelAcao_repararMuralha();
+        configuraPainelAcao_repararMuralha2();
 
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
@@ -407,6 +413,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelEventos();
         configuraPainelDRMS();
         configuraPainelAvancoInimigo();
+        configuraPainelAcao_repararMuralha();
+        configuraPainelAcao_repararMuralha2();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
@@ -416,7 +424,87 @@ public class JogoView extends JFrame implements Observer{
         painelCentroBaixo.add(painelEventos, "painelEventos");
         painelCentroBaixo.add(painelDRMS, "painelDRMS");
         painelCentroBaixo.add(painelAvancoInimigo, "painelAvancoInimigo");
+        painelCentroBaixo.add(painelAcao_repararMuralha, "painelAcao_repararMuralha");
+        painelCentroBaixo.add(painelAcao_repararMuralha2, "painelAcao_repararMuralha2");
         painelCentroBaixo.revalidate();
+    }
+    
+    
+    private void configuraPainelAcao_repararMuralha2(){
+        painelAcao_repararMuralha2.removeAll();
+        painelAcao_repararMuralha2.setLayout(new BorderLayout());
+        painelAcao_repararMuralha2.setBackground(Color.decode("#405972"));
+        painelAcao_repararMuralha2.setPreferredSize(new Dimension(200,300));
+        
+        //
+        // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            if(m.getCartaAtual() != null){
+                Carta cartaVirada = m.getCartaAtual();
+                Evento eventoAtual = m.eventoAtual(cartaVirada);
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof RepararMuralha){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+            }
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        
+        if(m.getUltimoResultadoDoDado() >= Constantes.REPARAR_MURALHA_MINIMO.getValor())
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". A força da sua muralha foi aumentada (+1).");
+        else
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". A força da sua muralha não foi aumentada.");
+        
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Continuar_repararMuralha.setText("<< Voltar às Ações");
+        botao_Continuar_repararMuralha.setBorderPainted(false);
+        botao_Continuar_repararMuralha.setFocusPainted(false);
+        botao_Continuar_repararMuralha.setForeground(Color.white);
+        botao_Continuar_repararMuralha.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_repararMuralha.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_repararMuralha.setBackground(Color.decode("#104919"));
+        painelAcao_repararMuralha2.add(botao_Continuar_repararMuralha, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_repararMuralha2.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcao_repararMuralha(){
+        painelAcao_repararMuralha.removeAll();
+        painelAcao_repararMuralha.setLayout(new BorderLayout());
+        painelAcao_repararMuralha.setBackground(Color.decode("#405972"));
+        painelAcao_repararMuralha.setPreferredSize(new Dimension(200,300));
+        
+        //
+        // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            if(m.getCartaAtual() != null){
+                Carta cartaVirada = m.getCartaAtual();
+                Evento eventoAtual = m.eventoAtual(cartaVirada);
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof RepararMuralha){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+            }
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("Para aumentar a força da muralha (+1), deve conseguir >= " + Constantes.REPARAR_MURALHA_MINIMO.getValor() + " (+" + var + " DRM) no resultado do dado.");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_RodarDado_repararMuralha.setText("Rodar Dado >>");
+        botao_RodarDado_repararMuralha.setBorderPainted(false);
+        botao_RodarDado_repararMuralha.setFocusPainted(false);
+        botao_RodarDado_repararMuralha.setForeground(Color.white);
+        botao_RodarDado_repararMuralha.setPreferredSize(new Dimension(120,80));
+        botao_RodarDado_repararMuralha.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_RodarDado_repararMuralha.setBackground(Color.decode("#104919"));
+        painelAcao_repararMuralha.add(botao_RodarDado_repararMuralha, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_repararMuralha.add(label_Msg, BorderLayout.CENTER);
     }
     
     private void configuraPainelAvancoInimigo(){
@@ -661,6 +749,7 @@ public class JogoView extends JFrame implements Observer{
         
         // PAINEL DE ACOES 2 - LISTA DAS AÇÕES DISPONÍVEIS
         painelAcoes2.setBackground(new Color(0,0,0,0)); // TRANSPARENTE (r, g, b, a <- opacidade)
+        painelAcoes2.removeAll();
         // Descobrir a lista de ações permitidas pelo Evento Atual
             // Descobrir qual a carta atual
         Carta cartaAtual = m.getCartaAtual();
@@ -672,6 +761,7 @@ public class JogoView extends JFrame implements Observer{
             
             Evento eventoAtual = m.eventoAtual(cartaAtual);
             acoesDisponiveis.addAll(eventoAtual.getAcoesPermitidas());   
+            System.out.println("11111" + eventoAtual.getAcoesPermitidas());
         }
    
         // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
@@ -684,12 +774,16 @@ public class JogoView extends JFrame implements Observer{
              painelAcoes2.add(botao);
         }
         
-        
+        painelAcoes2.revalidate();
+        painelAcoes2.repaint();
         // Fazer as adições ao painel principal
         painelAcoes.add(label_Msg, BorderLayout.NORTH);
         painelAcoes.add(label_acoesDisponiveis, BorderLayout.CENTER);
         painelAcoes.add(painelAcoes2, BorderLayout.SOUTH);
         
+        
+        painelAcoes.revalidate();
+        painelAcoes.repaint();
     }
     
     
@@ -935,6 +1029,14 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_NaoRealizarMaisAcoes() {
         return botao_NaoRealizarMaisAcoes;
+    }
+
+    public JButton getBotao_RodarDado_repararMuralha() {
+        return botao_RodarDado_repararMuralha;
+    }
+
+    public JButton getBotao_Continuar_repararMuralha() {
+        return botao_Continuar_repararMuralha;
     }
     
     
