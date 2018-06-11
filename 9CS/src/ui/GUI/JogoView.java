@@ -64,22 +64,22 @@ import sun.java2d.SunGraphicsEnvironment;
 
 public class JogoView extends JFrame implements Observer{
     Mundo m;
-    JLabel label_dia, label_forcaDaMuralha, label_nivelDosSuprimentos, label_moralDoPovo, label_localDosSoldados, label_nivelDosSuprimentosFurtados;
+    JLabel label_dia, label_forcaDaMuralha, label_nivelDosSuprimentos, label_moralDoPovo, label_localDosSoldados, label_nivelDosSuprimentosFurtados, label_nrCatapultas;
     JMenuBar menuBar_menu;
     JMenu menu_jogo, menu_sobre;
     JMenuItem menuItem_sair, menuItem_sobre;
     Icon icon_guardar, icon_carregar, icon_sair, icon_dia1, icon_dia2, icon_dia3, icon_suprimentos0, icon_suprimentos1, icon_suprimentos2, icon_suprimentos3, icon_suprimentos4;
-    Icon icon_smileMuitoFeliz, icon_smileBemFeliz, icon_smileFeliz, icon_smileTriste, icon_smileZangado;
+    Icon icon_smileMuitoFeliz, icon_smileBemFeliz, icon_smileFeliz, icon_smileTriste, icon_smileZangado, icon_catapulta1, icon_catapulta2, icon_catapulta3;
     Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4, icon_mochila0, icon_mochila1, icon_mochila2;
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
     JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado;
-    JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2;
+    JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2, painelAcao_sabotagem, painelAcao_sabotagem2;
     CardLayout cl;
-    JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros, botao_Continuar_repararMuralha;
+    JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros, botao_Continuar_repararMuralha, botao_Continuar_sabotagem;
     JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
-    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha;
+    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha, botao_RodarDado_sabotagem;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
     JLabel label_Mensagem;
     
@@ -132,6 +132,9 @@ public class JogoView extends JFrame implements Observer{
         img_carta5 = new JLabel(new ImageIcon("imagens/cartas/5.JPG"));
         img_carta6 = new JLabel(new ImageIcon("imagens/cartas/6.JPG"));
         img_carta7 = new JLabel(new ImageIcon("imagens/cartas/7.JPG"));
+        icon_catapulta1 = new ImageIcon("imagens/catapultav2-1.png");
+        icon_catapulta2 = new ImageIcon("imagens/catapultav2-2.png");
+        icon_catapulta3 = new ImageIcon("imagens/catapultav2-3.png");
         
         // Inicialização dos Botões das Ações
         botao_AtaqueDeAguaFervente = new JButton("Ataque de Água Fervente");
@@ -151,7 +154,8 @@ public class JogoView extends JFrame implements Observer{
         botao_Continuar_AvancoInimigo = new JButton("Continuar >>");
         botao_RodarDado_repararMuralha = new JButton("Rodar Dado >>");
         botao_Continuar_repararMuralha = new JButton("Continuar >>");
-        
+        botao_RodarDado_sabotagem = new JButton("Rodar Dado >>");
+        botao_Continuar_sabotagem = new JButton("Continuar >>");
         
         // Inicialização das jLabels
         label_dia = new JLabel();
@@ -162,7 +166,7 @@ public class JogoView extends JFrame implements Observer{
         label_nivelDosSuprimentosFurtados = new JLabel();
         label_mensagemInicial = new JLabel("", SwingConstants.CENTER);
         label_acoesDisponiveis = new JLabel("", SwingConstants.CENTER);
-        
+        label_nrCatapultas = new JLabel("", SwingConstants.CENTER);
         
         configuraMenu();
                 
@@ -188,6 +192,8 @@ public class JogoView extends JFrame implements Observer{
         painelAvancoInimigo = new JPanel();
         painelAcao_repararMuralha = new JPanel();
         painelAcao_repararMuralha2 = new JPanel();
+        painelAcao_sabotagem = new JPanel();
+        painelAcao_sabotagem2 = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -265,6 +271,7 @@ public class JogoView extends JFrame implements Observer{
         configuraLocalDosSoldados();
         configuraCartaAtual();
         configuraSuprimentosFurtados();
+        configuraNrCatapultas();
         desenhoDosProgressosInimigos.repaint();
         configuraPainelRodarDado();
         configuraPainelEventos();
@@ -273,6 +280,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcoes();
         configuraPainelAcao_repararMuralha();
         configuraPainelAcao_repararMuralha2();
+        configuraPainelAcao_sabotagem();
+        configuraPainelAcao_sabotagem2();
 
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
@@ -308,6 +317,7 @@ public class JogoView extends JFrame implements Observer{
         configuraForcaDaMuralha();
         configuraLocalDosSoldados();
         configuraSuprimentosFurtados();
+        configuraNrCatapultas();
 
         // Adiciona elementos ao painel
         
@@ -318,6 +328,7 @@ public class JogoView extends JFrame implements Observer{
         painelDireita.add(label_nivelDosSuprimentos);
         painelDireita.add(label_moralDoPovo);
         painelDireita.add(label_localDosSoldados);
+        painelDireita.add(label_nrCatapultas);
         painelDireita.add(label_nivelDosSuprimentosFurtados);
         painelDireita.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
     }
@@ -415,6 +426,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAvancoInimigo();
         configuraPainelAcao_repararMuralha();
         configuraPainelAcao_repararMuralha2();
+        configuraPainelAcao_sabotagem();
+        configuraPainelAcao_sabotagem2();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
@@ -426,15 +439,16 @@ public class JogoView extends JFrame implements Observer{
         painelCentroBaixo.add(painelAvancoInimigo, "painelAvancoInimigo");
         painelCentroBaixo.add(painelAcao_repararMuralha, "painelAcao_repararMuralha");
         painelCentroBaixo.add(painelAcao_repararMuralha2, "painelAcao_repararMuralha2");
+        painelCentroBaixo.add(painelAcao_sabotagem, "painelAcao_sabotagem");
+        painelCentroBaixo.add(painelAcao_sabotagem2, "painelAcao_sabotagem2");
         painelCentroBaixo.revalidate();
     }
     
-    
-    private void configuraPainelAcao_repararMuralha2(){
-        painelAcao_repararMuralha2.removeAll();
-        painelAcao_repararMuralha2.setLayout(new BorderLayout());
-        painelAcao_repararMuralha2.setBackground(Color.decode("#405972"));
-        painelAcao_repararMuralha2.setPreferredSize(new Dimension(200,300));
+    private void configuraPainelAcao_sabotagem(){
+        painelAcao_sabotagem.removeAll();
+        painelAcao_sabotagem.setLayout(new BorderLayout());
+        painelAcao_sabotagem.setBackground(Color.decode("#405972"));
+        painelAcao_sabotagem.setPreferredSize(new Dimension(200,300));
         
         //
         // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
@@ -444,12 +458,64 @@ public class JogoView extends JFrame implements Observer{
                 Carta cartaVirada = m.getCartaAtual();
                 Evento eventoAtual = m.eventoAtual(cartaVirada);
                 for(DRM drm : eventoAtual.getDrms()){
-                    if(drm.getAcao() instanceof RepararMuralha){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
+                    if(drm.getAcao() instanceof Sabotagem){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
                         temDRMS = true;
                         var += drm.getVar();
                     }
                 }
             }
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("Para fazer sabotagem, deverá conseguir um resultado >= 5. Se o resultado for 1, as tropas serão capturadas." + " (+" + var + " DRM).");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_RodarDado_sabotagem.setText("Rodar Dado >>");
+        botao_RodarDado_sabotagem.setBorderPainted(false);
+        botao_RodarDado_sabotagem.setFocusPainted(false);
+        botao_RodarDado_sabotagem.setForeground(Color.white);
+        botao_RodarDado_sabotagem.setPreferredSize(new Dimension(120,80));
+        botao_RodarDado_sabotagem.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_RodarDado_sabotagem.setBackground(Color.decode("#104919"));
+        painelAcao_sabotagem.add(botao_RodarDado_sabotagem, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_sabotagem.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcao_sabotagem2(){
+        painelAcao_sabotagem2.removeAll();
+        painelAcao_sabotagem2.setLayout(new BorderLayout());
+        painelAcao_sabotagem2.setBackground(Color.decode("#405972"));
+        painelAcao_sabotagem2.setPreferredSize(new Dimension(200,300));
+        
+
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        
+        if(m.getUltimoResultadoDoDado() >= Constantes.SABOTAGEM_MINIMO_SUCESSO.getValor())
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Danificou 1 catapulta inimiga!");
+        else if(m.getUltimoResultadoDoDado() <= Constantes.SABOTAGEM_MAXIMO_INSUCESSO.getValor())
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Enquanto tentavam sabotar as catapultas inimigas, as suas tropas foram capturadas pelo inimigo :/");
+        else
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Pouca sorte, não conseguiu efetuar sabotagem com sucesso :/");
+        
+        
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Continuar_sabotagem.setText("<< Voltar às Ações");
+        botao_Continuar_sabotagem.setBorderPainted(false);
+        botao_Continuar_sabotagem.setFocusPainted(false);
+        botao_Continuar_sabotagem.setForeground(Color.white);
+        botao_Continuar_sabotagem.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_sabotagem.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_sabotagem.setBackground(Color.decode("#104919"));
+        painelAcao_sabotagem2.add(botao_Continuar_sabotagem, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_sabotagem2.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcao_repararMuralha2(){
+        painelAcao_repararMuralha2.removeAll();
+        painelAcao_repararMuralha2.setLayout(new BorderLayout());
+        painelAcao_repararMuralha2.setBackground(Color.decode("#405972"));
+        painelAcao_repararMuralha2.setPreferredSize(new Dimension(200,300));
+        
         
         JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
         
@@ -864,7 +930,25 @@ public class JogoView extends JFrame implements Observer{
         
         label_moralDoPovo.setIcon(iconeEscolhido);
     }
-
+    
+    private void configuraNrCatapultas(){
+        // jLabel que indica o nível atual dos suprimentos (supplies)
+        label_nrCatapultas.setAlignmentX(CENTER_ALIGNMENT);
+        label_nrCatapultas.setToolTipText("Nr. De Catapultas: " + m.contaCatapultas());
+        Icon iconeEscolhido = null;
+        switch(m.contaCatapultas()){
+            case 3: iconeEscolhido = icon_catapulta3;
+                break;
+            case 2: iconeEscolhido = icon_catapulta2;
+                break;
+            case 1: iconeEscolhido = icon_catapulta1;
+                break;
+        }
+        
+        label_nrCatapultas.setIcon(iconeEscolhido);
+    }
+    
+    
     private void configuraSuprimentosFurtados(){
          // jLabel que indica o nível atual dos suprimentos (supplies)
         label_nivelDosSuprimentosFurtados.setAlignmentX(CENTER_ALIGNMENT);
@@ -1037,6 +1121,14 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_Continuar_repararMuralha() {
         return botao_Continuar_repararMuralha;
+    }
+
+    public JButton getBotao_Continuar_sabotagem() {
+        return botao_Continuar_sabotagem;
+    }
+
+    public JButton getBotao_RodarDado_sabotagem() {
+        return botao_RodarDado_sabotagem;
     }
     
     

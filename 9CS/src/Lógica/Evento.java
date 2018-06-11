@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import Lógica.DRM;
 import java.io.Serializable;
+import java.util.Collections;
 
 /**
  *
@@ -51,6 +52,7 @@ public abstract class Evento implements Serializable{
         return true;
     }
     public List<Acao> getAcoesPermitidas(){
+        if(APA == 0) return Collections.emptyList();
         return acoesPermitidas;
     }
     

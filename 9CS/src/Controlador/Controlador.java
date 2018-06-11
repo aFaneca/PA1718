@@ -84,6 +84,8 @@ public class Controlador implements ActionListener{ // CONTROLLER
         
         jogoView.addListener(this, jogoView.getBotao_RodarDado_repararMuralha());
         jogoView.addListener(this, jogoView.getBotao_Continuar_repararMuralha());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_sabotagem());
+        jogoView.addListener(this, jogoView.getBotao_RodarDado_sabotagem());
         pausa = pausa_acoes = false;
         
     }
@@ -228,7 +230,12 @@ public class Controlador implements ActionListener{ // CONTROLLER
         m.consomeAcaoAtual("RepararMuralha");
         jogoView.trocarPainel("painelAcao_repararMuralha2");
     }
-
+    
+    private void acao_sabotagem(){
+        m.setUltimoResultadoDoDado(m.acao_Sabotagem(eventoAtual));
+        m.consomeAcaoAtual("Sabotagem");
+        jogoView.trocarPainel("painelAcao_sabotagem2");
+    }
     
     
      @Override
@@ -293,6 +300,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_MovimentarSoldadosNoTunel())){
              System.out.println("Movimentar Soldados No Túnel");
+
          }
          else if(origem == (jogoView.getBotao_NaoRealizarMaisAcoes())){
              System.out.println("Não Realizar Mais Ações");
@@ -311,6 +319,10 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_Sabotagem())){
              System.out.println("Sabotagem");
+             if(!m.soldadosEmLinhasInimigas())
+                 jogoView.mostraPopup("Não possui soldados em linhas inimigas!");
+             else
+                 jogoView.trocarPainel("painelAcao_sabotagem");
          }
          
          else if(origem == (jogoView.getBotao_RodarDado_repararMuralha())){
@@ -320,7 +332,12 @@ public class Controlador implements ActionListener{ // CONTROLLER
          else if(origem == (jogoView.getBotao_Continuar_repararMuralha())){
              pausa_acoes = false;
          }
-             
+         else if(origem == (jogoView.getBotao_RodarDado_sabotagem())){
+             acao_sabotagem();
+         }
+         else if(origem == (jogoView.getBotao_Continuar_sabotagem())){
+             pausa_acoes = false;
+         }
     }
     
 }

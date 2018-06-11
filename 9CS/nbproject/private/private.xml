@@ -7,7 +7,6 @@
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Evento.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Muralha.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/ui/GUI/JogoView.java</file>
-            <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Constantes.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Mundo.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Ações/RepararMuralha.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Estados/AguardaSelecaoDeAcao.java</file>
@@ -15,6 +14,7 @@
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Controlador/Controlador.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Estados/AguardaLeituraDeInfo.java</file>
             <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Fortaleza.java</file>
+            <file>file:/D:/DOCUMENTOS/DOCUMENTOS/ISEC/ANO%202/SEMESTRE%202/PA/1718/Trabalho%20Prático/TRABALHOPRATICO/9CS/src/Lógica/Soldado.java</file>
         </group>
     </open-files>
 </project-private>
