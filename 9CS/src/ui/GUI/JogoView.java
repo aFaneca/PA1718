@@ -74,12 +74,12 @@ public class JogoView extends JFrame implements Observer{
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
-    JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado;
-    JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2, painelAcao_sabotagem, painelAcao_sabotagem2;
+    JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado, painelAcao_motivarTropas, painelAcao_motivarTropas2;
+    JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2, painelAcao_sabotagem, painelAcao_sabotagem2, painelAcao_raid, painelAcao_raid2;
     CardLayout cl;
     JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros, botao_Continuar_repararMuralha, botao_Continuar_sabotagem;
     JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
-    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha, botao_RodarDado_sabotagem;
+    JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha, botao_RodarDado_sabotagem, botao_Continuar_raid, botao_RodarDado_raid, botao_Continuar_motivarTropas, botao_RodarDado_motivarTropas, botao_RodarDado_motivarTropasBonus;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
     JLabel label_Mensagem;
     
@@ -132,9 +132,9 @@ public class JogoView extends JFrame implements Observer{
         img_carta5 = new JLabel(new ImageIcon("imagens/cartas/5.JPG"));
         img_carta6 = new JLabel(new ImageIcon("imagens/cartas/6.JPG"));
         img_carta7 = new JLabel(new ImageIcon("imagens/cartas/7.JPG"));
-        icon_catapulta1 = new ImageIcon("imagens/catapultav2-1.png");
-        icon_catapulta2 = new ImageIcon("imagens/catapultav2-2.png");
-        icon_catapulta3 = new ImageIcon("imagens/catapultav2-3.png");
+        icon_catapulta1 = new ImageIcon("imagens/catapultav3-1.png");
+        icon_catapulta2 = new ImageIcon("imagens/catapultav3-2.png");
+        icon_catapulta3 = new ImageIcon("imagens/catapultav3-3.png");
         
         // Inicialização dos Botões das Ações
         botao_AtaqueDeAguaFervente = new JButton("Ataque de Água Fervente");
@@ -156,8 +156,13 @@ public class JogoView extends JFrame implements Observer{
         botao_Continuar_repararMuralha = new JButton("Continuar >>");
         botao_RodarDado_sabotagem = new JButton("Rodar Dado >>");
         botao_Continuar_sabotagem = new JButton("Continuar >>");
-        
-        // Inicialização das jLabels
+        botao_RodarDado_raid = new JButton("Rodar Dado >>");
+        botao_Continuar_raid = new JButton("Continuar >>");
+        botao_RodarDado_motivarTropas = new JButton("Rodar Dado >>");
+        botao_Continuar_motivarTropas = new JButton("Continuar >>");
+        botao_RodarDado_motivarTropasBonus = new JButton("Rodar Dado (COM BONUS) >>");
+
+// Inicialização das jLabels
         label_dia = new JLabel();
         label_forcaDaMuralha = new JLabel();
         label_localDosSoldados = new JLabel();
@@ -194,6 +199,10 @@ public class JogoView extends JFrame implements Observer{
         painelAcao_repararMuralha2 = new JPanel();
         painelAcao_sabotagem = new JPanel();
         painelAcao_sabotagem2 = new JPanel();
+        painelAcao_raid = new JPanel();
+        painelAcao_raid2 = new JPanel();
+        painelAcao_motivarTropas = new JPanel();
+        painelAcao_motivarTropas2 = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -282,7 +291,11 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_repararMuralha2();
         configuraPainelAcao_sabotagem();
         configuraPainelAcao_sabotagem2();
-
+        configuraPainelAcao_raid();
+        configuraPainelAcao_raid2();
+        configuraPainelAcao_motivarTropas();
+        configuraPainelAcao_motivarTropas2();
+        
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
             trocarPainel("painelInfo");
@@ -323,12 +336,13 @@ public class JogoView extends JFrame implements Observer{
         
         painelDireita.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
         painelDireita.add(label_dia);
+        painelDireita.add(label_nrCatapultas);
         //painelDireita.add(new JSeparator(SwingConstants.HORIZONTAL)); // Adiciona um separador horizontal
         painelDireita.add(label_forcaDaMuralha);
         painelDireita.add(label_nivelDosSuprimentos);
         painelDireita.add(label_moralDoPovo);
         painelDireita.add(label_localDosSoldados);
-        painelDireita.add(label_nrCatapultas);
+        
         painelDireita.add(label_nivelDosSuprimentosFurtados);
         painelDireita.add( Box.createVerticalGlue() ); // Para centrar os elementos verticalmente
     }
@@ -428,6 +442,10 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_repararMuralha2();
         configuraPainelAcao_sabotagem();
         configuraPainelAcao_sabotagem2();
+        configuraPainelAcao_raid();
+        configuraPainelAcao_raid2();
+        configuraPainelAcao_motivarTropas();
+        configuraPainelAcao_motivarTropas2();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
@@ -441,7 +459,156 @@ public class JogoView extends JFrame implements Observer{
         painelCentroBaixo.add(painelAcao_repararMuralha2, "painelAcao_repararMuralha2");
         painelCentroBaixo.add(painelAcao_sabotagem, "painelAcao_sabotagem");
         painelCentroBaixo.add(painelAcao_sabotagem2, "painelAcao_sabotagem2");
+        painelCentroBaixo.add(painelAcao_raid, "painelAcao_raid");
+        painelCentroBaixo.add(painelAcao_raid2, "painelAcao_raid2");
+        painelCentroBaixo.add(painelAcao_motivarTropas, "painelAcao_motivarTropas");
+        painelCentroBaixo.add(painelAcao_motivarTropas2, "painelAcao_motivarTropas2");
         painelCentroBaixo.revalidate();
+    }
+    
+    private void configuraPainelAcao_motivarTropas(){
+        painelAcao_motivarTropas.removeAll();
+        painelAcao_motivarTropas.setLayout(new BorderLayout());
+        painelAcao_motivarTropas.setBackground(Color.decode("#405972"));
+        painelAcao_motivarTropas.setPreferredSize(new Dimension(200,300));
+        
+        //
+        // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            if(m.getCartaAtual() != null){
+                Carta cartaVirada = m.getCartaAtual();
+                Evento eventoAtual = m.eventoAtual(cartaVirada);
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof MotivarTropas){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+            }
+       String msg = "<html>Para poder aumentar a moral do povo (+1), deverá conseguir um resultado >= a " + Constantes.MOTIVAR_TROPAS_MINIMO.getValor() + " (+" + var + " DRM)."  
+           + "<br />Pode sacrificar os seus suprimentos (-1), recebendo em troca +1 no resultado do dado.</html>";
+            
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText(msg);
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_RodarDado_motivarTropas.setText("<html><center>Rodar Dado<br /> >></center></html>");
+        botao_RodarDado_motivarTropas.setBorderPainted(false);
+        botao_RodarDado_motivarTropas.setFocusPainted(false);
+        botao_RodarDado_motivarTropas.setForeground(Color.white);
+        botao_RodarDado_motivarTropas.setPreferredSize(new Dimension(200,80));
+        botao_RodarDado_motivarTropas.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_RodarDado_motivarTropas.setBackground(Color.decode("#104919"));
+        
+        botao_RodarDado_motivarTropasBonus.setText("<html><center>Rodar Dado<br />(com Bonus) <br />>> </center></html>");
+        botao_RodarDado_motivarTropasBonus.setBorderPainted(false);
+        botao_RodarDado_motivarTropasBonus.setFocusPainted(false);
+        botao_RodarDado_motivarTropasBonus.setForeground(Color.white);
+        botao_RodarDado_motivarTropasBonus.setPreferredSize(new Dimension(200,80));
+        botao_RodarDado_motivarTropasBonus.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_RodarDado_motivarTropasBonus.setBackground(Color.decode("#104919"));
+        
+        painelAcao_motivarTropas.add(botao_RodarDado_motivarTropasBonus, BorderLayout.EAST);
+        painelAcao_motivarTropas.add(botao_RodarDado_motivarTropas, BorderLayout.WEST);
+        painelAcao_motivarTropas.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcao_motivarTropas2(){
+        painelAcao_motivarTropas2.removeAll();
+        painelAcao_motivarTropas2.setLayout(new BorderLayout());
+        painelAcao_motivarTropas2.setBackground(Color.decode("#405972"));
+        painelAcao_motivarTropas2.setPreferredSize(new Dimension(200,300));
+        
+
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+
+        if(m.getUltimoResultadoDoDado()  >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor()){ 
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Conseguiu aumentar a moral do povo (+1)!");
+        }
+
+        
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Continuar_motivarTropas.setText("<< Voltar às Ações");
+        botao_Continuar_motivarTropas.setBorderPainted(false);
+        botao_Continuar_motivarTropas.setFocusPainted(false);
+        botao_Continuar_motivarTropas.setForeground(Color.white);
+        botao_Continuar_motivarTropas.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_motivarTropas.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_motivarTropas.setBackground(Color.decode("#104919"));
+        painelAcao_motivarTropas2.add(botao_Continuar_motivarTropas, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_motivarTropas2.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcao_raid(){
+        painelAcao_raid.removeAll();
+        painelAcao_raid.setLayout(new BorderLayout());
+        painelAcao_raid.setBackground(Color.decode("#405972"));
+        painelAcao_raid.setPreferredSize(new Dimension(200,300));
+        
+        //
+        // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            if(m.getCartaAtual() != null){
+                Carta cartaVirada = m.getCartaAtual();
+                Evento eventoAtual = m.eventoAtual(cartaVirada);
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof Raid){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+            }
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("<html>Para fazer raid, deverá conseguir um resultado >= 3.<br/> Se obtiver o resultado 6, conseguirá arrecadar 2 unidades de Suprimentos. Se for 1, as tropas serão capturadas." + " (+" + var + " DRM).</html>");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_RodarDado_raid.setText("Rodar Dado >>");
+        botao_RodarDado_raid.setBorderPainted(false);
+        botao_RodarDado_raid.setFocusPainted(false);
+        botao_RodarDado_raid.setForeground(Color.white);
+        botao_RodarDado_raid.setPreferredSize(new Dimension(120,80));
+        botao_RodarDado_raid.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_RodarDado_raid.setBackground(Color.decode("#104919"));
+        painelAcao_raid.add(botao_RodarDado_raid, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_raid.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelAcao_raid2(){
+        painelAcao_raid2.removeAll();
+        painelAcao_raid2.setLayout(new BorderLayout());
+        painelAcao_raid2.setBackground(Color.decode("#405972"));
+        painelAcao_raid2.setPreferredSize(new Dimension(200,300));
+        
+
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        
+       
+        if(m.getUltimoResultadoDoDado()  >= Constantes.RAID_MINIMO_SUCESSO1.getValor()){ // DEFAULT: 3,4,5,6
+            if(m.getUltimoResultadoDoDado()  >= Constantes.RAID_MINIMO_SUCESSO2.getValor()){ // DEFAULT: 6 <= RAID COM SUCESSO DE 2 SUPRIMENTOS
+                label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Conseguiu furtar 2 unidades de suprimentos!");
+            }else{  // DEFAULT: 3,4,5 <= RAID COM SUCESSO DE 1 SUPRIMENTO
+                label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Conseguiu furtar 1 unidade de suprimentos!");
+            }
+        }else{ // DEFAULT: 1 <= SOLDADOS CAPTURADOS
+            label_Msg.setText("<html>Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". <br />Os seus soldados não conseguiram efetuar o Raid e foram capturados :/</html>");
+        }
+
+        
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Continuar_raid.setText("<< Voltar às Ações");
+        botao_Continuar_raid.setBorderPainted(false);
+        botao_Continuar_raid.setFocusPainted(false);
+        botao_Continuar_raid.setForeground(Color.white);
+        botao_Continuar_raid.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_raid.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_raid.setBackground(Color.decode("#104919"));
+        painelAcao_raid2.add(botao_Continuar_raid, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_raid2.add(label_Msg, BorderLayout.CENTER);
     }
     
     private void configuraPainelAcao_sabotagem(){
@@ -1129,6 +1296,26 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_RodarDado_sabotagem() {
         return botao_RodarDado_sabotagem;
+    }
+
+    public JButton getBotao_Continuar_raid() {
+        return botao_Continuar_raid;
+    }
+
+    public JButton getBotao_RodarDado_raid() {
+        return botao_RodarDado_raid;
+    }
+
+    public JButton getBotao_Continuar_motivarTropas() {
+        return botao_Continuar_motivarTropas;
+    }
+
+    public JButton getBotao_RodarDado_motivarTropas() {
+        return botao_RodarDado_motivarTropas;
+    }
+
+    public JButton getBotao_RodarDado_motivarTropasBonus() {
+        return botao_RodarDado_motivarTropasBonus;
     }
     
     

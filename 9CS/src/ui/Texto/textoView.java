@@ -528,7 +528,7 @@ public class textoView {
             int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
             
             for(DRM drm : eventoAtual.getDrms()){
-                if(drm.getAcao() instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
+                if(drm.getAcao() instanceof MotivarTropas){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
                     temDRMS = true;
                     var += drm.getVar();
                 }

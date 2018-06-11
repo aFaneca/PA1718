@@ -86,6 +86,11 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.addListener(this, jogoView.getBotao_Continuar_repararMuralha());
         jogoView.addListener(this, jogoView.getBotao_Continuar_sabotagem());
         jogoView.addListener(this, jogoView.getBotao_RodarDado_sabotagem());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_raid());
+        jogoView.addListener(this, jogoView.getBotao_RodarDado_raid());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_motivarTropas());
+        jogoView.addListener(this, jogoView.getBotao_RodarDado_motivarTropas());
+        jogoView.addListener(this, jogoView.getBotao_RodarDado_motivarTropasBonus());
         pausa = pausa_acoes = false;
         
     }
@@ -237,6 +242,17 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.trocarPainel("painelAcao_sabotagem2");
     }
     
+    private void acao_raid(){
+        m.setUltimoResultadoDoDado(m.acao_Raid(eventoAtual));
+        m.consomeAcaoAtual("Raid");
+        jogoView.trocarPainel("painelAcao_raid2");
+    }
+    
+    private void acao_motivarTropas(boolean usarBonus){
+        m.setUltimoResultadoDoDado(m.acao_MotivarTropas(usarBonus, eventoAtual));
+        m.consomeAcaoAtual("MotivarTropas");
+        jogoView.trocarPainel("painelAcao_motivarTropas2");
+    }
     
      @Override
     public void actionPerformed(ActionEvent e) {
@@ -297,6 +313,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_MotivarTropas())){
              System.out.println("Motivar Tropas");
+             jogoView.trocarPainel("painelAcao_motivarTropas");
          }
          else if(origem == (jogoView.getBotao_MovimentarSoldadosNoTunel())){
              System.out.println("Movimentar Soldados No Túnel");
@@ -315,6 +332,10 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_Raid())){
              System.out.println("Raid");
+             if(!m.soldadosEmLinhasInimigas())
+                 jogoView.mostraPopup("Não possui soldados em linhas inimigas!");
+             else
+                 jogoView.trocarPainel("painelAcao_raid");
 
          }
          else if(origem == (jogoView.getBotao_Sabotagem())){
@@ -336,6 +357,21 @@ public class Controlador implements ActionListener{ // CONTROLLER
              acao_sabotagem();
          }
          else if(origem == (jogoView.getBotao_Continuar_sabotagem())){
+             pausa_acoes = false;
+         }
+         else if(origem == (jogoView.getBotao_RodarDado_raid())){
+             acao_raid();
+         }
+         else if(origem == (jogoView.getBotao_Continuar_raid())){
+             pausa_acoes = false;
+         }
+         else if(origem == (jogoView.getBotao_RodarDado_motivarTropasBonus())){
+             acao_motivarTropas(true);
+         }
+         else if(origem == (jogoView.getBotao_RodarDado_motivarTropas())){
+             acao_motivarTropas(false);
+         }
+         else if(origem == (jogoView.getBotao_Continuar_motivarTropas())){
              pausa_acoes = false;
          }
     }
