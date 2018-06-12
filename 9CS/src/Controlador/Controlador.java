@@ -54,11 +54,15 @@ public class Controlador implements ActionListener{ // CONTROLLER
     Evento eventoAtual;
     Carta cartaVirada;
     boolean pausa, pausa_acoes;
+    boolean movimentarSoldadosFreeJaUsado;
     
     public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
         this.menuInicial = menuInicial;
         this.jogoView = jogoView;
+        movimentarSoldadosFreeJaUsado = false;
+        
+        
         m.addObserver(jogoView); // Adiciona a View JogoView à lista de observers do Observable "Mundo", que é o Modelo no padrão MVC
         menuInicial.addListener(this, menuInicial.getBotao_sair());
         menuInicial.addListener(this, menuInicial.getBotao_continuarJogo());
@@ -91,6 +95,9 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.addListener(this, jogoView.getBotao_Continuar_motivarTropas());
         jogoView.addListener(this, jogoView.getBotao_RodarDado_motivarTropas());
         jogoView.addListener(this, jogoView.getBotao_RodarDado_motivarTropasBonus());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_movimentarSoldados());
+        jogoView.addListener(this, jogoView.getBotao_Movimentar_movimentarSoldadosFast());
+        jogoView.addListener(this, jogoView.getBotao_Movimentar_movimentarSoldadosFree());
         pausa = pausa_acoes = false;
         
     }
@@ -254,6 +261,22 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.trocarPainel("painelAcao_motivarTropas2");
     }
     
+    private void acao_movimentarSoldados(boolean fast){
+        if(fast){
+            m.acao_movimentarSoldadosNoTunel(2);
+            for(int i = 0; i < 2; i++)
+                eventoAtual.decrementaAPA();
+        }   
+        else{
+            movimentarSoldadosFreeJaUsado = true;
+            m.acao_movimentarSoldadosNoTunel(1);
+        }
+            
+        
+        jogoView.trocarPainel("painelAcao_movimentarSoldados2");
+ 
+    }
+    
      @Override
     public void actionPerformed(ActionEvent e) {
         
@@ -317,12 +340,14 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_MovimentarSoldadosNoTunel())){
              System.out.println("Movimentar Soldados No Túnel");
+             jogoView.trocarPainel("painelAcao_movimentarSoldados");
 
          }
          else if(origem == (jogoView.getBotao_NaoRealizarMaisAcoes())){
              System.out.println("Não Realizar Mais Ações");
              m.setEstado(m.getEstado().proximoEstado());
              pausa_acoes = false;
+             movimentarSoldadosFreeJaUsado = false;
 
          }
          else if(origem == (jogoView.getBotao_RepararMuralha())){
@@ -373,6 +398,18 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_Continuar_motivarTropas())){
              pausa_acoes = false;
+         }
+         else if(origem == (jogoView.getBotao_Continuar_movimentarSoldados())){
+             pausa_acoes = false;
+         }
+         else if(origem == (jogoView.getBotao_Movimentar_movimentarSoldadosFast())){
+             acao_movimentarSoldados(true);
+         }
+         else if(origem == (jogoView.getBotao_Movimentar_movimentarSoldadosFree())){
+             if(this.movimentarSoldadosFreeJaUsado)
+                 jogoView.mostraPopup("Já utilizou um movimento free neste turno!");
+             else
+                acao_movimentarSoldados(false);
          }
     }
     

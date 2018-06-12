@@ -528,7 +528,7 @@ public class Mundo extends Observable implements Serializable{
             eventoAtual.removerAcao(acaoEscolhida); // REMOVER A AÇÃO DO LEQUE DE AÇÕES DISPONÍVEIS
 
         eventoAtual.decrementaAPA(); // RETIRAR DO NR. DE APA'S DISPONÍVEIS O QUE FOI UTILIZADO AGORA
-        System.out.println("fdsfsad" + eventoAtual.getAcoesPermitidas());
+        //System.out.println("fdsfsad" + eventoAtual.getAcoesPermitidas());
 
         notificaAlteracao();      
     }

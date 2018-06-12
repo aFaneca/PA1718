@@ -74,14 +74,16 @@ public class JogoView extends JFrame implements Observer{
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
     JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
-    JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado, painelAcao_motivarTropas, painelAcao_motivarTropas2;
+    JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado, painelAcao_motivarTropas, painelAcao_motivarTropas2, painelAcao_movimentarSoldados, painelAcao_movimentarSoldados2;
     JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2, painelAcao_sabotagem, painelAcao_sabotagem2, painelAcao_raid, painelAcao_raid2;
     CardLayout cl;
     JButton botao_Continuar, botao_RodarDado_SoldadosEmLinhasInimigas, botao_Continuar_SoldadosSeguros, botao_Continuar_repararMuralha, botao_Continuar_sabotagem;
     JButton botao_AtaqueDeAguaFervente, botao_AtaqueDeArqueiros, botao_AtaqueDeCloseCombat, botao_MotivarTropas, botao_MovimentarSoldadosNoTunel, botao_Raid, botao_RepararMuralha, botao_Sabotagem;
     JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha, botao_RodarDado_sabotagem, botao_Continuar_raid, botao_RodarDado_raid, botao_Continuar_motivarTropas, botao_RodarDado_motivarTropas, botao_RodarDado_motivarTropasBonus;
+    JButton botao_Continuar_movimentarSoldados, botao_Movimentar_movimentarSoldadosFree, botao_Movimentar_movimentarSoldadosFast;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
     JLabel label_Mensagem;
+
     
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
@@ -92,7 +94,6 @@ public class JogoView extends JFrame implements Observer{
         this.setUndecorated(false);
         this.setLayout(new BorderLayout());
         this.m = m;
-        
         
         
         // Inicialização dos ícones
@@ -146,6 +147,9 @@ public class JogoView extends JFrame implements Observer{
         botao_RepararMuralha = new JButton("Reparar Muralha");
         botao_Sabotagem = new JButton("Sabotagem");
         botao_NaoRealizarMaisAcoes = new JButton("Não Fazer Nada");
+        botao_Continuar_movimentarSoldados = new JButton("Continuar >>");
+        botao_Movimentar_movimentarSoldadosFast = new JButton("Movimentar Soldados (FAST) >>");
+        botao_Movimentar_movimentarSoldadosFree = new JButton("Movimentar Soldados (FREE) >>");
 
         // Inicialização dos jButtons
         botao_Continuar_RodarDado = new JButton("Virar Carta >>");
@@ -203,6 +207,8 @@ public class JogoView extends JFrame implements Observer{
         painelAcao_raid2 = new JPanel();
         painelAcao_motivarTropas = new JPanel();
         painelAcao_motivarTropas2 = new JPanel();
+        painelAcao_movimentarSoldados = new JPanel();
+        painelAcao_movimentarSoldados2 = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -295,7 +301,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_raid2();
         configuraPainelAcao_motivarTropas();
         configuraPainelAcao_motivarTropas2();
-        
+        configuraPainelAcao_movimentarSoldados();
+        configuraPainelAcao_movimentarSoldados2();
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
             trocarPainel("painelInfo");
@@ -446,6 +453,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_raid2();
         configuraPainelAcao_motivarTropas();
         configuraPainelAcao_motivarTropas2();
+        configuraPainelAcao_movimentarSoldados();
+        configuraPainelAcao_movimentarSoldados2();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
@@ -463,7 +472,81 @@ public class JogoView extends JFrame implements Observer{
         painelCentroBaixo.add(painelAcao_raid2, "painelAcao_raid2");
         painelCentroBaixo.add(painelAcao_motivarTropas, "painelAcao_motivarTropas");
         painelCentroBaixo.add(painelAcao_motivarTropas2, "painelAcao_motivarTropas2");
+        painelCentroBaixo.add(painelAcao_movimentarSoldados, "painelAcao_movimentarSoldados");
+        painelCentroBaixo.add(painelAcao_movimentarSoldados2, "painelAcao_movimentarSoldados2");
         painelCentroBaixo.revalidate();
+    }
+    
+    private void configuraPainelAcao_movimentarSoldados(){
+        painelAcao_movimentarSoldados.removeAll();
+        painelAcao_movimentarSoldados.setLayout(new BorderLayout());
+        painelAcao_movimentarSoldados.setBackground(Color.decode("#405972"));
+        painelAcao_movimentarSoldados.setPreferredSize(new Dimension(200,300));
+        
+        //
+        // VERIFICAR SE O RESULTADO SERÁ INFLUENCIADO POR ALGUMA DRM
+            boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
+            int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
+            if(m.getCartaAtual() != null){
+                Carta cartaVirada = m.getCartaAtual();
+                Evento eventoAtual = m.eventoAtual(cartaVirada);
+                for(DRM drm : eventoAtual.getDrms()){
+                    if(drm.getAcao() instanceof MovimentarSoldadosNoTunel){ // SE ESSA DRM AFETA A AÇÃO "RepararMuralha"
+                        temDRMS = true;
+                        var += drm.getVar();
+                    }
+                }
+            }
+       String msg = "<html>Movimento Free: mover 1 unidade (Custo: 0 APA)"  
+           + "<br />Movimento Fast: mover diretamente para o final do Túnel (Custo: 2 APA)</html>";
+            
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText(msg);
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Movimentar_movimentarSoldadosFree.setText("<html><center>Movimentar (FREE) <br />>></center></html>");
+        botao_Movimentar_movimentarSoldadosFree.setBorderPainted(false);
+        botao_Movimentar_movimentarSoldadosFree.setFocusPainted(false);
+        botao_Movimentar_movimentarSoldadosFree.setForeground(Color.white);
+        botao_Movimentar_movimentarSoldadosFree.setPreferredSize(new Dimension(200,80));
+        botao_Movimentar_movimentarSoldadosFree.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Movimentar_movimentarSoldadosFree.setBackground(Color.decode("#104919"));
+        
+        botao_Movimentar_movimentarSoldadosFast.setText("<html><center>Movimentar (FAST)<br />>> </center></html>");
+        botao_Movimentar_movimentarSoldadosFast.setBorderPainted(false);
+        botao_Movimentar_movimentarSoldadosFast.setFocusPainted(false);
+        botao_Movimentar_movimentarSoldadosFast.setForeground(Color.white);
+        botao_Movimentar_movimentarSoldadosFast.setPreferredSize(new Dimension(200,80));
+        botao_Movimentar_movimentarSoldadosFast.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Movimentar_movimentarSoldadosFast.setBackground(Color.decode("#104919"));
+        
+        painelAcao_movimentarSoldados.add(botao_Movimentar_movimentarSoldadosFree, BorderLayout.EAST);
+        painelAcao_movimentarSoldados.add(botao_Movimentar_movimentarSoldadosFast, BorderLayout.WEST);
+        painelAcao_movimentarSoldados.add(label_Msg, BorderLayout.CENTER);
+    }
+    
+    
+    private void configuraPainelAcao_movimentarSoldados2(){
+        painelAcao_movimentarSoldados2.removeAll();
+        painelAcao_movimentarSoldados2.setLayout(new BorderLayout());
+        painelAcao_movimentarSoldados2.setBackground(Color.decode("#405972"));
+        painelAcao_movimentarSoldados2.setPreferredSize(new Dimension(200,300));
+        
+
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("Os seus soldados estão agora na posição " + m.getPosDosSoldados() + ".");
+
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Continuar_movimentarSoldados.setText("<< Voltar às Ações");
+        botao_Continuar_movimentarSoldados.setBorderPainted(false);
+        botao_Continuar_movimentarSoldados.setFocusPainted(false);
+        botao_Continuar_movimentarSoldados.setForeground(Color.white);
+        botao_Continuar_movimentarSoldados.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_movimentarSoldados.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_movimentarSoldados.setBackground(Color.decode("#104919"));
+        painelAcao_movimentarSoldados2.add(botao_Continuar_movimentarSoldados, BorderLayout.AFTER_LAST_LINE);
+        painelAcao_movimentarSoldados2.add(label_Msg, BorderLayout.CENTER);
     }
     
     private void configuraPainelAcao_motivarTropas(){
@@ -994,7 +1077,7 @@ public class JogoView extends JFrame implements Observer{
             
             Evento eventoAtual = m.eventoAtual(cartaAtual);
             acoesDisponiveis.addAll(eventoAtual.getAcoesPermitidas());   
-            System.out.println("11111" + eventoAtual.getAcoesPermitidas());
+            //System.out.println("11111" + eventoAtual.getAcoesPermitidas());
         }
    
         // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
@@ -1132,6 +1215,7 @@ public class JogoView extends JFrame implements Observer{
         
         label_nivelDosSuprimentosFurtados.setIcon(iconeEscolhido);
     }
+    
     private void configuraNivelDosSuprimentos() {
         // jLabel que indica o nível atual dos suprimentos (supplies)
         label_nivelDosSuprimentos.setAlignmentX(CENTER_ALIGNMENT);
@@ -1316,6 +1400,18 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_RodarDado_motivarTropasBonus() {
         return botao_RodarDado_motivarTropasBonus;
+    }
+
+    public JButton getBotao_Continuar_movimentarSoldados() {
+        return botao_Continuar_movimentarSoldados;
+    }
+
+    public JButton getBotao_Movimentar_movimentarSoldadosFree() {
+        return botao_Movimentar_movimentarSoldadosFree;
+    }
+
+    public JButton getBotao_Movimentar_movimentarSoldadosFast() {
+        return botao_Movimentar_movimentarSoldadosFast;
     }
     
     
