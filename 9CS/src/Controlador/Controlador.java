@@ -98,6 +98,12 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.addListener(this, jogoView.getBotao_Continuar_movimentarSoldados());
         jogoView.addListener(this, jogoView.getBotao_Movimentar_movimentarSoldadosFast());
         jogoView.addListener(this, jogoView.getBotao_Movimentar_movimentarSoldadosFree());
+        
+        jogoView.addListener(this, jogoView.getBotao_Ataque_Torres());
+        jogoView.addListener(this, jogoView.getBotao_Ataque_Escadas());
+        jogoView.addListener(this, jogoView.getBotao_Ataque_Arietes());
+        jogoView.addListener(this, jogoView.getBotao_Ataque_Nenhum());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_Ataques());
         pausa = pausa_acoes = false;
         
     }
@@ -277,6 +283,27 @@ public class Controlador implements ActionListener{ // CONTROLLER
  
     }
     
+    private void acao_AtaqueArietes(){
+        m.setUltimoResultadoDoDado(m.acao_AtaqueDeAguaFervente(m.getFortaleza().getAriete(), eventoAtual));
+        jogoView.setInimigoAtacado(m.getFortaleza().getAriete());
+        m.consomeAcaoAtual("AtaqueDeAguaFervente");
+        jogoView.trocarPainel("painelAtaquesResultados");  
+    }
+    
+    private void acao_AtaqueEscadas(){
+        m.setUltimoResultadoDoDado(m.acao_AtaqueDeAguaFervente(m.getFortaleza().getEscada(), eventoAtual));
+        jogoView.setInimigoAtacado(m.getFortaleza().getEscada());
+        m.consomeAcaoAtual("AtaqueDeAguaFervente");
+        jogoView.trocarPainel("painelAtaquesResultados"); 
+    }
+    
+    private void acao_AtaqueTorres(){
+        m.setUltimoResultadoDoDado(m.acao_AtaqueDeAguaFervente(m.getFortaleza().getTorre(), eventoAtual));
+        jogoView.setInimigoAtacado(m.getFortaleza().getTorre());
+        m.consomeAcaoAtual("AtaqueDeAguaFervente");
+        jogoView.trocarPainel("painelAtaquesResultados"); 
+    }
+    
      @Override
     public void actionPerformed(ActionEvent e) {
         
@@ -325,6 +352,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
          // LISTENERS DOS BOTÕES DE AÇÕES
          else if(origem == (jogoView.getBotao_AtaqueDeAguaFervente())){
              System.out.println("Ataque De Àgua Fervente");
+             jogoView.trocarPainel("painelAtaques");
              pausa = false;
 
          }
@@ -410,6 +438,21 @@ public class Controlador implements ActionListener{ // CONTROLLER
                  jogoView.mostraPopup("Já utilizou um movimento free neste turno!");
              else
                 acao_movimentarSoldados(false);
+         }
+         else if(origem == (jogoView.getBotao_Ataque_Torres())){
+             acao_AtaqueTorres();
+         }
+         else if(origem == (jogoView.getBotao_Ataque_Escadas())){
+             acao_AtaqueEscadas();
+         }
+         else if(origem == (jogoView.getBotao_Ataque_Arietes())){
+             acao_AtaqueArietes();
+         }
+         else if(origem == (jogoView.getBotao_Ataque_Nenhum())){
+             pausa_acoes = false;
+         }
+         else if(origem == (jogoView.getBotao_Continuar_Ataques())){
+             pausa_acoes = false;
          }
     }
     

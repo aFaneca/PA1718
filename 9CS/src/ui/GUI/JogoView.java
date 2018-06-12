@@ -14,6 +14,7 @@ import Lógica.Constantes;
 import Lógica.DRM;
 import Lógica.Evento;
 import Lógica.Inimigo;
+import Lógica.Inimigos.*;
 import Lógica.Mundo;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -83,7 +84,9 @@ public class JogoView extends JFrame implements Observer{
     JButton botao_Continuar_movimentarSoldados, botao_Movimentar_movimentarSoldadosFree, botao_Movimentar_movimentarSoldadosFast;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
     JLabel label_Mensagem;
-
+    JButton botao_Ataque_Torres, botao_Ataque_Escadas, botao_Ataque_Arietes, botao_Ataque_Nenhum, botao_Continuar_Ataques;
+    JPanel painelAtaques, painelAtaques2, painelAtaquesResultados;
+    Inimigo inimigoAtacado;
     
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
@@ -165,6 +168,11 @@ public class JogoView extends JFrame implements Observer{
         botao_RodarDado_motivarTropas = new JButton("Rodar Dado >>");
         botao_Continuar_motivarTropas = new JButton("Continuar >>");
         botao_RodarDado_motivarTropasBonus = new JButton("Rodar Dado (COM BONUS) >>");
+        botao_Ataque_Arietes = new JButton("Atacar Aríetes");
+        botao_Ataque_Torres = new JButton("Atacar Torres");
+        botao_Ataque_Escadas = new JButton("Atacar Escadas");
+        botao_Ataque_Nenhum = new JButton("Não Atacar");
+        botao_Continuar_Ataques = new JButton("Continuar >>");
 
 // Inicialização das jLabels
         label_dia = new JLabel();
@@ -209,6 +217,9 @@ public class JogoView extends JFrame implements Observer{
         painelAcao_motivarTropas2 = new JPanel();
         painelAcao_movimentarSoldados = new JPanel();
         painelAcao_movimentarSoldados2 = new JPanel();
+        painelAtaques = new JPanel();
+        painelAtaques2 = new JPanel();
+        painelAtaquesResultados = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -303,6 +314,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_motivarTropas2();
         configuraPainelAcao_movimentarSoldados();
         configuraPainelAcao_movimentarSoldados2();
+        configuraPainelAtaques();
+        configuraPainelAtaques2();
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
             trocarPainel("painelInfo");
@@ -455,6 +468,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_motivarTropas2();
         configuraPainelAcao_movimentarSoldados();
         configuraPainelAcao_movimentarSoldados2();
+        configuraPainelAtaques();
+        configuraPainelAtaques2();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
@@ -474,7 +489,110 @@ public class JogoView extends JFrame implements Observer{
         painelCentroBaixo.add(painelAcao_motivarTropas2, "painelAcao_motivarTropas2");
         painelCentroBaixo.add(painelAcao_movimentarSoldados, "painelAcao_movimentarSoldados");
         painelCentroBaixo.add(painelAcao_movimentarSoldados2, "painelAcao_movimentarSoldados2");
+        painelCentroBaixo.add(painelAtaques, "painelAtaques");
+        painelCentroBaixo.add(painelAtaquesResultados, "painelAtaquesResultados");
         painelCentroBaixo.revalidate();
+    }
+    
+    private void configuraPainelAtaques(){
+        List<JButton> botoesDisponiveis;
+        List<Inimigo> inimigosDisponiveis = new ArrayList<>();
+        Acao acaoDeAtaque = null;
+        /*
+            Este painel vai mostrar a seguinte informação:
+                - Mensagem inicial a introduzir a escolha de inimigos
+                - Nr. de APAs Disponíveis
+                - Lista de Inimigos - JRadioButton (dentro do seu próprio painel interno) - painelAtaques2
+        */
+        painelAtaques.removeAll();
+        painelAtaques.setLayout(new BorderLayout());
+        painelAtaques.setBackground(Color.decode("#405972"));
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText("<html><center>Por favor, selecione uma das facções abaixo para atacar!</center></html>");
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        
+        
+        
+        // PAINEL DE ATAQUES 2 - LISTA DAS AÇÕES DISPONÍVEIS
+        painelAtaques2.setBackground(new Color(0,0,0,0)); // TRANSPARENTE (r, g, b, a <- opacidade)
+        painelAtaques2.removeAll();
+        // Descobrir a lista de ações permitidas pelo Evento Atual
+            // Descobrir qual a carta atual
+        Carta cartaAtual = m.getCartaAtual();
+        if(cartaAtual != null){
+            
+            // Nr. de Ações Disponíveis
+//            label_acoesDisponiveis.setText("Ações Disponíveis: " + m.eventoAtual(cartaAtual).getAPA() + " para o evento " + m.eventoAtual(cartaAtual));
+//            label_acoesDisponiveis.setFont(new Font("Serif", Font.PLAIN, 30));
+//            
+            
+            Evento eventoAtual = m.eventoAtual(cartaAtual);
+            for(Acao acao : eventoAtual.getAcoesPermitidas()){
+                if(acao instanceof AtaqueDeAguaFervente){
+                    acaoDeAtaque = acao;
+                    inimigosDisponiveis.addAll(acaoDeAtaque.getPotenciaisAlvos()); 
+                }
+            }
+              
+            //System.out.println("11111" + eventoAtual.getAcoesPermitidas());
+        }
+   
+        // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
+        // que vai cruzar os botões recebidos com a lista de ações disponíveis e fazer a filtração
+        botoesDisponiveis = new ArrayList<>(getBotoesDeAtaqueDisponiveis(inimigosDisponiveis));
+
+        for(JButton botao : botoesDisponiveis){
+             botao.setVerticalTextPosition(SwingConstants.TOP);
+             botao.setHorizontalTextPosition(SwingConstants.CENTER);
+             painelAtaques2.add(botao);
+        }
+
+        painelAtaques2.revalidate();
+        painelAtaques2.repaint();
+        // Fazer as adições ao painel principal
+        painelAtaques.add(label_Msg, BorderLayout.NORTH);
+//        painelAtaques.add(label_acoesDisponiveis, BorderLayout.CENTER);
+        painelAtaques.add(painelAtaques2, BorderLayout.SOUTH);
+        
+        
+        painelAtaques.revalidate();
+        painelAtaques.repaint();
+    }
+    
+    private void configuraPainelAtaques2(){
+        painelAtaquesResultados.removeAll();
+        painelAtaquesResultados.setLayout(new BorderLayout());
+        painelAtaquesResultados.setBackground(Color.decode("#405972"));
+        painelAtaquesResultados.setPreferredSize(new Dimension(200,300));
+
+
+        String msg = "O resultado do dado foi " + m.getUltimoResultadoDoDado() + ".";
+        
+        if(inimigoAtacado != null){
+            if(m.getUltimoResultadoDoDado() > inimigoAtacado.getForca())
+                msg += "O seu ataque teve sucesso e o inimigo recuou uma posição!";
+            else if(m.getUltimoResultadoDoDado() == 1)
+                msg += "Má Sorte! O seu ataque falhou e com isso a população perde 1 unidade de moral!";
+            else
+                msg += "Má Sorte! O seu ataque não teve sucesso!";
+        }
+       
+        
+        JLabel label_Msg = new JLabel("", SwingConstants.CENTER);
+        label_Msg.setText(msg);
+
+        label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_Msg.setForeground(Color.white);
+        botao_Continuar_Ataques.setText("<< Voltar às Ações");
+        botao_Continuar_Ataques.setBorderPainted(false);
+        botao_Continuar_Ataques.setFocusPainted(false);
+        botao_Continuar_Ataques.setForeground(Color.white);
+        botao_Continuar_Ataques.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_Ataques.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_Ataques.setBackground(Color.decode("#104919"));
+        painelAtaquesResultados.add(botao_Continuar_Ataques, BorderLayout.AFTER_LAST_LINE);
+        painelAtaquesResultados.add(label_Msg, BorderLayout.CENTER);
     }
     
     private void configuraPainelAcao_movimentarSoldados(){
@@ -524,7 +642,6 @@ public class JogoView extends JFrame implements Observer{
         painelAcao_movimentarSoldados.add(botao_Movimentar_movimentarSoldadosFast, BorderLayout.WEST);
         painelAcao_movimentarSoldados.add(label_Msg, BorderLayout.CENTER);
     }
-    
     
     private void configuraPainelAcao_movimentarSoldados2(){
         painelAcao_movimentarSoldados2.removeAll();
@@ -1104,6 +1221,27 @@ public class JogoView extends JFrame implements Observer{
     
     
     
+            
+            
+            
+    // Faz o cruzamento entre os botões disponíveis e a lista recebida de inimigos disponíveis e retorna um resultado filtrado dessa lista
+    List<JButton> getBotoesDeAtaqueDisponiveis(List<Inimigo> inimigos){
+        List<JButton> botoesFiltrados = new ArrayList<>();
+        
+        for(Inimigo i : inimigos){
+            if(i instanceof Escada)
+                botoesFiltrados.add(botao_Ataque_Escadas);
+            else if(i instanceof Torre)
+                botoesFiltrados.add(botao_Ataque_Torres);
+            else if(i instanceof Ariete)
+                botoesFiltrados.add(botao_Ataque_Arietes);
+        }
+        
+        botoesFiltrados.add(botao_Ataque_Nenhum);
+        return botoesFiltrados;
+    }
+    
+    
     // Faz o cruzamento entre os botões disponíveis e a lista recebida de ações disponíveis e retorna um resultado filtrado dessa lista
     List<JButton> getBotoesDisponiveis(List<Acao> acoes){
         List<JButton> botoesFiltrados = new ArrayList<>();
@@ -1129,7 +1267,7 @@ public class JogoView extends JFrame implements Observer{
         
         botoesFiltrados.add(botao_NaoRealizarMaisAcoes);
         return botoesFiltrados;
-    }
+}
     
     
     // Troca entre os vários Paineis de CardLayout
@@ -1412,6 +1550,34 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_Movimentar_movimentarSoldadosFast() {
         return botao_Movimentar_movimentarSoldadosFast;
+    }
+
+    public JButton getBotao_Ataque_Torres() {
+        return botao_Ataque_Torres;
+    }
+
+    public JButton getBotao_Ataque_Escadas() {
+        return botao_Ataque_Escadas;
+    }
+
+    public JButton getBotao_Ataque_Arietes() {
+        return botao_Ataque_Arietes;
+    }
+
+    public JButton getBotao_Ataque_Nenhum() {
+        return botao_Ataque_Nenhum;
+    }
+
+    public Inimigo getInimigoAtacado() {
+        return inimigoAtacado;
+    }
+
+    public void setInimigoAtacado(Inimigo inimigoAtacado) {
+        this.inimigoAtacado = inimigoAtacado;
+    }
+
+    public JButton getBotao_Continuar_Ataques() {
+        return botao_Continuar_Ataques;
     }
     
     
