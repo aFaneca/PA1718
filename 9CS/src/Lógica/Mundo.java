@@ -720,6 +720,7 @@ public class Mundo extends Observable implements Serializable{
         dado.ultimoResultado = nr;
     }
     public void notificaAlteracao() {
+        
         setChanged();
         notifyObservers();
     }

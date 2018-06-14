@@ -20,8 +20,8 @@ import javax.swing.JPanel;
  * @author me
  */
 public class DesenhoDosProgressosInimigos extends JPanel{
-    
     Mundo m;
+    JogoView view;
     int uDistancia = 50; // Unidades de Distância
     int diametro = 70; // Diâmetro dos círculos
     int comp_CloseCombat_X = 650;
@@ -40,9 +40,9 @@ public class DesenhoDosProgressosInimigos extends JPanel{
     
     int posEscadas, posArietes, posTorres;
     
-    public DesenhoDosProgressosInimigos(Mundo m){
+    public DesenhoDosProgressosInimigos(JogoView view, Mundo m){
         this.m = m;
-        
+        this.view = view;
         
     }
     
@@ -50,6 +50,8 @@ public class DesenhoDosProgressosInimigos extends JPanel{
     public void paintComponent(Graphics g){
         
         super.paintComponent(g);
+        
+        m = view.getM();
         
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // ANTI-ALIASING
@@ -71,19 +73,19 @@ public class DesenhoDosProgressosInimigos extends JPanel{
         g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y, diametro, diametro);
         
         // LOCAL 2
-        g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro + uDistancia, diametro, diametro);
-        g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y  + diametro + uDistancia, diametro, diametro);
-        g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro + uDistancia, diametro, diametro);
+        g.fillRect(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro + uDistancia, diametro, diametro);
+        g.fillRect(comp_Arietes_X - 35, comp_Arietes_Y  + diametro + uDistancia, diametro, diametro);
+        g.fillRect(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro + uDistancia, diametro, diametro);
         
         // LOCAL 3
-        g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 2 + uDistancia * 2, diametro, diametro);
-        g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
-        g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
+        g.fillRect(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 2 + uDistancia * 2, diametro, diametro);
+        g.fillRect(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
+        g.fillRect(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
        
         // LOCAL 4
-        g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 3 + uDistancia * 3, diametro, diametro);
-        g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
-        g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
+        g.fillRect(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 3 + uDistancia * 3, diametro, diametro);
+        g.fillRect(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
+        g.fillRect(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
     
     
         // LINHAS QUE CONECTAM OS COMPONENTES
@@ -124,13 +126,13 @@ public class DesenhoDosProgressosInimigos extends JPanel{
             case 1: g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y, diametro, diametro); 
                     icon_Escadas.paintIcon(this, g, comp_Escadas_X - uDistancia, comp_Escadas_Y);
                 break;
-            case 2: g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro + uDistancia, diametro, diametro);
+            case 2: g.fillRect(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro + uDistancia, diametro, diametro);
                     icon_Escadas.paintIcon(this, g, comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro + uDistancia);
                 break;
-            case 3: g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 2 + uDistancia * 2, diametro, diametro);
+            case 3: g.fillRect(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 2 + uDistancia * 2, diametro, diametro);
                     icon_Escadas.paintIcon(this, g, comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 2 + uDistancia * 2);
                 break;
-            case 4: g.fillOval(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 3 + uDistancia * 3, diametro, diametro);
+            case 4: g.fillRect(comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 3 + uDistancia * 3, diametro, diametro);
                     icon_Escadas.paintIcon(this, g, comp_Escadas_X - uDistancia, comp_Escadas_Y + diametro * 3 + uDistancia * 3);
                 break;
         }
@@ -139,24 +141,24 @@ public class DesenhoDosProgressosInimigos extends JPanel{
             case 1: g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y, diametro, diametro);
                     
                 break;
-            case 2: g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y  + diametro + uDistancia, diametro, diametro);
+            case 2: g.fillRect(comp_Arietes_X - 35, comp_Arietes_Y  + diametro + uDistancia, diametro, diametro);
                 break;
-            case 3: g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
+            case 3: g.fillRect(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
                     icon_Arietes.paintIcon(this, g, comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 2 + uDistancia * 2);
                 break;
-            case 4: g.fillOval(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
+            case 4: g.fillRect(comp_Arietes_X - 35, comp_Arietes_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
                 break;
         }
         
         switch(posTorres){
             case 1: g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y, diametro, diametro);
                 break;
-            case 2: g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro + uDistancia, diametro, diametro);
+            case 2: g.fillRect(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro + uDistancia, diametro, diametro);
                 break;
-            case 3: g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
+            case 3: g.fillRect(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 2 + uDistancia * 2, diametro, diametro);
                     
                 break;
-            case 4: g.fillOval(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
+            case 4: g.fillRect(comp_Torres_X - uDistancia / 2, comp_Torres_Y  + diametro * 3 + uDistancia * 3, diametro, diametro);
                 break;
         }      
         g.setColor(Color.white);
@@ -223,4 +225,14 @@ public class DesenhoDosProgressosInimigos extends JPanel{
     
     
     }
+
+    public Mundo getM() {
+        return m;
+    }
+
+    public void setM(Mundo m) {
+        this.m = m;
+    }
+    
+    
 }

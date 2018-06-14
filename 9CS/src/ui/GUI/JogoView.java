@@ -13,6 +13,8 @@ import Lógica.Carta;
 import Lógica.Constantes;
 import Lógica.DRM;
 import Lógica.Evento;
+import Lógica.Eventos.OleoQuente;
+import Lógica.Eventos.Reuniao;
 import Lógica.Inimigo;
 import Lógica.Inimigos.*;
 import Lógica.Mundo;
@@ -199,7 +201,7 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelTopo();
         painelBase = new JPanel();
         configuraPainelBase();
-        desenhoDosProgressosInimigos = new DesenhoDosProgressosInimigos(m);
+        desenhoDosProgressosInimigos = new DesenhoDosProgressosInimigos(this, m);
         painelCentro = new JPanel();
         painelCentroBaixo = new JPanel();
         painelInfo = new JPanel();
@@ -299,6 +301,7 @@ public class JogoView extends JFrame implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
+        //m = (Mundo) arg;
         configuraDia();
         configuraMoralDoPovo();
         configuraNivelDosSuprimentos();
@@ -1119,6 +1122,7 @@ public class JogoView extends JFrame implements Observer{
     }
     
     private void configuraPainelDRMS(){
+        boolean afetaInimigos = false;
         painelDRMS.removeAll();
  
         painelDRMS.setLayout(new BorderLayout());
@@ -1131,13 +1135,20 @@ public class JogoView extends JFrame implements Observer{
             Carta cartaVirada = m.getCartaAtual();
             Evento eventoAtual = m.eventoAtual(cartaVirada);
             if(m.temDRM(eventoAtual)){ // SE O EVENTO POSSUI DRMs
+                
+                
                 List<DRM> drms = new ArrayList<>(m.getDRMS(eventoAtual));
                 for(DRM drm : drms){
-                    if(drm.isValida())
+                    if(drm.isValida()){
                         msg += ("Este evento concedeu-lhe a seguinte DRM: " + drm + ".<br/>");
+                        afetaInimigos = true;
+                    }
+                        
                 }      
             }else
                 msg += ("Este evento não lhe concedeu qualquer DRM.");
+            
+            if(!afetaInimigos) msg += ("Este evento não lhe concedeu qualquer DRM.");
             
             msg += "</html>";
         }
@@ -1158,6 +1169,9 @@ public class JogoView extends JFrame implements Observer{
         botao_Continuar_DRMS.setBackground(Color.decode("#104919"));
         painelDRMS.add(botao_Continuar_DRMS, BorderLayout.AFTER_LAST_LINE);
         painelDRMS.add(label_Msg, BorderLayout.CENTER);
+        
+        painelDRMS.repaint();
+        painelDRMS.revalidate();
     }
     
     private void configuraPainelEventos(){
@@ -1745,6 +1759,14 @@ public class JogoView extends JFrame implements Observer{
 
     public JMenuItem getMenuItem_guardar() {
         return menuItem_guardar;
+    }
+
+    public Mundo getM() {
+        return m;
+    }
+
+    public void setM(Mundo m) {
+        this.m = m;
     }
     
     

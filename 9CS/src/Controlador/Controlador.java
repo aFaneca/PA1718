@@ -59,11 +59,13 @@ public class Controlador implements ActionListener{ // CONTROLLER
     boolean pausa, pausa_acoes;
     boolean movimentarSoldadosFreeJaUsado;
     String msg;
+    boolean modoDebug;
     public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
         this.menuInicial = menuInicial;
         this.jogoView = jogoView;
         movimentarSoldadosFreeJaUsado = false;
+        modoDebug = true;
         acoesDoMenu();
         
         m.addObserver(jogoView); // Adiciona a View JogoView à lista de observers do Observable "Mundo", que é o Modelo no padrão MVC
@@ -126,7 +128,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
 
             }
             else if(estado instanceof AguardaLeituraDeInfo){
-                // Thread para verificar as condições de término imediatas
+               
                 menuInicial.setVisible(false);
                 jogoView.setVisible(true);
 
@@ -141,7 +143,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
                 jogoView.trocarPainel("painelAcoes");
                 selecaoDeAcao();
                 
-                msg = m.verificaCondicoesFataisImediatas();
+                if(!modoDebug) msg = m.verificaCondicoesFataisImediatas();
                 if(msg != null){
                     m.setMotivoFimDoJogo(msg);
                     m.setEstado(m.getEstado().fimDoJogo());
@@ -210,7 +212,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
        while(pausa){System.out.println("A Virar Carta...");}; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
 
        // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
-       m.setMotivoFimDoJogo(m.verificaCondicoesFatais());   
+       if(!modoDebug) m.setMotivoFimDoJogo(m.verificaCondicoesFatais());   
    } 
     
     
@@ -324,7 +326,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
         m.voltarAoInicio();
         m = new Mundo();
         m.notificaAlteracao();
-        
+        jogoView.setM(m);
         System.out.println(m.getCartaAtual());
     }
     
@@ -551,5 +553,15 @@ public class Controlador implements ActionListener{ // CONTROLLER
 //             movimentarSoldadosFreeJaUsado = false;
          }
     }
+
+    public Mundo getMundo() {
+        return m;
+    }
+
+    public void setMundo(Mundo m) {
+        this.m = m;
+    }
+    
+    
     
 }
