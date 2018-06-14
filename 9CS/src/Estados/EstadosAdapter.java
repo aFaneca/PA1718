@@ -134,4 +134,9 @@ public class EstadosAdapter implements IEstados, Serializable{
          return this;
      }
 
+    @Override
+    public IEstados voltarAoInicio() {
+        return this;
+    }
+
 }

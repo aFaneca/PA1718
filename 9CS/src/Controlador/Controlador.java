@@ -12,6 +12,7 @@ import Estados.AguardaSelecaoDeAcao;
 import Estados.DiaTerminado;
 import Estados.IEstados;
 import Estados.JogoTerminado;
+import Lógica.CarregamentoDeJogo;
 import Lógica.Carta;
 import Lógica.Constantes;
 import Lógica.Evento;
@@ -36,8 +37,11 @@ import Lógica.Eventos.SuprimentosEstragados;
 import Lógica.Mundo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFileChooser;
 import ui.GUI.JogoView;
 import ui.GUI.MenuInicialView;
 
@@ -50,18 +54,17 @@ public class Controlador implements ActionListener{ // CONTROLLER
     private MenuInicialView menuInicial; // VIEW
     private JogoView jogoView; // VIEW
     boolean sair;
-    private String motivoFimDoJogo;
     Evento eventoAtual;
     Carta cartaVirada;
     boolean pausa, pausa_acoes;
     boolean movimentarSoldadosFreeJaUsado;
-    
+    String msg;
     public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
         this.menuInicial = menuInicial;
         this.jogoView = jogoView;
         movimentarSoldadosFreeJaUsado = false;
-        
+        acoesDoMenu();
         
         m.addObserver(jogoView); // Adiciona a View JogoView à lista de observers do Observable "Mundo", que é o Modelo no padrão MVC
         menuInicial.addListener(this, menuInicial.getBotao_sair());
@@ -104,8 +107,9 @@ public class Controlador implements ActionListener{ // CONTROLLER
         jogoView.addListener(this, jogoView.getBotao_Ataque_Arietes());
         jogoView.addListener(this, jogoView.getBotao_Ataque_Nenhum());
         jogoView.addListener(this, jogoView.getBotao_Continuar_Ataques());
+        jogoView.addListener(this, jogoView.getBotao_Continuar_FimDoDia());
+        jogoView.addListener(this, jogoView.getBotao_Voltar_FimDoJogo());
         pausa = pausa_acoes = false;
-        
     }
     
     public void run() {
@@ -115,11 +119,14 @@ public class Controlador implements ActionListener{ // CONTROLLER
             IEstados estado = m.getEstado();  
             //System.out.println(estado);
             if(estado instanceof AguardaInicio){
+//                m = new Mundo();
+
                 menuInicial.setVisible(true);
+                jogoView.setVisible(false);
 
             }
             else if(estado instanceof AguardaLeituraDeInfo){
-
+                // Thread para verificar as condições de término imediatas
                 menuInicial.setVisible(false);
                 jogoView.setVisible(true);
 
@@ -133,21 +140,38 @@ public class Controlador implements ActionListener{ // CONTROLLER
                 //processaAcoes();
                 jogoView.trocarPainel("painelAcoes");
                 selecaoDeAcao();
+                
+                msg = m.verificaCondicoesFataisImediatas();
+                if(msg != null){
+                    m.setMotivoFimDoJogo(msg);
+                    m.setEstado(m.getEstado().fimDoJogo());
+                }
+
+                
             }
 
 
             else if(estado instanceof DiaTerminado){
-                //fimDoDia();
+                fimDoDia();
             }
 
 
             else if(estado instanceof JogoTerminado){
-                //fimDoJogo();
-                sair = true;
+                fimDoJogo();
+                //sair = true;
             }
                 
        }
         
+    }
+    
+    
+    private void fimDoJogo(){
+        jogoView.trocarPainel("painelFimDoJogo");
+    }
+    
+    private void fimDoDia(){
+        jogoView.trocarPainel("painelFimDoDia");
     }
     
     private void selecaoDeAcao(){
@@ -185,16 +209,8 @@ public class Controlador implements ActionListener{ // CONTROLLER
                       // Fica aqui parado até que pausa = false (que vai ser sinalizado no listener abaixo
        while(pausa){System.out.println("A Virar Carta...");}; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
 
-//       
-//       // MOSTRA OS DRMS ASSOCIADOS AO EVENTO
-//       mostraDRMS(eventoAtual);
-//       
-//       // AVANÇO DO INIMIGO
-//       avancaInimigos(eventoAtual);
-//       verificaCondicoesFataisImediatas(); /* FALTA FAZER COM QUE ESTAS CONDIÇÕES SEJAM VERIFICADAS IMEDIATAMENTE */
-//
-//       // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
-//       verificaCondicoesFatais();   
+       // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
+       m.setMotivoFimDoJogo(m.verificaCondicoesFatais());   
    } 
     
     
@@ -286,22 +302,60 @@ public class Controlador implements ActionListener{ // CONTROLLER
     private void acao_AtaqueArietes(){
         m.setUltimoResultadoDoDado(m.acao_AtaqueDeAguaFervente(m.getFortaleza().getAriete(), eventoAtual));
         jogoView.setInimigoAtacado(m.getFortaleza().getAriete());
-        m.consomeAcaoAtual("AtaqueDeAguaFervente");
+        m.consomeAcaoAtual(jogoView.getTipoDeAtaque());
         jogoView.trocarPainel("painelAtaquesResultados");  
     }
     
     private void acao_AtaqueEscadas(){
         m.setUltimoResultadoDoDado(m.acao_AtaqueDeAguaFervente(m.getFortaleza().getEscada(), eventoAtual));
         jogoView.setInimigoAtacado(m.getFortaleza().getEscada());
-        m.consomeAcaoAtual("AtaqueDeAguaFervente");
+        m.consomeAcaoAtual(jogoView.getTipoDeAtaque());
         jogoView.trocarPainel("painelAtaquesResultados"); 
     }
     
     private void acao_AtaqueTorres(){
         m.setUltimoResultadoDoDado(m.acao_AtaqueDeAguaFervente(m.getFortaleza().getTorre(), eventoAtual));
         jogoView.setInimigoAtacado(m.getFortaleza().getTorre());
-        m.consomeAcaoAtual("AtaqueDeAguaFervente");
+        m.consomeAcaoAtual(jogoView.getTipoDeAtaque());
         jogoView.trocarPainel("painelAtaquesResultados"); 
+    }
+    
+    private void voltarAoInicio(){
+        m.voltarAoInicio();
+        m = new Mundo();
+        m.notificaAlteracao();
+        
+        System.out.println(m.getCartaAtual());
+    }
+    
+    public void acoesDoMenu(){
+        
+        jogoView.getMenuItem_guardar().addActionListener((ActionEvent evento) ->{
+            
+            JFileChooser fc = new JFileChooser("./dados");
+            int returnVal = fc.showOpenDialog(menuInicial);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File ficheiro = fc.getSelectedFile();             
+                try{
+                    CarregamentoDeJogo.guardarJogo(ficheiro, m);
+                    //m.notificaAlteracao();
+                }catch(IOException ex){
+                    menuInicial.mostraErro("A operação falhou: \r\n\r\n" + ex);
+                }
+          
+            } else {
+                System.out.println("Operação de Carregamento de Jogo Cancelada.");
+            }
+            
+        });
+        
+        jogoView.getMenuItem_sair().addActionListener((ActionEvent evento) -> {
+            System.exit(0);
+        });
+        
+        jogoView.getMenuItem_sobre().addActionListener((ActionEvent evento) -> {
+            jogoView.mostraPopup("Sobre o Jogo\nAutor: António Faneca");
+        });
     }
     
      @Override
@@ -316,7 +370,24 @@ public class Controlador implements ActionListener{ // CONTROLLER
              jogoView.trocarPainel("painelInfo");
          }
          else if(origem == (menuInicial.getBotao_continuarJogo())){
-             menuInicial.mostraErro("Ainda não implementado...");
+             //menuInicial.mostraErro("Ainda não implementado...");
+            JFileChooser fc = new JFileChooser("./dados");
+            int returnVal = fc.showOpenDialog(menuInicial);
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                File ficheiro = fc.getSelectedFile();             
+                try{
+                    m = (Mundo) CarregamentoDeJogo.carregarJogo(ficheiro);
+                    
+                    m.notificaAlteracao();
+                    menuInicial.setVisible(false);
+                    jogoView.setVisible(true);
+                }catch(IOException | ClassNotFoundException ex){
+                    menuInicial.mostraErro("A operação falhou: \r\n\r\n" + e);
+                }
+          
+            } else {
+                System.out.println("Operação de Carregamento de Jogo Cancelada.");
+            }
          }
          else if(origem == (jogoView.getBotao_Continuar())){
              m.getEstado().verificarSoldados(jogoView);
@@ -352,14 +423,19 @@ public class Controlador implements ActionListener{ // CONTROLLER
          // LISTENERS DOS BOTÕES DE AÇÕES
          else if(origem == (jogoView.getBotao_AtaqueDeAguaFervente())){
              System.out.println("Ataque De Àgua Fervente");
+             jogoView.setTipoDeAtaque("AtaqueDeAguaFervente");
              jogoView.trocarPainel("painelAtaques");
              pausa = false;
 
          }
          else if(origem == (jogoView.getBotao_AtaqueDeArqueiros())){
+             jogoView.setTipoDeAtaque("AtaqueDeArqueiros");
+             jogoView.trocarPainel("painelAtaques");
              System.out.println("Ataque De Arqueiros");
          }
          else if(origem == (jogoView.getBotao_AtaqueDeCloseCombat())){
+             jogoView.setTipoDeAtaque("AtaqueDeCloseCombat");
+             jogoView.trocarPainel("painelAtaques");
              System.out.println("Ataque De Close Combat");
          }
          else if(origem == (jogoView.getBotao_MotivarTropas())){
@@ -453,6 +529,26 @@ public class Controlador implements ActionListener{ // CONTROLLER
          }
          else if(origem == (jogoView.getBotao_Continuar_Ataques())){
              pausa_acoes = false;
+         }
+         else if(origem == (jogoView.getBotao_Continuar_FimDoDia())){
+//             m.fimDoDia(); // Vai automaticamente determinar o próximo estado
+//             System.out.println("Fdasfsad");
+//             System.exit(0);
+//             pausa_acoes = false;
+             m.fimDoDia(); // Vai automaticamente determinar o próximo estado
+             pausa_acoes = false;
+             movimentarSoldadosFreeJaUsado = false;
+         }
+         else if(origem ==(jogoView.getBotao_Voltar_FimDoJogo())){
+//             m.setEstado(new AguardaInicio(m));
+//             pausa = false;
+             voltarAoInicio();
+//             System.out.println("A voltar ao início...");
+//             jogoView.setVisible(false);
+//             menuInicial.setVisible(true);
+//             pausa_acoes = false;
+//             pausa = false;
+//             movimentarSoldadosFreeJaUsado = false;
          }
     }
     

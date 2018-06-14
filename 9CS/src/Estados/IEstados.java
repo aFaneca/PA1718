@@ -43,5 +43,6 @@ public interface IEstados {
     public IEstados virarCarta();
     public IEstados mostraInfo(String mensagem);
     public IEstados verificarSoldados(JogoView view);
-     public IEstados testaSorteDosSoldados();
+    public IEstados testaSorteDosSoldados();
+    public IEstados voltarAoInicio();
 }

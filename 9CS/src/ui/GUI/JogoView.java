@@ -68,13 +68,13 @@ public class JogoView extends JFrame implements Observer{
     JLabel label_dia, label_forcaDaMuralha, label_nivelDosSuprimentos, label_moralDoPovo, label_localDosSoldados, label_nivelDosSuprimentosFurtados, label_nrCatapultas;
     JMenuBar menuBar_menu;
     JMenu menu_jogo, menu_sobre;
-    JMenuItem menuItem_sair, menuItem_sobre;
+    JMenuItem menuItem_sair, menuItem_sobre, menuItem_guardar;
     Icon icon_guardar, icon_carregar, icon_sair, icon_dia1, icon_dia2, icon_dia3, icon_suprimentos0, icon_suprimentos1, icon_suprimentos2, icon_suprimentos3, icon_suprimentos4;
     Icon icon_smileMuitoFeliz, icon_smileBemFeliz, icon_smileFeliz, icon_smileTriste, icon_smileZangado, icon_catapulta1, icon_catapulta2, icon_catapulta3;
     Icon icon_soldadoTroia, icon_tunel1, icon_tunel2, icon_fortaleza, icon_seguranca0, icon_seguranca1, icon_seguranca2, icon_seguranca3, icon_seguranca4, icon_mochila0, icon_mochila1, icon_mochila2;
     JPanel painelEsquerda, painelDireita, painelTopo, painelBase, painelCentro;
     JLabel img_cartaAtual, img_carta0, img_carta1, img_carta2, img_carta3, img_carta4, img_carta5, img_carta6, img_carta7;
-    JPanel desenhoDosProgressosInimigos, painelCentroBaixo;
+    JPanel desenhoDosProgressosInimigos, painelCentroBaixo, painelFimDoDia, painelFimDoJogo;
     JPanel painelInfo, painelAcoes, painelAcoes2, painelSoldadosEmLinhasInimigas, painelSoldadosSeguros, painelRodarDado, painelAcao_motivarTropas, painelAcao_motivarTropas2, painelAcao_movimentarSoldados, painelAcao_movimentarSoldados2;
     JPanel painelEventos, painelDRMS, painelAvancoInimigo, painelAcao_repararMuralha, painelAcao_repararMuralha2, painelAcao_sabotagem, painelAcao_sabotagem2, painelAcao_raid, painelAcao_raid2;
     CardLayout cl;
@@ -83,10 +83,11 @@ public class JogoView extends JFrame implements Observer{
     JButton botao_NaoRealizarMaisAcoes, botao_Continuar_RodarDado, botao_Continuar_Eventos, botao_Continuar_DRMS, botao_Continuar_AvancoInimigo, botao_RodarDado_repararMuralha, botao_RodarDado_sabotagem, botao_Continuar_raid, botao_RodarDado_raid, botao_Continuar_motivarTropas, botao_RodarDado_motivarTropas, botao_RodarDado_motivarTropasBonus;
     JButton botao_Continuar_movimentarSoldados, botao_Movimentar_movimentarSoldadosFree, botao_Movimentar_movimentarSoldadosFast;
     JLabel label_mensagemInicial, label_acoesDisponiveis;
-    JLabel label_Mensagem;
-    JButton botao_Ataque_Torres, botao_Ataque_Escadas, botao_Ataque_Arietes, botao_Ataque_Nenhum, botao_Continuar_Ataques;
+    JLabel label_Mensagem, label_MensagemFimDoDia, label_MensagemFimDoJogo;
+    JButton botao_Ataque_Torres, botao_Ataque_Escadas, botao_Ataque_Arietes, botao_Ataque_Nenhum, botao_Continuar_Ataques, botao_Continuar_FimDoDia, botao_Voltar_FimDoJogo;
     JPanel painelAtaques, painelAtaques2, painelAtaquesResultados;
     Inimigo inimigoAtacado;
+    String tipoDeAtaque;
     
     public JogoView(Mundo m){
         this.setTitle("9 Cards Siege - Jogo");
@@ -97,6 +98,7 @@ public class JogoView extends JFrame implements Observer{
         this.setUndecorated(false);
         this.setLayout(new BorderLayout());
         this.m = m;
+        this.setVisible(false);
         
         
         // Inicialização dos ícones
@@ -173,6 +175,8 @@ public class JogoView extends JFrame implements Observer{
         botao_Ataque_Escadas = new JButton("Atacar Escadas");
         botao_Ataque_Nenhum = new JButton("Não Atacar");
         botao_Continuar_Ataques = new JButton("Continuar >>");
+        botao_Continuar_FimDoDia = new JButton("Continuar >>");
+        botao_Voltar_FimDoJogo = new JButton("Voltar ao Menu Inicial >>");
 
 // Inicialização das jLabels
         label_dia = new JLabel();
@@ -220,6 +224,8 @@ public class JogoView extends JFrame implements Observer{
         painelAtaques = new JPanel();
         painelAtaques2 = new JPanel();
         painelAtaquesResultados = new JPanel();
+        painelFimDoDia = new JPanel();
+        painelFimDoJogo = new JPanel();
         cl = new CardLayout();
         configuraPainelCentro();
         
@@ -255,21 +261,24 @@ public class JogoView extends JFrame implements Observer{
         menuItem_sobre = new JMenuItem("Sobre");
         menuItem_sobre.setMnemonic(KeyEvent.VK_O);
         menuItem_sobre.setToolTipText("Sobre a Aplicação");
-        menuItem_sobre.addActionListener((ActionEvent evento) -> {
-            mostraPopup("Sobre o Jogo\nAutores: Amadeus Alves e António Faneca");
-        });
+       
         
         
         
         menuItem_sair = new JMenuItem("Sair", icon_sair);
         menuItem_sair.setMnemonic(KeyEvent.VK_S);
         menuItem_sair.setToolTipText("Sair da Aplicação");
-        menuItem_sair.addActionListener((ActionEvent evento) -> {
-            System.exit(0);
-        });
         
+        menuItem_guardar = new JMenuItem("Guardar Jogo");
+        menuItem_guardar.setMnemonic(KeyEvent.VK_G);
+        menuItem_sair.setToolTipText("Guardar o estado atual do jogo");
+        
+        
+        menu_jogo.add(menuItem_guardar);
         menu_jogo.add(menuItem_sair);
+        
         menu_sobre.add(menuItem_sobre);
+        
         menuBar_menu.add(menu_jogo);
         menuBar_menu.add(menu_sobre);
         
@@ -316,6 +325,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_movimentarSoldados2();
         configuraPainelAtaques();
         configuraPainelAtaques2();
+        configuraPainelFimDoDia();
+        configuraPainelFimDoJogo();
         
         if(m.getEstado() instanceof AguardaLeituraDeInfo)
             trocarPainel("painelInfo");
@@ -470,6 +481,8 @@ public class JogoView extends JFrame implements Observer{
         configuraPainelAcao_movimentarSoldados2();
         configuraPainelAtaques();
         configuraPainelAtaques2();
+        configuraPainelFimDoDia();
+        configuraPainelFimDoJogo();
         
         painelCentroBaixo.add(painelInfo, "painelInfo");
         painelCentroBaixo.add(painelAcoes, "painelAcoes");
@@ -491,7 +504,93 @@ public class JogoView extends JFrame implements Observer{
         painelCentroBaixo.add(painelAcao_movimentarSoldados2, "painelAcao_movimentarSoldados2");
         painelCentroBaixo.add(painelAtaques, "painelAtaques");
         painelCentroBaixo.add(painelAtaquesResultados, "painelAtaquesResultados");
+        painelCentroBaixo.add(painelFimDoDia, "painelFimDoDia");
+        painelCentroBaixo.add(painelFimDoJogo, "painelFimDoJogo");
         painelCentroBaixo.revalidate();
+    }
+    
+    private void configuraPainelFimDoJogo(){
+        String msg = "<html>";
+        /*
+            Este painel é composto por:
+                - 1 bloco de texto informativo em cima - label_Mensagem
+                - 1 botão em baixo que permite avançar para a próxima secção do jogo - botao_Continuar
+        
+        */
+        painelFimDoJogo.removeAll();
+        painelFimDoJogo.setLayout(new BorderLayout());
+        painelFimDoJogo.setBackground(Color.decode("#405972"));
+        painelFimDoJogo.setPreferredSize(new Dimension(200,300));
+        
+        if(m.getMotivoFimDoJogo() != null){
+            msg += "Game Over :/<br />O jogo chegou ao fim pelo seguinte motivo:<br />" + m.getMotivoFimDoJogo();
+        }
+        else{
+            msg += "Parabéns! Venceu o jogo!!!";
+        }
+        
+        
+        
+        msg += "</html>";
+       
+        
+        label_MensagemFimDoJogo = new JLabel("", SwingConstants.CENTER);
+        label_MensagemFimDoJogo.setText(msg);
+        label_MensagemFimDoJogo.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_MensagemFimDoJogo.setForeground(Color.white);
+        
+        //botao_Continuar_FimDoDia = new JButton("Continuar >>");
+        botao_Voltar_FimDoJogo.setBorderPainted(false);
+        botao_Voltar_FimDoJogo.setFocusPainted(false);
+        botao_Voltar_FimDoJogo.setForeground(Color.white);
+        botao_Voltar_FimDoJogo.setPreferredSize(new Dimension(120,80));
+        botao_Voltar_FimDoJogo.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Voltar_FimDoJogo.setBackground(Color.decode("#104919"));
+        painelFimDoJogo.add(botao_Voltar_FimDoJogo, BorderLayout.AFTER_LAST_LINE);
+        painelFimDoJogo.add(label_MensagemFimDoJogo, BorderLayout.CENTER);
+    }
+    
+    private void configuraPainelFimDoDia(){
+        String msg = "<html>";
+        /*
+            Este painel é composto por:
+                - 1 bloco de texto informativo em cima - label_Mensagem
+                - 1 botão em baixo que permite avançar para a próxima secção do jogo - botao_Continuar
+        
+        */
+        painelFimDoDia.removeAll();
+        painelFimDoDia.setLayout(new BorderLayout());
+        painelFimDoDia.setBackground(Color.decode("#405972"));
+        painelFimDoDia.setPreferredSize(new Dimension(200,300));
+        
+        msg += "Parabéns! Chegou ao fim do dia " + m.getDia() + ". Continua em segurança... Por agora!";
+        msg += "<br />Os seus suprimentos foram reduzidos em 1 unidade.";
+        if(m.soldadosNoTunel()){
+           // COMO TUDO ESTÁ CONFIGURADO PARA QUE A POSIÇÃO DOS SOLDADOS NUNCA SEJA < 0, ISTO GARANTE QUE ELES VOLTAM PARA A POSIÇÃO 0, INDEPENDENTEMENTE DA POSIÇÃO EM QUE ESTÃO ATUALMENTE
+            msg += "<br />Como tinha soldados no túnel, os mesmos viajaram de volta para o castelo.";
+        }
+        // SOLDADOS EM TERRITÓRIO INIMIGO, SÃO CAPTURADOS
+        if(m.soldadosEmLinhasInimigas()){
+            msg += "<br />Como tinha soldados em linhas inimigas, os mesmos foram capturados.";
+        }        
+        
+        msg += "</html>";
+       
+        
+        label_MensagemFimDoDia = new JLabel("", SwingConstants.CENTER);
+        label_MensagemFimDoDia.setText(msg);
+        label_MensagemFimDoDia.setFont(new Font("Serif", Font.PLAIN, 30));
+        label_MensagemFimDoDia.setForeground(Color.white);
+        
+        //botao_Continuar_FimDoDia = new JButton("Continuar >>");
+        botao_Continuar_FimDoDia.setBorderPainted(false);
+        botao_Continuar_FimDoDia.setFocusPainted(false);
+        botao_Continuar_FimDoDia.setForeground(Color.white);
+        botao_Continuar_FimDoDia.setPreferredSize(new Dimension(120,80));
+        botao_Continuar_FimDoDia.setFont(new Font("Serif", Font.PLAIN, 30));
+        botao_Continuar_FimDoDia.setBackground(Color.decode("#104919"));
+        painelFimDoDia.add(botao_Continuar_FimDoDia, BorderLayout.AFTER_LAST_LINE);
+        painelFimDoDia.add(label_MensagemFimDoDia, BorderLayout.CENTER);
     }
     
     private void configuraPainelAtaques(){
@@ -528,14 +627,32 @@ public class JogoView extends JFrame implements Observer{
 //            
             
             Evento eventoAtual = m.eventoAtual(cartaAtual);
-            for(Acao acao : eventoAtual.getAcoesPermitidas()){
-                if(acao instanceof AtaqueDeAguaFervente){
-                    acaoDeAtaque = acao;
-                    inimigosDisponiveis.addAll(acaoDeAtaque.getPotenciaisAlvos()); 
+            
+            if(tipoDeAtaque == "AtaqueDeAguaFervente"){
+                for(Acao acao : eventoAtual.getAcoesPermitidas()){
+                    if(acao instanceof AtaqueDeAguaFervente){
+                        acaoDeAtaque = acao;
+                        inimigosDisponiveis.addAll(acaoDeAtaque.getPotenciaisAlvos()); 
+                    }
                 }
             }
-              
-            //System.out.println("11111" + eventoAtual.getAcoesPermitidas());
+            else if(tipoDeAtaque == "AtaqueDeArqueiros"){
+                for(Acao acao : eventoAtual.getAcoesPermitidas()){
+                    if(acao instanceof AtaqueDeArqueiros){
+                        acaoDeAtaque = acao;
+                        inimigosDisponiveis.addAll(acaoDeAtaque.getPotenciaisAlvos()); 
+                    }
+                }
+            }
+            else if(tipoDeAtaque == "AtaqueDeCloseCombat"){
+                for(Acao acao : eventoAtual.getAcoesPermitidas()){
+                    if(acao instanceof AtaqueDeCloseCombat){
+                        acaoDeAtaque = acao;
+                        inimigosDisponiveis.addAll(acaoDeAtaque.getPotenciaisAlvos()); 
+                    }
+                }
+            }
+
         }
    
         // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
@@ -569,13 +686,33 @@ public class JogoView extends JFrame implements Observer{
 
         String msg = "O resultado do dado foi " + m.getUltimoResultadoDoDado() + ".";
         
+        
         if(inimigoAtacado != null){
-            if(m.getUltimoResultadoDoDado() > inimigoAtacado.getForca())
-                msg += "O seu ataque teve sucesso e o inimigo recuou uma posição!";
-            else if(m.getUltimoResultadoDoDado() == 1)
-                msg += "Má Sorte! O seu ataque falhou e com isso a população perde 1 unidade de moral!";
-            else
-                msg += "Má Sorte! O seu ataque não teve sucesso!";
+            
+            if(tipoDeAtaque == "AtaqueDeAguaFervente"){
+                if(m.getUltimoResultadoDoDado() > inimigoAtacado.getForca())
+                    msg += "O seu ataque teve sucesso e o inimigo recuou uma posição!";
+
+                else if(m.getUltimoResultadoDoDado() == 1)
+                    msg += "Má Sorte! O seu ataque falhou e com isso a população perde 1 unidade de moral!";
+                else
+                    msg += "Má Sorte! O seu ataque não teve sucesso!";
+            }
+            else if(tipoDeAtaque == "AtaqueDeArqueiros"){
+                if(m.getUltimoResultadoDoDado() > inimigoAtacado.getForca())
+                    msg += "O seu ataque teve sucesso e o inimigo recuou uma posição!";
+                else
+                    msg += "Má Sorte! O seu ataque não teve sucesso!";
+            }
+            if(tipoDeAtaque == "AtaqueDeCloseCombat"){
+                if(m.getUltimoResultadoDoDado() > 4)
+                    msg += "O seu ataque teve sucesso e o inimigo recuou uma posição!";
+
+                else if(m.getUltimoResultadoDoDado() == 1)
+                    msg += "Má Sorte! O seu ataque falhou e com isso a população perde 1 unidade de moral!";
+                else
+                    msg += "Má Sorte! O seu ataque não teve sucesso!";
+            }
         }
        
         
@@ -1044,7 +1181,6 @@ public class JogoView extends JFrame implements Observer{
         painelEventos.add(botao_Continuar_Eventos, BorderLayout.AFTER_LAST_LINE);
         painelEventos.add(label_Msg, BorderLayout.CENTER);
     }
-    
     private void configuraPainelRodarDado(){
         painelRodarDado.removeAll();
         painelRodarDado.setLayout(new BorderLayout());
@@ -1103,8 +1239,7 @@ public class JogoView extends JFrame implements Observer{
         botao_Continuar_SoldadosSeguros.setBackground(Color.decode("#104919"));
         painelSoldadosSeguros.add(botao_Continuar_SoldadosSeguros, BorderLayout.AFTER_LAST_LINE);
         painelSoldadosSeguros.add(label_Msg, BorderLayout.CENTER);
-    }
-    
+    }    
     private void configuraPainelSoldadosEmLinhasInimigas(){
         /*
             Este painel é composto por:
@@ -1130,8 +1265,7 @@ public class JogoView extends JFrame implements Observer{
         botao_RodarDado_SoldadosEmLinhasInimigas.setBackground(Color.decode("#104919"));
         painelSoldadosEmLinhasInimigas.add(botao_RodarDado_SoldadosEmLinhasInimigas, BorderLayout.AFTER_LAST_LINE);
         painelSoldadosEmLinhasInimigas.add(label_Msg, BorderLayout.CENTER);
-    }
-    
+    } 
     private void configuraPainelInfo(){
 
         /*
@@ -1159,7 +1293,6 @@ public class JogoView extends JFrame implements Observer{
         painelInfo.add(botao_Continuar, BorderLayout.AFTER_LAST_LINE);
         painelInfo.add(label_Mensagem, BorderLayout.CENTER);
     }
-    
     private void configuraPainelAcoes(){
         List<JButton> botoesDisponiveis;
         List<Acao> acoesDisponiveis = new ArrayList<>();
@@ -1250,7 +1383,7 @@ public class JogoView extends JFrame implements Observer{
             if(a instanceof AtaqueDeAguaFervente)
                 botoesFiltrados.add(botao_AtaqueDeAguaFervente);
             else if(a instanceof AtaqueDeArqueiros)
-                botoesFiltrados.add(botao_AtaqueDeAguaFervente);
+                botoesFiltrados.add(botao_AtaqueDeArqueiros);
             else if(a instanceof AtaqueDeCloseCombat)
                 botoesFiltrados.add(botao_AtaqueDeCloseCombat);
             else if(a instanceof MotivarTropas)
@@ -1578,6 +1711,39 @@ public class JogoView extends JFrame implements Observer{
 
     public JButton getBotao_Continuar_Ataques() {
         return botao_Continuar_Ataques;
+    }
+
+    public JButton getBotao_Continuar_FimDoDia() {
+        return botao_Continuar_FimDoDia;
+    }
+
+    public JButton getBotao_Voltar_FimDoJogo() {
+        return botao_Voltar_FimDoJogo;
+    }
+    
+    
+    
+
+    public String getTipoDeAtaque() {
+        return tipoDeAtaque;
+    }
+
+    public void setTipoDeAtaque(String tipoDeAtaque) {
+        
+        this.tipoDeAtaque = tipoDeAtaque;
+        configuraPainelAtaques();
+    }
+
+    public JMenuItem getMenuItem_sair() {
+        return menuItem_sair;
+    }
+
+    public JMenuItem getMenuItem_sobre() {
+        return menuItem_sobre;
+    }
+
+    public JMenuItem getMenuItem_guardar() {
+        return menuItem_guardar;
     }
     
     

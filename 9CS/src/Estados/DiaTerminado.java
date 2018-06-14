@@ -13,7 +13,7 @@ import java.io.Serializable;
  * @author me
  */
 public class DiaTerminado extends EstadosAdapter implements Serializable{
-    static int contagemDeDias = 1;
+
     Mundo m;
     public DiaTerminado(Mundo mundo) {
         super(mundo);
@@ -37,18 +37,23 @@ public class DiaTerminado extends EstadosAdapter implements Serializable{
         // REDUZIR SUPPLIES EM 1 UNIDADE
         m.alteraSuprimentos(-1);
         
-        return this;
+        return this.proximoEstado();
     }
     
     
     @Override
     public IEstados proximoEstado(){
-        if(contagemDeDias++ == 3)
+        if(m.getDia() == 3)
             return new JogoTerminado(this.getMundo());
         Mundo m  = super.getMundo();
         
         m.setDia(m.getDia() + 1);
         
         return new AguardaCarta(this.getMundo());
+    }
+    
+    @Override
+    public IEstados fimDoJogo(){
+        return new JogoTerminado(this.getMundo());
     }
 }

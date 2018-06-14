@@ -54,6 +54,7 @@ public class MenuInicialView extends JFrame{
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         //painel = new JPanel(); // Cria o painel principal desta view
         setLayout(new BorderLayout(5,5)); // Gap vertical e horizontal: 5
+        this.setVisible(false);
         
         // CONFIGURAÇÃO DA IMAGEM DE BACKGROUND
 	JLabel background=new JLabel(new ImageIcon("imagens/logo.png"));

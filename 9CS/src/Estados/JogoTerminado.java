@@ -18,4 +18,7 @@ public class JogoTerminado extends EstadosAdapter implements Serializable{
         super(m);
     }
     
+    public IEstados voltarAoInicio(){
+        return new AguardaInicio(super.getMundo());
+    }
 }

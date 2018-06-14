@@ -43,6 +43,7 @@ public class Mundo extends Observable implements Serializable{
     private int dia;
     private Carta cartaAtual;
     private String mensagemParaJogador; // mensagem a mostrar ao utilizador
+    private String motivoFimDoJogo; 
     
     public Mundo(){
         estadoAtual = new AguardaInicio(this);
@@ -54,6 +55,7 @@ public class Mundo extends Observable implements Serializable{
         gerarCartas();
         cartasViradas = 0;
         dia = 1;
+        notificaAlteracao();
     }
     
     public void gerarCartas(){
@@ -665,8 +667,8 @@ public class Mundo extends Observable implements Serializable{
             - Uma 3a facção avançar para zona de close combat
             - Uma 2a força fica a 0
         */
-        boolean faccoesFatais = fortaleza.faccoesFatais(2); // 2 facções estão na zona de close combat?
-        boolean forcasFatais = fortaleza.forcasFatais(1); // 1 das forças está a 0?
+        boolean faccoesFatais = fortaleza.faccoesFatais(3); // 3 facções estão na zona de close combat?
+        boolean forcasFatais = fortaleza.forcasFatais(2); // 2 das forças está a 0?
         
         if(faccoesFatais){
             setEstado(estadoAtual.fimDoJogo());
@@ -675,7 +677,7 @@ public class Mundo extends Observable implements Serializable{
             
         else if(forcasFatais){
             setEstado(estadoAtual.fimDoJogo());
-            return "2 das forças da fortaleza chegou a zero, pelo que o jogador perdeu automaticamente o jogo.";
+            return "2 das forças da fortaleza chegaram a zero, pelo que o jogador perdeu automaticamente o jogo.";
         }
         
         
@@ -697,7 +699,7 @@ public class Mundo extends Observable implements Serializable{
 
     
     public void fimDoDia(){
-        estadoAtual.aplicarAcoes();
+        setEstado(estadoAtual.aplicarAcoes());
     }
     
     
@@ -734,4 +736,20 @@ public class Mundo extends Observable implements Serializable{
         fortaleza.alteraPosTorres(var);
         notificaAlteracao();
     }
+
+    public void voltarAoInicio(){
+        setEstado(getEstado().voltarAoInicio());
+        
+    }
+    
+    public String getMotivoFimDoJogo() {
+        return motivoFimDoJogo;
+    }
+
+    public void setMotivoFimDoJogo(String motivoFimDoJogo) {
+        this.motivoFimDoJogo = motivoFimDoJogo;
+        notificaAlteracao();
+    }
+    
+    
 }
