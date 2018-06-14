@@ -292,11 +292,11 @@ public class textoView {
        verificaCondicoesFatais();   
    } 
    
-    public static void main(String[] args) {
-        textoView main = new textoView();
-        main.run();
-     
-    }
+//    public static void main(String[] args) {
+//        textoView main = new textoView();
+//        main.run();
+//     
+//    }
   
     private void mostraDRMS(Evento evento){
         if(m.temDRM(evento)){ // SE O EVENTO POSSUI DRMs

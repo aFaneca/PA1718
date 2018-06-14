@@ -1323,6 +1323,7 @@ public class JogoView extends JFrame implements Observer{
             // Nr. de Ações Disponíveis
             label_acoesDisponiveis.setText("Ações Disponíveis: " + m.eventoAtual(cartaAtual).getAPA() + " para o evento " + m.eventoAtual(cartaAtual));
             label_acoesDisponiveis.setFont(new Font("Serif", Font.PLAIN, 30));
+            label_acoesDisponiveis.setForeground(Color.decode("#44ff76"));
             
             
             Evento eventoAtual = m.eventoAtual(cartaAtual);
