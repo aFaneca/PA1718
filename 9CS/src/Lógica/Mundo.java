@@ -36,7 +36,6 @@ public class Mundo extends Observable implements Serializable{
     private Dado dado;
     private Fortaleza fortaleza;
     private List<Carta> cartas;
-    
     private List<Evento> eventos;
     private IEstados estadoAtual; 
     private static int cartasViradas;
@@ -46,6 +45,10 @@ public class Mundo extends Observable implements Serializable{
     private String motivoFimDoJogo; 
     
     public Mundo(){
+        init();
+    }
+    
+    public void init(){
         estadoAtual = new AguardaInicio(this);
         dado = new Dado(this);
         fortaleza = new Fortaleza(this);
@@ -565,8 +568,7 @@ public class Mundo extends Observable implements Serializable{
         if(dia > 3) dia = 3;
         if(dia < 1) dia = 1;
         
-        setChanged();
-        notifyObservers();
+        notificaAlteracao();
     }
     
     public Fortaleza getFortaleza(){
@@ -722,7 +724,7 @@ public class Mundo extends Observable implements Serializable{
     public void notificaAlteracao() {
         
         setChanged();
-        notifyObservers();
+        notifyObservers(this);
     }
     
     public void alteraPosArietes(int var){
@@ -740,6 +742,7 @@ public class Mundo extends Observable implements Serializable{
 
     public void voltarAoInicio(){
         setEstado(getEstado().voltarAoInicio());
+        init(); // Reinicia as settings
         
     }
     

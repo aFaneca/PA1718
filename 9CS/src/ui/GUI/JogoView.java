@@ -51,15 +51,12 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableModel;
-import sun.java2d.SunGraphicsEnvironment;
+
 
 /**
  *
- * @author me
+ * @author António Faneca
  */
 
 
@@ -301,7 +298,9 @@ public class JogoView extends JFrame implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
+       System.out.println("DIA UPDATE 0: " + getM().getDia());
         //m = (Mundo) arg;
+        System.out.println("DIA UPDATE: " + getM().getDia());
         configuraDia();
         configuraMoralDoPovo();
         configuraNivelDosSuprimentos();
@@ -865,7 +864,8 @@ public class JogoView extends JFrame implements Observer{
 
         if(m.getUltimoResultadoDoDado()  >= Constantes.MOTIVAR_TROPAS_MINIMO.getValor()){ 
             label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Conseguiu aumentar a moral do povo (+1)!");
-        }
+        }else
+            label_Msg.setText("Rodou o dado e o resultado foi " + m.getUltimoResultadoDoDado() + ". Não conseguiu aumentar a moral do povo.");
 
         
         label_Msg.setFont(new Font("Serif", Font.PLAIN, 30));
@@ -1148,7 +1148,7 @@ public class JogoView extends JFrame implements Observer{
             }else
                 msg += ("Este evento não lhe concedeu qualquer DRM.");
             
-            if(!afetaInimigos) msg += ("Este evento não lhe concedeu qualquer DRM.");
+            if(!afetaInimigos) msg = ("<html>Este evento não lhe concedeu qualquer DRM.");
             
             msg += "</html>";
         }
@@ -1427,6 +1427,7 @@ public class JogoView extends JFrame implements Observer{
     }
     
     private void configuraDia(){
+        System.out.println("DIA UPDATE 0: " + getM().getDia());
         // jLabel que indica o dia atual
         label_dia.setAlignmentX(CENTER_ALIGNMENT);
         label_dia.setToolTipText("DIA: " + m.getDia());

@@ -65,7 +65,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
         this.menuInicial = menuInicial;
         this.jogoView = jogoView;
         movimentarSoldadosFreeJaUsado = false;
-        modoDebug = true;
+        modoDebug = false;
         acoesDoMenu();
         
         m.addObserver(jogoView); // Adiciona a View JogoView à lista de observers do Observable "Mundo", que é o Modelo no padrão MVC
@@ -179,7 +179,15 @@ public class Controlador implements ActionListener{ // CONTROLLER
     private void selecaoDeAcao(){
         pausa_acoes = true;
         
-        while(pausa_acoes){System.out.println("A Selecionar Ação...");};
+        while(pausa_acoes){
+            try {
+                Thread.sleep(1);
+                
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        };
+        /*System.out.println("A Selecionar Ação...");*/
     }
     
     private void virarCarta(){
@@ -209,7 +217,16 @@ public class Controlador implements ActionListener{ // CONTROLLER
            jogoView.trocarPainel("painelDRMS"); //  direcionar diretamente para este painel
 
                       // Fica aqui parado até que pausa = false (que vai ser sinalizado no listener abaixo
-       while(pausa){System.out.println("A Virar Carta...");}; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
+       while(pausa){
+           
+           try {
+               Thread.sleep(1);
+               
+               /*System.out.println("A Virar Carta...");*/
+           } catch (InterruptedException ex) {
+               Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
+           }
+}; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
 
        // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
        if(!modoDebug) m.setMotivoFimDoJogo(m.verificaCondicoesFatais());   
@@ -324,10 +341,8 @@ public class Controlador implements ActionListener{ // CONTROLLER
     
     private void voltarAoInicio(){
         m.voltarAoInicio();
-        m = new Mundo();
-        m.notificaAlteracao();
         jogoView.setM(m);
-        System.out.println(m.getCartaAtual());
+        
     }
     
     public void acoesDoMenu(){
@@ -379,10 +394,17 @@ public class Controlador implements ActionListener{ // CONTROLLER
                 File ficheiro = fc.getSelectedFile();             
                 try{
                     m = (Mundo) CarregamentoDeJogo.carregarJogo(ficheiro);
-                    
+                    m.addObserver(jogoView);
+                    jogoView.setM(m);
                     m.notificaAlteracao();
-                    menuInicial.setVisible(false);
+                    
+                    System.out.println("DIA ATUAL: " + m.getDia());
+                    System.out.println("MENSAGEM: " + m.getMensagemParaJogador());
+                    
+                    menuInicial.dispose();
                     jogoView.setVisible(true);
+                    
+
                 }catch(IOException | ClassNotFoundException ex){
                     menuInicial.mostraErro("A operação falhou: \r\n\r\n" + e);
                 }
