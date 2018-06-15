@@ -52,7 +52,7 @@ public abstract class Evento implements Serializable{
         return true;
     }
     public List<Acao> getAcoesPermitidas(){
-        if(APA == 0) return Collections.emptyList();
+        if(APA < 1) return Collections.emptyList();
         return acoesPermitidas;
     }
     

@@ -116,8 +116,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
     
     public void run() {
         while (!sair) {     
-//            if(pausa) // Só executar este loop nas fases em que o jogo não está em pausa
-//                continue; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
+
             IEstados estado = m.getEstado();  
             //System.out.println(estado);
             if(estado instanceof AguardaInicio){
@@ -313,7 +312,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
             m.acao_movimentarSoldadosNoTunel(1);
         }
             
-        
+        m.notificaAlteracao();
         jogoView.trocarPainel("painelAcao_movimentarSoldados2");
  
     }
@@ -531,7 +530,10 @@ public class Controlador implements ActionListener{ // CONTROLLER
              pausa_acoes = false;
          }
          else if(origem == (jogoView.getBotao_Movimentar_movimentarSoldadosFast())){
-             acao_movimentarSoldados(true);
+             if(eventoAtual.getAPA() >= 2)
+                acao_movimentarSoldados(true);
+             else
+                 jogoView.mostraPopup("Não tem APAs suficientes para esta ação!");
          }
          else if(origem == (jogoView.getBotao_Movimentar_movimentarSoldadosFree())){
              if(this.movimentarSoldadosFreeJaUsado)

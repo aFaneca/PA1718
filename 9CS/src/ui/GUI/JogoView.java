@@ -1368,10 +1368,7 @@ public class JogoView extends JFrame implements Observer{
     }
     
     
-    
-            
-            
-            
+          
     // Faz o cruzamento entre os botões disponíveis e a lista recebida de inimigos disponíveis e retorna um resultado filtrado dessa lista
     List<JButton> getBotoesDeAtaqueDisponiveis(List<Inimigo> inimigos){
         List<JButton> botoesFiltrados = new ArrayList<>();
