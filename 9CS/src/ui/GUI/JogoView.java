@@ -1394,6 +1394,12 @@ public class JogoView extends JFrame implements Observer{
     List<JButton> getBotoesDisponiveis(List<Acao> acoes){
         List<JButton> botoesFiltrados = new ArrayList<>();
         
+        if(m.getFortaleza().faccoesFatais(2)){ // Se estiverem 2 facções em Close Combat
+            botoesFiltrados.add(botao_AtaqueDeCloseCombat);
+            botoesFiltrados.add(botao_NaoRealizarMaisAcoes);
+            return botoesFiltrados;
+        }
+        
         for(Acao a : acoes){
             if(a instanceof AtaqueDeAguaFervente)
                 botoesFiltrados.add(botao_AtaqueDeAguaFervente);
