@@ -150,7 +150,6 @@ public class AguardaSelecaoDeAcao extends EstadosAdapter implements Serializable
         // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
         m.setMotivoFimDoJogo(m.verificaCondicoesFatais());
         if(m.getMotivoFimDoJogo() != null){
-            System.out.println("TERMINADO");
             return new JogoTerminado(this.getMundo());
         }
         
