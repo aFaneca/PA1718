@@ -13,8 +13,6 @@ import Lógica.Carta;
 import Lógica.Constantes;
 import Lógica.DRM;
 import Lógica.Evento;
-import Lógica.Eventos.OleoQuente;
-import Lógica.Eventos.Reuniao;
 import Lógica.Inimigo;
 import Lógica.Inimigos.*;
 import Lógica.Mundo;
@@ -22,22 +20,14 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridLayout;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-import javafx.scene.layout.Border;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -268,9 +258,9 @@ public class JogoView extends JFrame implements Observer{
         menuItem_sair.setMnemonic(KeyEvent.VK_S);
         menuItem_sair.setToolTipText("Sair da Aplicação");
         
-        menuItem_guardar = new JMenuItem("Guardar Jogo");
+        menuItem_guardar = new JMenuItem("Guardar Jogo", icon_guardar);
         menuItem_guardar.setMnemonic(KeyEvent.VK_G);
-        menuItem_sair.setToolTipText("Guardar o estado atual do jogo");
+        menuItem_guardar.setToolTipText("Guardar o estado atual do jogo");
         
         
         menu_jogo.add(menuItem_guardar);
@@ -298,9 +288,7 @@ public class JogoView extends JFrame implements Observer{
 
     @Override
     public void update(Observable o, Object arg) {
-       System.out.println("DIA UPDATE 0: " + getM().getDia());
         //m = (Mundo) arg;
-        System.out.println("DIA UPDATE: " + getM().getDia());
         configuraDia();
         configuraMoralDoPovo();
         configuraNivelDosSuprimentos();
@@ -1342,7 +1330,6 @@ public class JogoView extends JFrame implements Observer{
             
             Evento eventoAtual = m.eventoAtual(cartaAtual);
             acoesDisponiveis.addAll(eventoAtual.getAcoesPermitidas());   
-            //System.out.println("11111" + eventoAtual.getAcoesPermitidas());
         }
    
         // Inicializar a lista dos botões disponíveis com a lista recebida de uma função
@@ -1430,7 +1417,6 @@ public class JogoView extends JFrame implements Observer{
     }
     
     private void configuraDia(){
-        System.out.println("DIA UPDATE 0: " + getM().getDia());
         // jLabel que indica o dia atual
         label_dia.setAlignmentX(CENTER_ALIGNMENT);
         label_dia.setToolTipText("DIA: " + m.getDia());

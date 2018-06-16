@@ -138,5 +138,4 @@ public class EstadosAdapter implements IEstados, Serializable{
     public IEstados voltarAoInicio() {
         return this;
     }
-
 }

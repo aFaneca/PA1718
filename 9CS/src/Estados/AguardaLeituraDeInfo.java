@@ -36,9 +36,7 @@ public class AguardaLeituraDeInfo extends EstadosAdapter implements Serializable
             if(resultado > Constantes.SOLDADOS_EM_LINHAS_INIMIGAS_SEM_SORTE.getValor()){
                // TUDO CORREU BEM
            }else{
-                System.out.println("CAPTURADOS");
                m.soldadosCapturados();
-               System.out.println("NOVA POSICAO: " + m.getPosDosSoldados());
            }
             
             return this;

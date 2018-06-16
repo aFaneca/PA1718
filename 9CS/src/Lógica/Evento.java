@@ -33,10 +33,7 @@ public abstract class Evento implements Serializable{
         this.acoesPermitidas = new ArrayList<>(carta.getAcoes());
     }
     
-    /*
-    protected abstract boolean condicao();
-*/
-    
+
 
     public List<DRM> getDrms() {
         return drms;

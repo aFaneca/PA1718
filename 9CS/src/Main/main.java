@@ -25,6 +25,5 @@ public class main {
          Controlador controlador = new Controlador(mundo, menuInicial, jogoView); // Controlador
          
          controlador.run();
-         //menuInicial.setVisible(true);
     }
 }

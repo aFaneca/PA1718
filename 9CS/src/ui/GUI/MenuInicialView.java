@@ -12,20 +12,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.paint.Color;
-import javax.imageio.ImageIO;
-
 import javax.swing.*;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -35,14 +22,13 @@ import javax.swing.JPanel;
 
 /**
  *
- * @author me
+ * @author António Faneca
  */
 public class MenuInicialView extends JFrame{
     JPanel painelInferior;
     JButton botao_iniciarJogo;
     JButton botao_sair;
     JButton botao_continuarJogo;
-    //BufferedImage wPic;
     JLabel logotipo;
     Icon icon_abrirFicheiro = new ImageIcon("imagens/icon_abrirFicheiro.png");
     Icon icon_adicionar = new ImageIcon("imagens/icon_adicionar.png");
@@ -112,7 +98,6 @@ public class MenuInicialView extends JFrame{
     
     
     public void addListener(ActionListener controlador, JButton botao){
-        //System.out.println("View      : adding controller");
         botao.addActionListener(controlador);	//need instance of controller before can add it as a listener
     }
     

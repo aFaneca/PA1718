@@ -52,7 +52,7 @@ public class DesenhoDosProgressosInimigos extends JPanel{
         super.paintComponent(g);
         
         m = view.getM();
-        System.out.println("DIA ATUAL PAIN: " + m.getDia());
+        
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON); // ANTI-ALIASING
         g2.setStroke(new BasicStroke(3));

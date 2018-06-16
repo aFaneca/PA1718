@@ -38,11 +38,6 @@ public class DRM implements Serializable{
         inimigosAfetados = new ArrayList<>(inimigos);
         afetaInimigos = true;
     }
-    
-//    public DRM(Acao acao, int var, ArrayList<Integer> locais){
-//        this(acao, var);
-//        inimi
-//    }
 
     public Acao getAcao() {
         return acao;

@@ -62,8 +62,11 @@ class Soldado implements Serializable{
         if(local < 0) local = 0;
         if(local > 3) local = 3;
         
-        if(local == 0)
+        if(local == 0){
             fortaleza.alteraSuprimentos(+suprimentosFurtados);
+            suprimentosFurtados = 0;
+        }
+            
         
     }
 }

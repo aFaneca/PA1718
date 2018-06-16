@@ -6,9 +6,7 @@
 package Lógica;
 
 import Estados.AguardaInicio;
-import Estados.AguardaSelecaoDeAcao;
 import Estados.IEstados;
-import Estados.JogoTerminado;
 import Lógica.Ações.AtaqueDeAguaFervente;
 import Lógica.Ações.AtaqueDeArqueiros;
 import Lógica.Ações.AtaqueDeCloseCombat;
@@ -17,16 +15,12 @@ import Lógica.Ações.MovimentarSoldadosNoTunel;
 import Lógica.Ações.Raid;
 import Lógica.Ações.RepararMuralha;
 import Lógica.Ações.Sabotagem;
-import Lógica.Inimigos.Escada;
-import Lógica.Inimigos.Torre;
-import Lógica.Inimigos.Ariete;
 import Lógica.Eventos.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Observable;
-import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -208,9 +202,7 @@ public class Mundo extends Observable implements Serializable{
     public Carta virarCarta(){
        if(cartasViradas > 6)
            cartasViradas = 0;
-//          // setEstado(estadoAtual.fimDoDia());
-//          setEstado(new AguardaInicio(this)); // TEMPORÁRIO PARA EFEITO DE TESTES
-//       }
+
        
         cartaAtual = cartas.get(cartasViradas++);
         
@@ -401,13 +393,15 @@ public class Mundo extends Observable implements Serializable{
     public int acao_AtaqueDeAguaFervente(Inimigo inimigoEscolhido, Evento eventoAtual) {
         boolean temDRMS = false; // SE O EVENTO ATUAL TEM ALGUM DRM QUE AFETE ESTA AÇÃO
         int var  = 0; // SE TEM DRM, QUAL A VARIÂNCIA DA ALTERAÇÃO (SE NÃO TEM -> = 0)
-        
-        for(DRM drm : eventoAtual.drms){
+        if(eventoAtual != null){
+            for(DRM drm : eventoAtual.drms){
             if(drm.acao instanceof AtaqueDeAguaFervente){ // SE ESSA DRM AFETA A AÇÃO "ATAQUE DE AGUA FERVENTE"
                 temDRMS = true;
                 var += drm.var;
             }
         }
+        }
+        
         
         int resultadoDoDado = rodaDado() + 1 + var; // +1 DRM
         
@@ -533,8 +527,7 @@ public class Mundo extends Observable implements Serializable{
             eventoAtual.removerAcao(acaoEscolhida); // REMOVER A AÇÃO DO LEQUE DE AÇÕES DISPONÍVEIS
 
         eventoAtual.decrementaAPA(); // RETIRAR DO NR. DE APA'S DISPONÍVEIS O QUE FOI UTILIZADO AGORA
-        //System.out.println("fdsfsad" + eventoAtual.getAcoesPermitidas());
-
+        
         notificaAlteracao();      
     }
     
@@ -619,29 +612,6 @@ public class Mundo extends Observable implements Serializable{
         return fortaleza.getPosicaoSoldados();
     }
     
-    public void verInfo(){
-        int nr = 1, nr1 = 1;
-        
-        for(Carta carta : cartas){
-            System.out.println("## CARTA Nº " + nr++ + " ##");
-            System.out.println("\tNr. de Eventos: " + carta.eventos.size());
-            for(Evento evento : carta.eventos){
-                System.out.println("\t\tNOME DO EVENTO: " + evento);
-                System.out.println("\t\tAPA: " + evento.APA);
-                System.out.println("\t\tTem Restrições de Ações: " + evento.temRestricoesDeAcoes());
-                if(evento.temRestricoesDeAcoes())
-                    System.out.println("\t\tAções Permitidas: " + evento.acoesPermitidas);
-                System.out.println("\t\tNr. de Inimigos: " + evento.inimigos.size());
-                for(Inimigo inimigo : evento.inimigos){
-                    System.out.println("\t\t\tINIMIGO #" + nr1++ + " - " + inimigo);
-                }
-                System.out.println("\n\t\t\t------------------------\n\n");
-                nr1 = 1;
-            }
-            System.out.println("\n==========================================\n");
-        }
-        
-    }
 
     public String verificaCondicoesFatais() {
         /* CONDIÇÕES PARA FIM DO JOGO NO FINAL DO TURNO

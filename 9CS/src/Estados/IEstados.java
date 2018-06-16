@@ -45,4 +45,5 @@ public interface IEstados {
     public IEstados verificarSoldados(JogoView view);
     public IEstados testaSorteDosSoldados();
     public IEstados voltarAoInicio();
+
 }

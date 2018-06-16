@@ -9,7 +9,7 @@ import java.io.Serializable;
 
 /**
  *
- * @author me
+ * @author António Faneca
  */
 public abstract class Inimigo implements Serializable{
     protected int forca;

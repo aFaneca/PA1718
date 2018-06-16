@@ -14,25 +14,12 @@ import Estados.IEstados;
 import Estados.JogoTerminado;
 import Lógica.CarregamentoDeJogo;
 import Lógica.Carta;
-import Lógica.Constantes;
 import Lógica.Evento;
 import Lógica.Eventos.AtaqueDeCatapulta;
 import Lógica.Eventos.CatapultaReparada;
-import Lógica.Eventos.CoberturaDaEscuridao;
 import Lógica.Eventos.Colapso;
 import Lógica.Eventos.Doenca;
-import Lógica.Eventos.EscudosDeFerro;
-import Lógica.Eventos.FatigaInimiga;
-import Lógica.Eventos.Fe;
-import Lógica.Eventos.FlechasFlamejantes;
-import Lógica.Eventos.GuardasDistraidos;
-import Lógica.Eventos.InimigoDeterminado;
-import Lógica.Eventos.MauTempo;
 import Lógica.Eventos.MorteDeUmLider;
-import Lógica.Eventos.OleoQuente;
-import Lógica.Eventos.PortaFortificada;
-import Lógica.Eventos.Reuniao;
-import Lógica.Eventos.SalvaDeFlechas;
 import Lógica.Eventos.SuprimentosEstragados;
 import Lógica.Mundo;
 import java.awt.event.ActionEvent;
@@ -47,7 +34,7 @@ import ui.GUI.MenuInicialView;
 
 /**
  *
- * @author me
+ * @author António Faneca
  */
 public class Controlador implements ActionListener{ // CONTROLLER
     private Mundo m; // MODEL
@@ -60,6 +47,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
     boolean movimentarSoldadosFreeJaUsado;
     String msg;
     boolean modoDebug;
+    
     public Controlador(Mundo m, MenuInicialView menuInicial, JogoView jogoView){
         this.m = m;
         this.menuInicial = menuInicial;
@@ -120,23 +108,18 @@ public class Controlador implements ActionListener{ // CONTROLLER
             IEstados estado = m.getEstado();  
             //System.out.println(estado);
             if(estado instanceof AguardaInicio){
-//                m = new Mundo();
-
                 menuInicial.setVisible(true);
                 jogoView.setVisible(false);
 
             }
-            else if(estado instanceof AguardaLeituraDeInfo){
-               
+            else if(estado instanceof AguardaLeituraDeInfo){ 
                 menuInicial.setVisible(false);
                 jogoView.setVisible(true);
 
             }
-                //m.novoJogo();
             else if(estado instanceof AguardaCarta){
                 virarCarta();
             }
-
             else if(estado instanceof AguardaSelecaoDeAcao){
                 //processaAcoes();
                 jogoView.trocarPainel("painelAcoes");
@@ -146,24 +129,16 @@ public class Controlador implements ActionListener{ // CONTROLLER
                 if(msg != null){
                     m.setMotivoFimDoJogo(msg);
                     m.setEstado(m.getEstado().fimDoJogo());
-                }
-
-                
+                }   
             }
-
-
             else if(estado instanceof DiaTerminado){
                 fimDoDia();
             }
-
-
             else if(estado instanceof JogoTerminado){
                 fimDoJogo();
                 //sair = true;
-            }
-                
-       }
-        
+            }       
+       }        
     }
     
     
@@ -194,10 +169,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
        pausa = true;
        cartaVirada = m.virarCarta();
        eventoAtual = m.eventoAtual(cartaVirada);
-       
-       
-       
-       //m.setEstado(m.getEstado().proximoEstado());
+
         
        // DESCOBRE QUAL O EVENTO ATUAL E APLICA-O
        if(eventoAtual instanceof AtaqueDeCatapulta)
@@ -225,14 +197,12 @@ public class Controlador implements ActionListener{ // CONTROLLER
            } catch (InterruptedException ex) {
                Logger.getLogger(Controlador.class.getName()).log(Level.SEVERE, null, ex);
            }
-}; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
+        }; // Necessário, caso contrário o sistema vai simplesmente passar imediatamente para a próxima carta, sem esperar pela interação do utilizador
 
-       // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
-       if(!modoDebug) m.setMotivoFimDoJogo(m.verificaCondicoesFatais());   
+      
    } 
     
-    
-    
+
 
     private void EVENTO_ataqueDeCatapulta() {
         m.evento_AtaqueDeCatapulta(); // Aplica o evento
@@ -566,15 +536,7 @@ public class Controlador implements ActionListener{ // CONTROLLER
              movimentarSoldadosFreeJaUsado = false;
          }
          else if(origem ==(jogoView.getBotao_Voltar_FimDoJogo())){
-//             m.setEstado(new AguardaInicio(m));
-//             pausa = false;
              voltarAoInicio();
-//             System.out.println("A voltar ao início...");
-//             jogoView.setVisible(false);
-//             menuInicial.setVisible(true);
-//             pausa_acoes = false;
-//             pausa = false;
-//             movimentarSoldadosFreeJaUsado = false;
          }
     }
 

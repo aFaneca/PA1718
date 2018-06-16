@@ -143,7 +143,16 @@ public class AguardaSelecaoDeAcao extends EstadosAdapter implements Serializable
         return this;
     }
     
+
+    
     public IEstados proximoEstado(){
+        
+        // MÉTODO PARA VERIFICAR AS CONDIÇÕES QUE DETERMINAM O FIM DO JOGO AO FINAL DE CADA TURNO 
+        m.setMotivoFimDoJogo(m.verificaCondicoesFatais());
+        if(m.getMotivoFimDoJogo() != null){
+            System.out.println("TERMINADO");
+            return new JogoTerminado(this.getMundo());
+        }
         
         if(mundo.getCartasViradas() % mundo.getCartas().size() == 0) // SE JÁ FORAM VIRADAS AS 7 CARTAS
             return new DiaTerminado(this.getMundo());
