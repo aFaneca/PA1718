@@ -3,6 +3,9 @@
 
 **Objetivo:** Simular o jogo 9CS - 9 Card Siege
 
+## Screenshots
+![Novo Jogo](http://afaneca.com/imagens/9CS-novoJogo.png)
+
 ## Como se joga o 9CS?
 O jogo possui 9 cartas:
 - 7 Cartas de Eventos
